@@ -3,6 +3,7 @@ import Link from "next/link";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { services, type Service } from "@/data/homepage";
+import { cn } from "@/lib/cn";
 
 /**
  * One card in the services carousel: photo with a category tag on top,
@@ -12,16 +13,28 @@ import { services, type Service } from "@/data/homepage";
  *   shorter description and a button without an arrow.
  * - Desktop (xl and up): the full 400px card.
  */
-export default function ServiceCard({ service }: { service: Service }) {
+export default function ServiceCard({
+  service,
+  layout = "carousel",
+}: {
+  service: Service;
+  /** "carousel": fixed width for the homepage slider. "grid": fills its grid cell (Services page). */
+  layout?: "carousel" | "grid";
+}) {
   return (
-    <article className="flex w-75 shrink-0 snap-start flex-col overflow-hidden rounded-card border border-border bg-white shadow-card xl:w-100">
+    <article
+      className={cn(
+        "flex flex-col overflow-hidden rounded-card border border-border bg-white shadow-card",
+        layout === "carousel" ? "w-75 shrink-0 snap-start xl:w-100" : "h-full w-full",
+      )}
+    >
       {/* Photo */}
       <div className="relative h-40 xl:h-55">
         <Image
           src={service.image}
           alt=""
           fill
-          sizes="400px"
+          sizes="(min-width: 768px) 400px, 100vw"
           className="object-cover"
         />
         {/* Slight dark fade at the bottom of the photo */}

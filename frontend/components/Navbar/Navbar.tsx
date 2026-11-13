@@ -2,13 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { navbar } from "@/data/homepage";
+import { isActiveLink } from "@/lib/active-link";
 import { cn } from "@/lib/cn";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import MobileMenu from "./MobileMenu";
+import ServicesMegaMenu from "./ServicesMegaMenu";
 
 /** The small gradient tag next to a link, e.g. "SOON". */
 function Badge({ children }: { children: string }) {
@@ -75,11 +78,52 @@ function MenuButton({ isOpen, onClick }: { isOpen: boolean; onClick: () => void 
  *   the logo and a menu button. Tablets also show the main button. Tapping the
  *   menu button opens the full-screen menu.
  * - Desktop (xl and up): an 88px see-through bar with logo, links and buttons.
+ *   Hovering "Services" drops down the services mega menu.
  */
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // The "Free Consultation" buttons open the consultation pop-up.
   const { openConsultation } = usePopups();
+  // The page we are on: decides which link gets the underline.
+  const pathname = usePathname();
+
+  /* ---------------- Services mega menu (desktop only) ---------------- */
+  const [isMegaOpen, setIsMegaOpen] = useState(false);
+  // Where the little arrow on top of the panel sits (under "Services").
+  const [caretLeft, setCaretLeft] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
+  const megaRef = useRef<HTMLDivElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const openMega = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    // Measure where "Services" is, so the arrow points at it.
+    const bar = barRef.current?.getBoundingClientRect();
+    const link = megaRef.current?.getBoundingClientRect();
+    if (bar && link) setCaretLeft(link.left - bar.left + link.width / 2);
+    setIsMegaOpen(true);
+  }, []);
+  const closeMega = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setIsMegaOpen(false);
+  }, []);
+  // Leaving the link or the panel closes the menu after a short pause, so
+  // the pointer can travel from the link down into the panel.
+  const scheduleMegaClose = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setIsMegaOpen(false), 150);
+  }, []);
+
+  // Escape closes the mega menu; a pending close is cancelled on unmount.
+  useEffect(() => {
+    if (!isMegaOpen) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") closeMega();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isMegaOpen, closeMega]);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   // While the menu is open: close it with the Escape key, and stop the page
   // behind it from scrolling.
@@ -108,7 +152,10 @@ export default function Navbar() {
           isMenuOpen ? "fixed bg-ink" : "absolute bg-ink/60 backdrop-blur-md",
         )}
       >
-        <div className="mx-auto flex h-navbar-compact w-full max-w-page items-center justify-between page-x xl:h-navbar">
+        <div
+          ref={barRef}
+          className="relative mx-auto flex h-navbar-compact w-full max-w-page items-center justify-between page-x xl:h-navbar"
+        >
           {/* Logo: 136 x 32 on small screens, 176 x 42 on desktop */}
           <Link
             href="/"
@@ -128,21 +175,30 @@ export default function Navbar() {
           {/* Desktop links */}
           <nav aria-label="Main" className="hidden items-center gap-7.5 xl:flex">
             {navbar.links.map((link) => {
-              const isActive = link.href === navbar.activeHref;
-              return (
+              const isActive = isActiveLink(link.href, pathname);
+              const linkElement = (
                 <Link
                   key={link.label}
                   href={link.href}
                   aria-current={isActive ? "page" : undefined}
+                  {...(link.hasDropdown && {
+                    "aria-haspopup": true,
+                    "aria-expanded": isMegaOpen,
+                    onClick: closeMega,
+                  })}
                   className={cn(
                     "relative flex items-center gap-1.5 text-nav font-semibold transition-colors hover:text-white",
-                    isActive ? "text-white" : "text-white/75",
+                    isActive || (link.hasDropdown && isMegaOpen) ? "text-white" : "text-white/75",
                   )}
                 >
                   {link.label}
-                  {/* Small arrow for links that will open a dropdown. */}
+                  {/* Small arrow for the link with the mega menu; it flips while open. */}
                   {link.hasDropdown && (
-                    <Icon src="/assets/icons/chevron-down-white-16.svg" size={16} />
+                    <Icon
+                      src="/assets/icons/chevron-down-white-16.svg"
+                      size={16}
+                      className={cn("transition-transform duration-200", isMegaOpen && "rotate-180")}
+                    />
                   )}
                   {link.badge && <Badge>{link.badge}</Badge>}
                   {/* Gradient underline under the current page. */}
@@ -150,6 +206,39 @@ export default function Navbar() {
                     <span className="absolute inset-x-0 -bottom-3 h-0.75 rounded-xs bg-accent-gradient" />
                   )}
                 </Link>
+              );
+
+              if (!link.hasDropdown) return linkElement;
+
+              // "Services": hovering it (or moving the keyboard focus onto it)
+              // opens the mega menu; clicking it still goes to the Services page.
+              // The panel comes right after the link in the page, so the Tab
+              // key moves into it. It is positioned against the whole bar
+              // (this wrapper is not "relative"), so it spans the page width.
+              return (
+                <div
+                  key={link.label}
+                  ref={megaRef}
+                  onMouseEnter={openMega}
+                  onMouseLeave={scheduleMegaClose}
+                  onFocus={openMega}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget)) closeMega();
+                  }}
+                >
+                  {linkElement}
+                  {isMegaOpen && (
+                    <div className="absolute inset-x-0 top-full animate-menu-in px-gutter pt-4">
+                      {/* Little white arrow pointing up at "Services" */}
+                      <span
+                        aria-hidden
+                        className="absolute top-2.5 size-3.5 -translate-x-1/2 rotate-45 rounded-xs bg-white"
+                        style={{ left: caretLeft }}
+                      />
+                      <ServicesMegaMenu pathname={pathname} onNavigate={closeMega} />
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>

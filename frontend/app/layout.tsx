@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
+import Footer from "@/components/Footer/Footer";
+import Navbar from "@/components/Navbar/Navbar";
+import PopupProvider from "@/components/Popups/PopupProvider";
 import "./globals.css";
 
 /*
@@ -32,7 +35,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${inter.variable} ${outfit.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="flex min-h-full flex-col font-main">{children}</body>
+      <body className="flex min-h-full flex-col font-main">
+        {/* Every page shares the navbar, the footer and the pop-ups (free
+            consultation, schedule a call), which any section can open. */}
+        <PopupProvider>
+          {/* The navbar floats on top of each page's dark hero. */}
+          <Navbar />
+          {children}
+          <Footer />
+        </PopupProvider>
+      </body>
     </html>
   );
 }

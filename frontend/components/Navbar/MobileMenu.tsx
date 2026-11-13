@@ -1,9 +1,83 @@
+"use client"; // Remembers whether the Services list is unfolded.
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import ActionButton from "@/components/Button/ActionButton";
+import Glyph from "@/components/Icon/Glyph";
 import Icon from "@/components/Icon/Icon";
 import { footer, navbar } from "@/data/homepage";
+import { serviceCategories, serviceHref, servicesIn } from "@/data/services";
+import { isActiveLink } from "@/lib/active-link";
 import { cn } from "@/lib/cn";
+
+/**
+ * The list under "Services" in the mobile menu: a link to the Services page,
+ * then every service grouped by practice area. It unfolds smoothly by
+ * animating the grid row from 0 to its natural height.
+ */
+function MobileServicesList({
+  isOpen,
+  pathname,
+  onNavigate,
+}: {
+  isOpen: boolean;
+  pathname: string;
+  onNavigate: () => void;
+}) {
+  return (
+    <div
+      id="mobile-services"
+      inert={!isOpen}
+      className={cn(
+        "grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none",
+        isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+      )}
+    >
+      <div className="overflow-hidden">
+        <div className="flex flex-col gap-5 px-1 pb-5">
+          <Link
+            href="/services"
+            onClick={onNavigate}
+            className="flex items-center gap-2 text-label font-semibold text-accent"
+          >
+            All services
+            <Glyph name="arrow-right" size={16} />
+          </Link>
+          {serviceCategories.map((category) => (
+            <div key={category.id} className="flex flex-col gap-1">
+              <p className="text-eyebrow-sm font-semibold text-white/45 uppercase">{category.name}</p>
+              <ul>
+                {servicesIn(category).map((service) => {
+                  const href = serviceHref(service.slug);
+                  return (
+                    <li key={service.slug}>
+                      <Link
+                        href={href}
+                        onClick={onNavigate}
+                        aria-current={pathname === href ? "page" : undefined}
+                        className={cn(
+                          "flex items-center gap-3 py-2 text-body-sm font-medium transition-colors",
+                          pathname === href ? "text-white" : "text-white/75 hover:text-white",
+                        )}
+                      >
+                        <span className="rounded-lg bg-white/8 p-1.5 text-accent">
+                          <Glyph name={service.icon} size={16} />
+                        </span>
+                        {service.title}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 type MobileMenuProps = {
   /** Whether the menu is showing. */
@@ -33,6 +107,15 @@ type MobileMenuProps = {
  * children inside its own box, which would squash the menu into the bar.
  */
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const pathname = usePathname();
+  // Whether the "Services" row is unfolded. It folds again when the menu closes.
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [wasOpen, setWasOpen] = useState(isOpen);
+  if (wasOpen !== isOpen) {
+    setWasOpen(isOpen);
+    if (!isOpen) setIsServicesOpen(false);
+  }
+
   /* Shared animation for each row: fade + slide up when the menu opens.
      "motion-reduce" switches the movement off for people who ask for less motion. */
   const rowAnimation = cn(
@@ -74,7 +157,37 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       {/* 1. Page links */}
       <nav aria-label="Mobile" className="page-x pt-3">
         <ul>
-          {navbar.links.map((link, i) => (
+          {navbar.links.map((link, i) =>
+            link.hasDropdown ? (
+              // "Services" opens a list of all services instead of leaving the menu.
+              <li
+                key={link.label}
+                style={delay(i)}
+                className={cn("border-b border-white/10", rowAnimation)}
+              >
+                <button
+                  type="button"
+                  aria-expanded={isServicesOpen}
+                  aria-controls="mobile-services"
+                  onClick={() => setIsServicesOpen((open) => !open)}
+                  className="group flex w-full cursor-pointer items-center gap-2.5 px-1 py-4.25 text-left font-heading text-title font-semibold text-white"
+                >
+                  {link.label}
+                  <span className="ml-auto">
+                    <Icon
+                      src="/assets/icons/chevron-down-white-16.svg"
+                      size={16}
+                      className={cn("transition-transform duration-300", isServicesOpen && "rotate-180")}
+                    />
+                  </span>
+                </button>
+                <MobileServicesList
+                  isOpen={isServicesOpen}
+                  pathname={pathname}
+                  onNavigate={onClose}
+                />
+              </li>
+            ) : (
             <li
               key={link.label}
               style={delay(i)}
@@ -82,7 +195,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             >
               <Link
                 href={link.href}
-                aria-current={link.href === navbar.activeHref ? "page" : undefined}
+                aria-current={isActiveLink(link.href, pathname) ? "page" : undefined}
                 // Close the menu after choosing a link.
                 onClick={onClose}
                 className="group flex items-center gap-2.5 px-1 py-4.25 font-heading text-title font-semibold text-white"
@@ -93,19 +206,19 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
                     {link.badge}
                   </span>
                 )}
-                {/* Arrow on the right: it points down for links with a
-                    dropdown and right for normal links (same icon, turned).
+                {/* Arrow on the right (the down arrow, turned to point right).
                     It nudges to the right when the row is hovered or pressed. */}
                 <span className="ml-auto transition-transform duration-200 group-hover:translate-x-1 group-active:translate-x-1">
                   <Icon
                     src="/assets/icons/chevron-down-white-16.svg"
                     size={16}
-                    className={link.hasDropdown ? "" : "-rotate-90"}
+                    className="-rotate-90"
                   />
                 </span>
               </Link>
             </li>
-          ))}
+            ),
+          )}
         </ul>
       </nav>
 

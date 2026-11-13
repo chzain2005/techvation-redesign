@@ -32,6 +32,7 @@
   --color-ink: #0b0820; /* darkest navy - hero, industries, footer */
   --color-ink-soft: #1c1645; /* lighter navy used in overlays */
   --color-ink-card: #140f35; /* glass card on the hero */
+  --color-ink-violet: #2b2460; /* end of the "Why choose" card gradient */
 
   /* ---- Colours: light surfaces ---- */
   --color-surface: #f5f4fb; /* light lavender section background */
@@ -87,6 +88,15 @@
   --text-h2-xs: 1.875rem; /* 30px - footer headline on phones */
   --text-h2-xs--line-height: 1.15;
   --text-h2-xs--letter-spacing: -1px;
+  --text-page-title: 3.375rem; /* 54px - hero headline of inner pages (services) */
+  --text-page-title--line-height: 1.1;
+  --text-page-title--letter-spacing: -1.5px;
+  --text-page-title-sm: 2rem; /* 32px - the same headline on phones */
+  --text-page-title-sm--line-height: 1.1;
+  --text-page-title-sm--letter-spacing: -1px;
+  --text-faq-title: 2.375rem; /* 38px - FAQ heading on service pages */
+  --text-faq-title--line-height: 1.15;
+  --text-faq-title--letter-spacing: -1px;
   --text-h3: 2.5rem; /* 40px - stats, industry names */
   --text-h3--line-height: 1.15;
   --text-h3--letter-spacing: -1px;
@@ -244,6 +254,7 @@
   --animate-fade-in: fade-in 0.25s ease-out; /* dark layer behind a pop-up */
   --animate-popup-in: popup-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); /* pop-up window */
   --animate-sheet-in: sheet-in 0.4s cubic-bezier(0.22, 1, 0.36, 1); /* pop-up on phones */
+  --animate-menu-in: menu-in 0.25s cubic-bezier(0.22, 1, 0.36, 1); /* services mega menu */
 
   /* Drifts in a small loop: up and to the right, over the top, back down.
      It uses the "translate" property (not "transform"), so it can be combined
@@ -399,6 +410,14 @@
   @keyframes sheet-in {
     from {
       translate: 0 100%;
+    }
+  }
+
+  /* A drop-down menu fades in while sliding down a little. */
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      translate: 0 -8px;
     }
   }
 

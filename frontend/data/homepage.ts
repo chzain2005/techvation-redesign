@@ -53,15 +53,15 @@ export const navbar = {
   },
   links: [
     { label: "Home", href: "/" },
-    { label: "Services", href: "#services", hasDropdown: true },
-    { label: "Solutions", href: "#industries", badge: "SOON" },
+    // Hovering "Services" on desktop opens the services mega menu; clicking
+    // it goes to the Services page.
+    { label: "Services", href: "/services", hasDropdown: true },
+    { label: "Solutions", href: "/#industries", badge: "SOON" },
     { label: "About Us", href: "/about" },
     { label: "Careers", href: "/careers" },
     { label: "FAQs", href: "/faqs" },
-    { label: "Blogs", href: "#insights" },
+    { label: "Blogs", href: "/#insights" },
   ] as Array<LinkItem & { hasDropdown?: boolean; badge?: string }>,
-  /** The link that gets the small underline (the page we are on). */
-  activeHref: "/",
   secondaryAction: cta.letsTalk,
   primaryAction: cta.freeConsultation,
   /** The three stacked buttons in the full-screen mobile menu. */
