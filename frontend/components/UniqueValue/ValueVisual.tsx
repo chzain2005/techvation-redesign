@@ -21,6 +21,7 @@ const pillPositions = {
  * placed by absolute position to match the Figma frame. On smaller screens
  * the whole drawing is simply scaled down, exactly like the Figma frames do:
  *
+ *   small phones (under 370px)  280px  (scale 50%) - fits a 320px screen
  *   phones   330px  (scale 59%)
  *   tablets  480px  (scale 86%)
  *   desktop  560px  (scale 100%)
@@ -41,8 +42,8 @@ export default function ValueVisual() {
   return (
     // Small top/bottom padding below desktop, as in the tablet and phone frames.
     <div className="shrink-0 pt-2.5 pb-5 xl:p-0">
-      <div className="size-82.5 md:size-120 xl:size-140">
-        <div className="relative size-140 origin-top-left scale-59 md:scale-86 xl:scale-100">
+      <div className="size-82.5 max-[23.125rem]:size-70 md:size-120 xl:size-140">
+        <div className="relative size-140 origin-top-left scale-59 max-[23.125rem]:scale-50 md:scale-86 xl:scale-100">
           {/* Big hollow word behind everything */}
           <p
             aria-hidden

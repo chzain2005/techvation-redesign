@@ -15,7 +15,10 @@ import ValueVisual from "./ValueVisual";
  */
 export default function UniqueValue() {
   return (
-    <section className="bg-white">
+    // "overflow-x-clip": the turning dashed ring of the illustration is a
+    // square, and its corners swing past the screen edge on phones. Clipping
+    // them sideways stops the page from scrolling left and right.
+    <section className="overflow-x-clip bg-white">
       <div className="mx-auto flex w-full max-w-page flex-col-reverse items-center gap-6 page-x section-y md:gap-8 xl:flex-row xl:gap-20">
         {/* Text */}
         <div className="flex w-full min-w-0 flex-col items-start gap-4 xl:flex-1">

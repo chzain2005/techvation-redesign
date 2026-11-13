@@ -151,7 +151,10 @@ export default function WhyTechvation() {
     "contents desktop:absolute desktop:inset-y-0 desktop:flex desktop:w-95 desktop:flex-col desktop:justify-around";
 
   return (
-    <section className="bg-surface">
+    // "overflow-x-clip": the turning dots layer of the hub is a square, and its
+    // corners swing past the screen edge on phones. Clipping them sideways stops
+    // the whole page from scrolling left and right (they are empty anyway).
+    <section className="overflow-x-clip bg-surface">
       <div className="mx-auto flex w-full max-w-page flex-col items-center section-gap page-x section-y">
         <SectionHeader
           eyebrow={whyTechvation.eyebrow}
