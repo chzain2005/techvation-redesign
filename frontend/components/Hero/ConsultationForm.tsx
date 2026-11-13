@@ -3,6 +3,7 @@
 import type { FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
+import { usePopups } from "@/components/Popups/PopupProvider";
 import { hero, services } from "@/data/homepage";
 
 /* Shared look of the three inputs (glass style on the dark card). */
@@ -14,6 +15,7 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-white
 /**
  * The "Free Consultation" card in the hero.
  * The service dropdown lists the same services as the Services section.
+ * Sending it opens the thank-you pop-up, from where the visitor can book a call.
  *
  * - Phones: a compact full-width card with the fields stacked.
  * - Tablets: full width, with name and email side by side.
@@ -22,12 +24,22 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-white
  */
 export default function ConsultationForm() {
   const { form } = hero;
+  const { showConsultationSuccess } = usePopups();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    const formElement = event.currentTarget;
+    const data = new FormData(formElement);
+    const text = (name: string) => String(data.get(name) ?? "").trim();
+
     // TODO: send the form to the backend once the API endpoint exists, e.g.
     // fetch(`${process.env.NEXT_PUBLIC_API_URL}/consultations`, { method: "POST", ... })
+
+    // Same next step as the consultation pop-up: the thank-you pop-up, which
+    // offers to book a call right away (name and email are carried over).
+    showConsultationSuccess({ name: text("name"), email: text("email") });
+    formElement.reset();
   }
 
   return (

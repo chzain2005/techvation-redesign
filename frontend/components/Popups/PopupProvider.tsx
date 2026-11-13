@@ -51,6 +51,10 @@ type Popups = {
   openConsultation: () => void;
   /** Opens the "Schedule a Call" pop-up directly at its first step. */
   openScheduleCall: () => void;
+  /** Shows the thank-you pop-up for a consultation request sent from a form
+      on the page (e.g. the hero card). The details are remembered and filled
+      in if the visitor goes on to book a call. */
+  showConsultationSuccess: (contact: Partial<Contact>) => void;
 };
 
 const PopupContext = createContext<Popups | null>(null);
@@ -65,6 +69,11 @@ export function usePopups() {
   const popups = useContext(PopupContext);
   if (!popups) throw new Error("usePopups must be used inside <PopupProvider>.");
   return popups;
+}
+
+/** Like usePopups(), but gives null on pages without a <PopupProvider>. */
+export function useOptionalPopups() {
+  return useContext(PopupContext);
 }
 
 const emptyContact: Contact = { name: "", email: "", phone: "", company: "" };
@@ -114,9 +123,13 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
     setBooking(newBooking());
     setStep("date");
   }, []);
+  const showConsultationSuccess = useCallback((details: Partial<Contact>) => {
+    setContact({ ...emptyContact, ...details });
+    setStep("success");
+  }, []);
   const popups = useMemo(
-    () => ({ openConsultation, openScheduleCall }),
-    [openConsultation, openScheduleCall],
+    () => ({ openConsultation, openScheduleCall, showConsultationSuccess }),
+    [openConsultation, openScheduleCall, showConsultationSuccess],
   );
 
   /** Closes the pop-up and forgets what was typed. */
@@ -144,10 +157,7 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
           {step === "consultation" && (
             <ConsultationPopup
               onClose={close}
-              onSubmitted={(details) => {
-                setContact(details);
-                setStep("success");
-              }}
+              onSubmitted={showConsultationSuccess}
             />
           )}
 

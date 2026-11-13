@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import { strategyCall } from "@/data/homepage";
 import CalendarCollage from "./CalendarCollage";
@@ -67,17 +67,17 @@ export default function StrategyCall() {
 
           {/* Buttons: full width and stacked on phones */}
           <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
-            <Button href={strategyCall.primaryAction.href} className="w-full md:w-auto">
+            <ActionButton href={strategyCall.primaryAction.href} className="w-full md:w-auto">
               {strategyCall.primaryAction.label}
-            </Button>
-            <Button
+            </ActionButton>
+            <ActionButton
               href={strategyCall.secondaryAction.href}
               variant="outlineDark"
               showIcon={false}
               className="w-full md:w-auto"
             >
               {strategyCall.secondaryAction.label}
-            </Button>
+            </ActionButton>
           </div>
         </div>
 

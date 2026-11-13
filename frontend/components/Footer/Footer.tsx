@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Icon from "@/components/Icon/Icon";
 import { footer } from "@/data/homepage";
 import NewsletterForm from "./NewsletterForm";
@@ -65,7 +65,7 @@ function FooterCta() {
             the last has no arrow, as in the design. */}
         <div className="mt-1.5 flex flex-col gap-3.5 xl:hidden">
           {cta.actionsCompact.map((action, i) => (
-            <Button
+            <ActionButton
               key={action.label}
               href={action.href}
               variant={i === 0 ? "secondary" : "outlineLight"}
@@ -73,21 +73,21 @@ function FooterCta() {
               className="w-full"
             >
               {action.label}
-            </Button>
+            </ActionButton>
           ))}
         </div>
 
         {/* Desktop: two outlined buttons. Only the first has an arrow. */}
         <div className="hidden gap-3.5 xl:flex">
           {cta.actions.map((action, i) => (
-            <Button
+            <ActionButton
               key={action.label}
               href={action.href}
               variant="outlineLight"
               showIcon={i === 0}
             >
               {action.label}
-            </Button>
+            </ActionButton>
           ))}
         </div>
       </div>

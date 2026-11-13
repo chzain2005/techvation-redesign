@@ -187,11 +187,7 @@ export default function Navbar() {
 
       {/* Full-screen menu for phones and tablets. It is deliberately placed
           OUTSIDE the <header>: see the note at the top of MobileMenu.tsx. */}
-      <MobileMenu
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onFreeConsultation={openConsultation}
-      />
+      <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </>
   );
 }

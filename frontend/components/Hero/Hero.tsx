@@ -1,4 +1,4 @@
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import { hero } from "@/data/homepage";
 import ConsultationForm from "./ConsultationForm";
@@ -46,20 +46,20 @@ export default function Hero() {
           {/* Buttons: full width and stacked on phones, two equal halves on
               tablets, natural width on desktop */}
           <div className="flex w-full flex-col gap-2.5 md:flex-row md:gap-3 xl:w-auto">
-            <Button
+            <ActionButton
               href={hero.primaryAction.href}
               variant="secondary"
               className="w-full md:flex-1 xl:w-auto xl:flex-none"
             >
               {hero.primaryAction.label}
-            </Button>
-            <Button
+            </ActionButton>
+            <ActionButton
               href={hero.secondaryAction.href}
               variant="outlineLight"
               className="w-full md:flex-1 xl:w-auto xl:flex-none"
             >
               {hero.secondaryAction.label}
-            </Button>
+            </ActionButton>
           </div>
         </div>
 

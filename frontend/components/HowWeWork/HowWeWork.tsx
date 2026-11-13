@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
 import { howWeWork } from "@/data/homepage";
@@ -24,7 +24,7 @@ export default function HowWeWork() {
             <p className="text-body-sm text-body md:text-body-base xl:max-w-100">
               {howWeWork.description}
             </p>
-            <Button href={howWeWork.action.href}>{howWeWork.action.label}</Button>
+            <ActionButton href={howWeWork.action.href}>{howWeWork.action.label}</ActionButton>
           </div>
         </SectionHeader>
 

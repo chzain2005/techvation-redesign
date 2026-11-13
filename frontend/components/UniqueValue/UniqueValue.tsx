@@ -1,4 +1,4 @@
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Icon from "@/components/Icon/Icon";
 import { uniqueValue } from "@/data/homepage";
@@ -44,7 +44,7 @@ export default function UniqueValue() {
             ))}
           </ul>
 
-          <Button href={uniqueValue.action.href}>{uniqueValue.action.label}</Button>
+          <ActionButton href={uniqueValue.action.href}>{uniqueValue.action.label}</ActionButton>
         </div>
 
         {/* Illustration */}

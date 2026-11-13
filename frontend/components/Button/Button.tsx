@@ -8,7 +8,7 @@ type Variant = "primary" | "secondary" | "outlineLight" | "outlineDark";
 /** lg = big buttons in sections, md = smaller buttons (navbar, cards). */
 type Size = "lg" | "md";
 
-type ButtonProps = {
+export type ButtonProps = {
   children: ReactNode;
   /** If set, the button is rendered as a link. Otherwise it is a <button>. */
   href?: string;

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
 import { whyTechvation } from "@/data/homepage";
@@ -230,16 +230,16 @@ export default function WhyTechvation() {
 
         {/* Buttons (desktop only; the tablet and phone designs end with the stats) */}
         <div className="hidden justify-center gap-3 xl:flex">
-          <Button href={whyTechvation.primaryAction.href}>
+          <ActionButton href={whyTechvation.primaryAction.href}>
             {whyTechvation.primaryAction.label}
-          </Button>
-          <Button
+          </ActionButton>
+          <ActionButton
             href={whyTechvation.secondaryAction.href}
             variant="outlineDark"
             showIcon={false}
           >
             {whyTechvation.secondaryAction.label}
-          </Button>
+          </ActionButton>
         </div>
       </div>
     </section>
