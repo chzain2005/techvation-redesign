@@ -14,7 +14,12 @@ import PopupShell, { PopupCloseButton } from "./PopupShell";
 import ScheduleConfirmed from "./ScheduleConfirmed";
 import ScheduleDateStep from "./ScheduleDateStep";
 import ScheduleDetailsStep from "./ScheduleDetailsStep";
-import { ScheduleInfoPanel, ScheduleSteps } from "./ScheduleParts";
+import {
+  ScheduleInfoPanel,
+  ScheduleMobileHeader,
+  ScheduleProgress,
+  ScheduleSteps,
+} from "./ScheduleParts";
 
 /** The visitor's details. Typed once, then reused in the next form. */
 export type Contact = {
@@ -155,10 +160,20 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
           {(step === "date" || step === "details") && booking && (
             <div className="flex lg:min-h-160">
               <ScheduleInfoPanel />
-              <div className="flex min-w-0 flex-1 flex-col gap-5 px-5 py-6 md:px-8 md:py-7">
+              <div className="flex min-w-0 flex-1 flex-col gap-3.5 px-5 pt-3.5 pb-6 md:gap-5 md:px-8 md:py-7">
+                {/* Phones: photo and title, then a progress bar.
+                    Larger screens: the numbered steps. */}
                 <div className="flex items-center justify-between gap-4">
-                  <ScheduleSteps current={step === "date" ? 1 : 2} />
+                  <div className="min-w-0 md:hidden">
+                    <ScheduleMobileHeader />
+                  </div>
+                  <div className="hidden md:block">
+                    <ScheduleSteps current={step === "date" ? 1 : 2} />
+                  </div>
                   <PopupCloseButton onClick={close} />
+                </div>
+                <div className="md:hidden">
+                  <ScheduleProgress current={step === "date" ? 1 : 2} />
                 </div>
 
                 {step === "date" && (

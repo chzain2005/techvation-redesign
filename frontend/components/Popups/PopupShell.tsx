@@ -19,7 +19,8 @@ type PopupShellProps = {
 
 /**
  * The frame every pop-up shares: a dark layer over the whole page with a
- * white, rounded window in the middle.
+ * white, rounded window in the middle. On phones the window is a bottom
+ * sheet instead: it slides up from the bottom edge and has a grab handle.
  *
  * It also takes care of the behaviour people expect from a pop-up:
  *   - Escape or a click on the dark layer closes it
@@ -98,7 +99,9 @@ export default function PopupShell({
         onClick={(event) => {
           if (event.target === event.currentTarget) onClose();
         }}
-        className="flex min-h-full items-center justify-center p-4 md:p-6"
+        // Phones: the window is a bottom sheet, with a strip of the dark layer
+        // left above it. Tablets and up: a window in the middle of the screen.
+        className="flex min-h-full items-end justify-center pt-16 md:items-center md:p-6"
       >
         <div
           // A new key makes React build a fresh window for every step, which
@@ -111,10 +114,14 @@ export default function PopupShell({
           tabIndex={-1}
           onKeyDown={handleTab}
           className={cn(
-            "w-full animate-popup-in overflow-hidden rounded-feature bg-white shadow-modal outline-none",
+            "w-full animate-sheet-in overflow-hidden rounded-t-feature bg-white shadow-modal outline-none md:animate-popup-in md:rounded-feature",
             className,
           )}
         >
+          {/* Grab handle at the top of the bottom sheet (phones only) */}
+          <div aria-hidden className="flex justify-center pt-3 md:hidden">
+            <span className="h-1.25 w-11 rounded-full bg-dot" />
+          </div>
           {children}
         </div>
       </div>

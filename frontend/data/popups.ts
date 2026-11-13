@@ -17,24 +17,35 @@ const icon = (name: string) => `/assets/icons/${name}.svg`;
 export const consultationPopup = {
   title: "Get your free consultation",
   subtitle: "Tell us a little about your needs, an expert replies within 24 hours.",
+  /** Shorter title and subtitle for the bottom sheet on phones. */
+  mobileTitle: "Free Consultation",
+  mobileSubtitle: "An expert replies within 24 hours.",
+  /** "mobileLabel" is the shorter label used on phones. The company field
+      is left out on phones. */
   fields: {
     name: { label: "Full name *", placeholder: "John Smith" },
     company: { label: "Company", placeholder: "Acme Inc." },
     email: { label: "Work email *", placeholder: "john@company.com" },
     phone: { label: "Phone / WhatsApp", placeholder: "+1 (555) 000-0000" },
-    service: { label: "Service you’re interested in *", placeholder: "Select a service" },
+    service: {
+      label: "Service you’re interested in *",
+      mobileLabel: "Service *",
+      placeholder: "Select a service",
+    },
     goal: {
       label: "Briefly describe your goal",
+      mobileLabel: "Your goal",
       placeholder: "e.g. We want to replace spreadsheets with an ERP…",
     },
   },
   submitLabel: "Get My Free Consultation",
-  /** Small reassurance line under the button. */
+  /** Small reassurance line under the button. Phones show the notes that
+      have a "mobileLabel", using that label. */
   notes: [
-    { label: "Confidential", icon: icon("shield-green-14") },
-    { label: "Reply in 24h", icon: icon("clock-green-14") },
+    { label: "Confidential", mobileLabel: "Confidential", icon: icon("shield-green-14") },
+    { label: "Reply in 24h", mobileLabel: "24h reply", icon: icon("clock-green-14") },
     { label: "No obligation", icon: icon("check-green-14") },
-  ],
+  ] as Array<{ label: string; mobileLabel?: string; icon: string }>,
 };
 
 /* ------------------------ Free Consultation success ----------------------- */
@@ -69,6 +80,12 @@ export const scheduleCall = {
     cover: ["Your goals & current systems", "Quick-win opportunities", "Timeline & budget estimate"],
   },
 
+  /** The header of the bottom sheet on phones, which has no dark panel. */
+  mobileHeader: {
+    title: "Schedule a Call",
+    subtitle: "30 min · Google Meet / Teams",
+  },
+
   /** The three numbered steps at the top. */
   steps: ["Date & time", "Your details", "Confirmed"],
 
@@ -78,6 +95,8 @@ export const scheduleCall = {
     weekdays: ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
     legend: { available: "Available", selected: "Selected", unavailable: "Unavailable" },
     timeZoneLabel: "Time zone",
+    /** Heading above the times on phones, e.g. "Available times · Wed, Nov 18 (PKT)". */
+    timesLabel: "Available times",
     bookedSuffix: " · booked",
     /** Shown at the bottom until a time has been picked. */
     emptySummary: "Pick a time to continue",

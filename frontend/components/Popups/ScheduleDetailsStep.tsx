@@ -49,7 +49,7 @@ export default function ScheduleDetailsStep({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-3.5 md:gap-4">
       {/* The chosen slot, with a link back to step 1 */}
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 self-start rounded-chip border border-primary/25 bg-surface px-4 py-3">
         <Icon src="/assets/icons/calendar-brand.svg" size={18} scale />
@@ -63,7 +63,7 @@ export default function ScheduleDetailsStep({
         </button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 md:gap-3.5">
+      <div className="grid gap-3.5 md:grid-cols-2">
         <PopupInput
           name="name"
           required
@@ -80,7 +80,7 @@ export default function ScheduleDetailsStep({
           {...fields.email}
         />
       </div>
-      <div className="grid gap-4 md:grid-cols-2 md:gap-3.5">
+      <div className="grid gap-3.5 md:grid-cols-2">
         <PopupInput
           name="phone"
           type="tel"
@@ -98,8 +98,9 @@ export default function ScheduleDetailsStep({
 
       <PopupTextarea name="topic" {...fields.topic} />
 
-      {/* Footer: back link on the left, the button on the right */}
-      <div className="mt-auto flex items-center justify-between gap-4">
+      {/* Footer: back link on the left, the button on the right.
+          Phones: a full-width button with the back link under it. */}
+      <div className="mt-auto flex flex-col-reverse items-center justify-between gap-3.5 md:flex-row md:gap-4">
         <button
           type="button"
           onClick={onBack}
@@ -113,7 +114,9 @@ export default function ScheduleDetailsStep({
           />
           {backLabel}
         </button>
-        <Button type="submit">{submitLabel}</Button>
+        <Button type="submit" className="w-full md:w-auto">
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );

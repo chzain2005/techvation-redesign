@@ -8,7 +8,7 @@ import {
   outlookCalendarLink,
   zonedMoment,
 } from "@/lib/schedule";
-import { ScheduleSteps } from "./ScheduleParts";
+import { ScheduleProgress, ScheduleSteps } from "./ScheduleParts";
 
 type ScheduleConfirmedProps = {
   /** The booked day. */
@@ -57,18 +57,25 @@ export default function ScheduleConfirmed({
   ];
 
   return (
-    <div className="flex flex-col items-center gap-4 p-6 text-center md:p-11">
-      <ScheduleSteps current={3} />
+    <div className="flex flex-col items-center gap-3.5 px-5 pt-3.5 pb-6 text-center md:gap-4 md:p-11">
+      {/* Phones: the slim progress bar of the bottom sheet. Larger screens:
+          the numbered steps. */}
+      <div className="md:hidden">
+        <ScheduleProgress current={3} />
+      </div>
+      <div className="hidden md:block">
+        <ScheduleSteps current={3} />
+      </div>
 
       {/* Round gradient icon with a white tick */}
       <span className="grid size-21 place-items-center rounded-full bg-brand">
         <Icon src="/assets/icons/check-white-40.svg" size={40} />
       </span>
 
-      <h2 className="font-heading text-popup-title-lg font-semibold text-heading">
+      <h2 className="font-heading text-popup-title-sm font-semibold text-heading md:text-popup-title-lg">
         {confirmedStep.title}
       </h2>
-      <p className="max-w-110 text-body-base text-body">
+      <p className="max-w-110 text-small text-body md:text-body-base">
         {confirmedStep.descriptionStart}
         {/* Long email addresses may wrap instead of overflowing. */}
         <span className="wrap-anywhere">{email}</span>
@@ -86,13 +93,15 @@ export default function ScheduleConfirmed({
       </ul>
 
       {/* Each button opens that calendar in a new tab with the call filled in. */}
-      <div className="flex flex-wrap justify-center gap-2.5">
+      {/* Phones: stacked, full-width buttons. */}
+      <div className="flex w-full flex-col gap-2.5 md:w-auto md:flex-row md:flex-wrap md:justify-center">
         <Button
           href={googleCalendarLink(event)}
           newTab
           variant="outlineDark"
           size="md"
           showIcon={false}
+          className="w-full md:w-auto"
         >
           {confirmedStep.googleLabel}
         </Button>
@@ -102,6 +111,7 @@ export default function ScheduleConfirmed({
           variant="outlineDark"
           size="md"
           showIcon={false}
+          className="w-full md:w-auto"
         >
           {confirmedStep.outlookLabel}
         </Button>

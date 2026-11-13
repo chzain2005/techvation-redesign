@@ -59,6 +59,58 @@ export function ScheduleSteps({ current }: { current: 1 | 2 | 3 }) {
 }
 
 /**
+ * Phones only: the header of the "Schedule a Call" bottom sheet, which
+ * stands in for the dark panel: photo, title and the call's length and tool.
+ */
+export function ScheduleMobileHeader() {
+  const { info, mobileHeader } = scheduleCall;
+  return (
+    <div className="flex min-w-0 items-center gap-2.5">
+      <Image src={info.photo} alt="" width={40} height={40} className="size-10 rounded-full" />
+      <div className="min-w-0">
+        <h2 className="font-heading text-subtitle-lg font-semibold text-heading">
+          {mobileHeader.title}
+        </h2>
+        <p className="text-caption font-medium text-body">{mobileHeader.subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Phones only: a slim progress bar instead of the numbered steps.
+ *
+ *   ━━━━━━ ━━━ ━━━  Step 1 of 3
+ *
+ * The current step has the long gradient bar, steps already done a short
+ * gradient bar, later steps a short grey bar.
+ */
+export function ScheduleProgress({ current }: { current: 1 | 2 | 3 }) {
+  const total = scheduleCall.steps.length;
+  return (
+    <div className="flex items-center gap-1.5">
+      {scheduleCall.steps.map((label, i) => {
+        const number = i + 1;
+        return (
+          <span
+            key={label}
+            aria-hidden
+            className={cn(
+              "h-1 shrink-0 rounded-sm",
+              number === current ? "w-20" : "w-10",
+              number <= current ? "bg-brand" : "bg-border",
+            )}
+          />
+        );
+      })}
+      <p className="text-caption font-medium text-body">
+        Step {current} of {total}
+      </p>
+    </div>
+  );
+}
+
+/**
  * The dark purple panel on the left of the "Schedule a Call" pop-up: who the
  * call is with, the key facts and what will be covered.
  * It is only shown on large screens; smaller screens go straight to the form.

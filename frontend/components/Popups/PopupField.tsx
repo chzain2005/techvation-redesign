@@ -8,10 +8,23 @@ const fieldClasses =
 
 const labelClasses = "flex min-w-0 flex-col gap-2 text-label-sm font-semibold text-heading";
 
+/** The label text, swapped for the shorter "mobileLabel" on phones if there is one. */
+function LabelText({ label, mobileLabel }: { label: string; mobileLabel?: string }) {
+  if (!mobileLabel) return label;
+  return (
+    <>
+      <span className="md:hidden">{mobileLabel}</span>
+      <span className="hidden md:inline">{label}</span>
+    </>
+  );
+}
+
 type BaseProps = {
   /** Name of the value when the form is submitted. */
   name: string;
   label: string;
+  /** Shorter label shown on phones instead of "label". */
+  mobileLabel?: string;
   placeholder?: string;
   required?: boolean;
   /** Text that is already filled in when the form opens. */
@@ -29,6 +42,7 @@ type InputProps = BaseProps & {
 export function PopupInput({
   name,
   label,
+  mobileLabel,
   placeholder,
   required,
   defaultValue,
@@ -38,7 +52,7 @@ export function PopupInput({
 }: InputProps) {
   return (
     <label className={cn(labelClasses, className)}>
-      {label}
+      <LabelText label={label} mobileLabel={mobileLabel} />
       <input
         type={type}
         name={name}
@@ -56,6 +70,7 @@ export function PopupInput({
 export function PopupTextarea({
   name,
   label,
+  mobileLabel,
   placeholder,
   required,
   defaultValue,
@@ -63,7 +78,7 @@ export function PopupTextarea({
 }: BaseProps) {
   return (
     <label className={cn(labelClasses, className)}>
-      {label}
+      <LabelText label={label} mobileLabel={mobileLabel} />
       <textarea
         name={name}
         required={required}
@@ -89,6 +104,7 @@ type SelectProps = Omit<BaseProps, "defaultValue"> & {
 export function PopupSelect({
   name,
   label,
+  mobileLabel,
   placeholder,
   required,
   hideLabel = false,
@@ -99,7 +115,9 @@ export function PopupSelect({
 }: SelectProps) {
   return (
     <label className={cn(labelClasses, className)}>
-      <span className={hideLabel ? "sr-only" : undefined}>{label}</span>
+      <span className={hideLabel ? "sr-only" : undefined}>
+        <LabelText label={label} mobileLabel={mobileLabel} />
+      </span>
       <span className="relative">
         <select
           name={name}
