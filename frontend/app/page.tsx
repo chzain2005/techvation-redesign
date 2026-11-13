@@ -4,6 +4,7 @@ import Hero from "@/components/Hero/Hero";
 import HowWeWork from "@/components/HowWeWork/HowWeWork";
 import Industries from "@/components/Industries/Industries";
 import Navbar from "@/components/Navbar/Navbar";
+import PopupProvider from "@/components/Popups/PopupProvider";
 import Services from "@/components/Services/Services";
 import StrategyCall from "@/components/StrategyCall/StrategyCall";
 import TrustedLogos from "@/components/TrustedLogos/TrustedLogos";
@@ -17,7 +18,9 @@ import WhyTechvation from "@/components/WhyTechvation/WhyTechvation";
  */
 export default function Home() {
   return (
-    <>
+    // PopupProvider shows the pop-ups (free consultation, schedule a call)
+    // and lets any section open them.
+    <PopupProvider>
       {/* The navbar floats on top of the hero. */}
       <Navbar />
       <main>
@@ -32,6 +35,6 @@ export default function Home() {
         <Blog />
       </main>
       <Footer />
-    </>
+    </PopupProvider>
   );
 }

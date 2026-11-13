@@ -19,6 +19,12 @@ const decor = "absolute h-auto w-auto max-w-none";
  * sets: a tall one for phones (shown below md) and a wide one for larger
  * screens. The glows have a "compact" set (below xl) and a desktop set.
  *
+ * The layers are animated with CSS (see the hero animations in
+ * globals.css) so the still picture feels like moving footage: the photos
+ * pan and zoom slowly, the plexus and lights drift, the glows breathe and
+ * the scan line sweeps down. People who ask for reduced motion get the
+ * still picture.
+ *
  * Everything here is decoration, so it is hidden from screen readers.
  */
 export default function HeroBackground() {
@@ -31,7 +37,7 @@ export default function HeroBackground() {
         fill
         sizes="100vw"
         preload
-        className="scale-118 object-cover"
+        className="scale-118 animate-hero-pan object-cover"
       />
       {/* 2. Circuit photo, blended on top at low opacity */}
       <Image
@@ -39,7 +45,7 @@ export default function HeroBackground() {
         alt=""
         fill
         sizes="100vw"
-        className="scale-111 object-cover opacity-18 mix-blend-screen"
+        className="scale-111 animate-hero-pan-reverse object-cover opacity-18 mix-blend-screen"
       />
       {/* 3. Brand tint: dark on the left (behind the text), purple on the right */}
       <div className="absolute inset-0 bg-linear-to-r from-ink/95 via-ink-soft/75 via-55% to-primary-dark/45" />
@@ -50,28 +56,28 @@ export default function HeroBackground() {
         alt=""
         width={460}
         height={1024}
-        className={`${decor} -top-15.5 -left-8 md:hidden`}
+        className={`${decor} -top-15.5 -left-8 animate-drift md:hidden`}
       />
       <Image
         src="/assets/images/hero/light-1-mobile.svg"
         alt=""
         width={206}
         height={779}
-        className={`${decor} -top-51 -right-9.5 md:hidden`}
+        className={`${decor} -top-51 -right-9.5 animate-drift-reverse md:hidden`}
       />
       <Image
         src="/assets/images/hero/light-2-mobile.svg"
         alt=""
         width={190}
         height={717}
-        className={`${decor} top-97 -left-17.5 md:hidden`}
+        className={`${decor} top-97 -left-17.5 animate-drift-reverse [animation-delay:-9s] md:hidden`}
       />
       <Image
         src="/assets/images/hero/light-3-mobile.svg"
         alt=""
         width={114}
         height={430}
-        className={`${decor} top-128 -right-5.5 md:hidden`}
+        className={`${decor} top-128 -right-5.5 animate-drift-reverse [animation-delay:-17s] md:hidden`}
       />
 
       {/* 4 + 5. Plexus lines and light spots: TABLET + DESKTOP set */}
@@ -80,32 +86,35 @@ export default function HeroBackground() {
         alt=""
         width={1700}
         height={867}
-        className={`${decor} -top-13 -left-30 hidden md:block`}
+        className={`${decor} -top-13 -left-30 hidden animate-drift md:block`}
       />
       <Image
         src="/assets/images/hero/light-1.svg"
         alt=""
         width={760}
         height={659}
-        className={`${decor} -top-43 -right-35 hidden md:block`}
+        className={`${decor} -top-43 -right-35 hidden animate-drift-reverse md:block`}
       />
       <Image
         src="/assets/images/hero/light-2.svg"
         alt=""
         width={700}
         height={607}
-        className={`${decor} top-82 -left-65 hidden md:block`}
+        className={`${decor} top-82 -left-65 hidden animate-drift-reverse [animation-delay:-9s] md:block`}
       />
       <Image
         src="/assets/images/hero/light-3.svg"
         alt=""
         width={420}
         height={364}
-        className={`${decor} top-108 -right-20 hidden md:block`}
+        className={`${decor} top-108 -right-20 hidden animate-drift-reverse [animation-delay:-17s] md:block`}
       />
 
-      {/* 6. Thin horizontal scan line */}
-      <div className="absolute inset-x-0 top-1/5 h-px bg-linear-to-r from-accent/0 via-accent/60 to-accent/0" />
+      {/* 6. Thin horizontal scan line. The wrapper is as tall as the hero and
+          slides down, which carries the line from the top to the bottom. */}
+      <div className="absolute inset-0 animate-scan">
+        <div className="absolute inset-x-0 top-1/5 h-px bg-linear-to-r from-accent/0 via-accent/60 to-accent/0" />
+      </div>
       {/* 7. Fade to dark at the bottom */}
       <div className="absolute inset-0 bg-linear-to-b from-ink/0 via-ink/15 via-60% to-ink/85" />
 
@@ -115,14 +124,14 @@ export default function HeroBackground() {
         alt=""
         width={600}
         height={600}
-        className={`${decor} top-75 -left-50 xl:hidden`}
+        className={`${decor} top-75 -left-50 animate-glow-slow xl:hidden`}
       />
       <Image
         src="/assets/images/hero/glow-compact-2.svg"
         alt=""
         width={500}
         height={500}
-        className={`${decor} -top-25 -right-62.5 xl:hidden`}
+        className={`${decor} -top-25 -right-62.5 animate-glow-slow [animation-delay:-4.5s] xl:hidden`}
       />
       {/* 8. Colour glows: DESKTOP set (top right and bottom left) */}
       <Image
@@ -130,14 +139,14 @@ export default function HeroBackground() {
         alt=""
         width={760}
         height={760}
-        className={`${decor} -top-40 -right-20 hidden xl:block`}
+        className={`${decor} -top-40 -right-20 hidden animate-glow-slow xl:block`}
       />
       <Image
         src="/assets/images/hero/glow-2.svg"
         alt=""
         width={700}
         height={700}
-        className={`${decor} top-95 -left-65 hidden xl:block`}
+        className={`${decor} top-95 -left-65 hidden animate-glow-slow [animation-delay:-4.5s] xl:block`}
       />
     </div>
   );

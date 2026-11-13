@@ -7,6 +7,7 @@ import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { navbar } from "@/data/homepage";
 import { cn } from "@/lib/cn";
+import { usePopups } from "@/components/Popups/PopupProvider";
 import MobileMenu from "./MobileMenu";
 
 /** The small gradient tag next to a link, e.g. "SOON". */
@@ -77,6 +78,8 @@ function MenuButton({ isOpen, onClick }: { isOpen: boolean; onClick: () => void 
  */
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // The "Free Consultation" buttons open the consultation pop-up.
+  const { openConsultation } = usePopups();
 
   // While the menu is open: close it with the Escape key, and stop the page
   // behind it from scrolling.
@@ -161,7 +164,7 @@ export default function Navbar() {
             >
               {navbar.secondaryAction.label}
             </Button>
-            <Button href={navbar.primaryAction.href} size="md">
+            <Button onClick={openConsultation} size="md">
               {navbar.primaryAction.label}
             </Button>
           </div>
@@ -170,7 +173,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2.5 xl:hidden">
             {/* A click on the main button also closes the menu if it is open. */}
             <div className="hidden md:block" onClick={() => setIsMenuOpen(false)}>
-              <Button href={navbar.primaryAction.href} size="md" showIcon={false}>
+              <Button onClick={openConsultation} size="md" showIcon={false}>
                 {navbar.primaryAction.label}
               </Button>
             </div>
@@ -184,7 +187,11 @@ export default function Navbar() {
 
       {/* Full-screen menu for phones and tablets. It is deliberately placed
           OUTSIDE the <header>: see the note at the top of MobileMenu.tsx. */}
-      <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        onFreeConsultation={openConsultation}
+      />
     </>
   );
 }

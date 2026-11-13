@@ -8,6 +8,8 @@ import { cn } from "@/lib/cn";
 type MobileMenuProps = {
   /** Whether the menu is showing. */
   isOpen: boolean;
+  /** Called when "Free Consultation" is tapped: opens the consultation pop-up. */
+  onFreeConsultation: () => void;
   /** Called when the menu should close (a link or button was tapped). */
   onClose: () => void;
 };
@@ -32,7 +34,7 @@ type MobileMenuProps = {
  * The header has a backdrop blur, and a blurred element traps "fixed"
  * children inside its own box, which would squash the menu into the bar.
  */
-export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, onFreeConsultation }: MobileMenuProps) {
   /* Shared animation for each row: fade + slide up when the menu opens.
      "motion-reduce" switches the movement off for people who ask for less motion. */
   const rowAnimation = cn(
@@ -119,7 +121,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         {navbar.menuActions.map((action, i) => (
           <Button
             key={action.label}
-            href={action.href}
+            // "Free Consultation" opens the pop-up; the others are links.
+            {...(action === navbar.primaryAction
+              ? { onClick: onFreeConsultation }
+              : { href: action.href })}
             variant={i === 0 ? "primary" : "outlineLight"}
             showIcon={i < navbar.menuActions.length - 1}
             className="w-full"
