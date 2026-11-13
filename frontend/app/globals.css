@@ -1,0 +1,417 @@
+@import "tailwindcss";
+
+/*
+ * ---------------------------------------------------------------------------
+ * DESIGN TOKENS (taken from the Figma file "TECHVATION-REDESIGN")
+ * ---------------------------------------------------------------------------
+ * Everything inside @theme becomes a Tailwind utility class:
+ *
+ *   --color-primary      ->  bg-primary, text-primary, border-primary ...
+ *   --font-heading       ->  font-heading
+ *   --text-h2            ->  text-h2  (sets size + line-height + letter-spacing)
+ *   --spacing-gutter     ->  px-gutter, left-gutter ...
+ *   --radius-chip        ->  rounded-chip
+ *   --shadow-card        ->  shadow-card
+ *   --breakpoint-desktop ->  desktop:flex ...
+ *
+ * Change a value here and it updates everywhere on the site.
+ * Transparent versions of a colour use Tailwind's "/" syntax, e.g. bg-white/8
+ * (white at 8% opacity) or to-ink/95.
+ */
+@theme inline {
+  /* ---- Colours: brand ---- */
+  --color-primary: #543ea9; /* purple - buttons, links, highlights */
+  --color-primary-dark: #3d2a8d; /* deeper purple - text on light buttons */
+  --color-secondary: #3196da; /* blue - end of the brand gradient */
+  --color-accent: #5cc8ff; /* cyan - highlights on dark backgrounds */
+  --color-accent-violet: #8b7bff; /* violet - end of the accent gradient */
+  --color-accent-lilac: #9d8cff; /* lilac - gradient text on dark backgrounds */
+  --color-accent-ice: #bfefff; /* pale cyan - footer headline highlight */
+
+  /* ---- Colours: dark surfaces ---- */
+  --color-ink: #0b0820; /* darkest navy - hero, industries, footer */
+  --color-ink-soft: #1c1645; /* lighter navy used in overlays */
+  --color-ink-card: #140f35; /* glass card on the hero */
+
+  /* ---- Colours: light surfaces ---- */
+  --color-surface: #f5f4fb; /* light lavender section background */
+  --color-surface-tint: #eeebfa; /* eyebrow / tag background */
+  --color-surface-sky: #eaf4fc; /* pale blue end of the CTA gradient */
+  --color-border: #e6e3f3; /* card and divider borders */
+  --color-dot: #d9d4ef; /* inactive carousel dot */
+
+  /* ---- Colours: text ---- */
+  --color-heading: #120e2b; /* headings on light backgrounds */
+  --color-body: #5e5a7a; /* paragraph text on light backgrounds */
+  --color-muted: #8e8aa8; /* meta text (dates, copyright) */
+  --color-subtle: #9c97c0; /* small index numbers "01" */
+  --color-faint: #c9c5dd; /* disabled calendar days */
+  --color-on-dark: #b9b4d9; /* paragraph text on dark backgrounds */
+
+  /* ---- Fonts (the CSS variables are created by next/font in app/layout.tsx) ---- */
+  --font-main: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+
+  /* ---- Font sizes: headings (Outfit) ----
+     Each size also carries its line-height and letter-spacing from Figma. */
+  --text-outline: 10.625rem; /* 170px - big "VALUE" outline word */
+  --text-outline--line-height: 1.05;
+  --text-outline--letter-spacing: -2px;
+  --text-display: 4.25rem; /* 68px - hero headline */
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -2px;
+  --text-h1: 4rem; /* 64px - "Our Unique Value", step numbers */
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -2px;
+  --text-display-md: 3.625rem; /* 58px - hero headline on tablets */
+  --text-display-md--line-height: 1.05;
+  --text-display-md--letter-spacing: -2px;
+  --text-display-sm: 2.5rem; /* 40px - hero headline on phones */
+  --text-display-sm--line-height: 1.05;
+  --text-display-sm--letter-spacing: -2px;
+  --text-h1-md: 3.25rem; /* 52px - "Our Unique Value" on tablets */
+  --text-h1-md--line-height: 1.05;
+  --text-h1-md--letter-spacing: -2px;
+  --text-h1-sm: 2.375rem; /* 38px - "Our Unique Value" on phones */
+  --text-h1-sm--line-height: 1.05;
+  --text-h1-sm--letter-spacing: -2px;
+  --text-h2: 2.75rem; /* 44px - section headings */
+  --text-h2--line-height: 1.15;
+  --text-h2--letter-spacing: -1px;
+  --text-h2-md: 2.25rem; /* 36px - section headings on tablets */
+  --text-h2-md--line-height: 1.15;
+  --text-h2-md--letter-spacing: -1px;
+  --text-h2-sm: 1.75rem; /* 28px - section headings and stats on phones */
+  --text-h2-sm--line-height: 1.15;
+  --text-h2-sm--letter-spacing: -1px;
+  --text-h2-xs: 1.875rem; /* 30px - footer headline on phones */
+  --text-h2-xs--line-height: 1.15;
+  --text-h2-xs--letter-spacing: -1px;
+  --text-h3: 2.5rem; /* 40px - stats, industry names */
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -1px;
+  --text-h4: 2.125rem; /* 34px - featured article title */
+  --text-h4--line-height: 1.15;
+  --text-h4--letter-spacing: -1px;
+  --text-stat: 1.375rem; /* 22px - "100%" chip */
+  --text-stat--line-height: 1.3;
+  --text-stat--letter-spacing: -0.2px;
+  --text-title-lg: 1.3125rem; /* 21px - form title */
+  --text-title-lg--line-height: 1.3;
+  --text-title-lg--letter-spacing: -0.2px;
+  --text-title: 1.25rem; /* 20px - card titles */
+  --text-title--line-height: 1.3;
+  --text-title--letter-spacing: -0.2px;
+  --text-title-sm: 1.125rem; /* 18px - compact form and newsletter titles */
+  --text-title-sm--line-height: 1.3;
+  --text-title-sm--letter-spacing: -0.2px;
+  --text-title-xs: 0.9375rem; /* 15px - card titles on phones */
+  --text-title-xs--line-height: 1.35;
+  --text-subtitle: 1.0625rem; /* 17px - small card titles */
+  --text-subtitle--line-height: 1.35;
+  --text-subtitle-sm: 1rem; /* 16px - calendar month */
+  --text-subtitle-sm--line-height: 1.35;
+
+  /* ---- Font sizes: body text (Inter) ---- */
+  --text-lead: 1.1875rem; /* 19px - "Trusted by..." */
+  --text-lead--line-height: 1.4;
+  --text-body-lg: 1.125rem; /* 18px */
+  --text-body-lg--line-height: 1.6;
+  --text-body-md: 1.0625rem; /* 17px */
+  --text-body-md--line-height: 1.6;
+  --text-body-base: 1rem; /* 16px */
+  --text-body-base--line-height: 1.6;
+  --text-body-sm: 0.9375rem; /* 15px */
+  --text-body-sm--line-height: 1.6;
+  --text-small: 0.875rem; /* 14px */
+  --text-small--line-height: 1.55;
+
+  --text-fine: 0.8125rem; /* 13px - card descriptions on phones */
+  --text-fine--line-height: 1.55;
+
+  /* ---- Font sizes: UI text (buttons, labels, tags) ---- */
+  --text-button: 0.9375rem; /* 15px - large buttons */
+  --text-button--line-height: 1.2;
+  --text-button-sm: 0.875rem; /* 14px - medium buttons */
+  --text-button-sm--line-height: 1.2;
+  --text-nav: 0.9375rem; /* 15px - navbar links */
+  --text-nav--line-height: 1.3;
+  --text-label: 0.875rem; /* 14px - bold labels */
+  --text-label--line-height: 1.3;
+  --text-label-sm: 0.8125rem; /* 13px - form labels, filter chips */
+  --text-label-sm--line-height: 1.3;
+  --text-caption: 0.75rem; /* 12px - tags, meta */
+  --text-caption--line-height: 1.4;
+  --text-eyebrow: 0.75rem; /* 12px - uppercase section labels */
+  --text-eyebrow--line-height: 1.3;
+  --text-eyebrow--letter-spacing: 1.5px;
+  --text-micro: 0.5625rem; /* 9px - "SOON" badge */
+  --text-micro--line-height: 1.4;
+
+  /* ---- Letter spacing / line height helpers ---- */
+  --tracking-display: -2px;
+  --tracking-badge: 0.8px;
+  --leading-display: 1.05;
+
+  /* ---- Spacing (on top of Tailwind's 4px scale: p-4 = 16px, gap-6 = 24px ...) ---- */
+  --spacing-gutter: 5rem; /* 80px - left/right page padding on desktop */
+  --spacing-section: 7rem; /* 112px - top/bottom padding of a section */
+  --spacing-navbar: 5.5rem; /* 88px - navbar height on desktop */
+  --spacing-navbar-compact: 4.25rem; /* 68px - navbar height on phones and tablets */
+
+  /* ---- Widths ---- */
+  --container-page: 90rem; /* 1440px - the width of the Figma frame */
+
+  /* ---- Breakpoints ---- */
+  --breakpoint-sm: 40rem; /* 640px - large phones */
+  --breakpoint-md: 48rem; /* 768px - tablets (the Figma tablet frame is 834px) */
+  --breakpoint-lg: 64rem; /* 1024px - large tablets */
+  --breakpoint-xl: 80rem; /* 1280px - the desktop layout starts here */
+  --breakpoint-desktop: 90rem; /* 1440px - the exact Figma layout */
+
+  /* ---- Corner radius ---- */
+  --radius-cell: 0.625rem; /* 10px - calendar days, small tags */
+  --radius-chip: 0.875rem; /* 14px - chips, icon tiles */
+  --radius-float: 1.125rem; /* 18px - floating consultant card */
+  --radius-reason: 1.25rem; /* 20px - reason cards */
+  --radius-post: 1.375rem; /* 22px - blog list cards */
+  --radius-card: 1.5rem; /* 24px - main cards */
+  --radius-feature: 1.75rem; /* 28px - featured blog card */
+  --radius-app-icon: 2.2425rem; /* 35.88px - Techvation icon in the orbit */
+  --radius-app-icon-lg: 4.032rem; /* 64.5px - large Techvation icon */
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 16px 40px 0 rgb(43 26 110 / 0.07);
+  --shadow-reason: 0 14px 36px 0 rgb(43 26 110 / 0.07);
+  --shadow-post: 0 10px 30px 0 rgb(43 26 110 / 0.05);
+  --shadow-chip: 0 6px 16px 0 rgb(43 26 110 / 0.05);
+  --shadow-tag: 0 8px 20px 0 rgb(43 26 110 / 0.12);
+  --shadow-badge: 0 10px 24px 0 rgb(43 26 110 / 0.12);
+  --shadow-pill: 0 14px 32px 0 rgb(43 26 110 / 0.14);
+  --shadow-float: 0 16px 40px 0 rgb(43 26 110 / 0.16);
+  --shadow-slots: 0 20px 50px 0 rgb(43 26 110 / 0.18);
+  --shadow-calendar: 0 30px 70px 0 rgb(43 26 110 / 0.16);
+  --shadow-feature: 0 24px 60px 0 rgb(43 26 110 / 0.15);
+  --shadow-arrow: 0 12px 30px 0 rgb(43 26 110 / 0.25);
+  --shadow-form: 0 30px 80px 0 rgb(0 0 0 / 0.45);
+  --shadow-brand-sm: 0 14px 32px 0 rgb(84 62 169 / 0.35);
+  --shadow-brand-md: 0 16px 40px 0 rgb(84 62 169 / 0.3);
+  --shadow-brand-lg: 0 20px 50px 0 rgb(84 62 169 / 0.45);
+  --shadow-brand-xl: 0 30px 70px 0 rgb(84 62 169 / 0.45);
+  --drop-shadow-button: 0 10px 15px rgb(84 62 169 / 0.35);
+
+  /* ---- Animations ---- */
+  /* "Springy" timing: overshoots a little, then settles (menu button). */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-marquee: marquee 40s linear infinite; /* client logo strip */
+  --animate-float: float 6s ease-in-out infinite; /* floating pills and chips */
+  --animate-float-slow: float-slow 8s ease-in-out infinite; /* large app icon */
+  --animate-orbit: orbit 60s linear infinite; /* slowly turning dashed ring */
+  --animate-orbit-reverse: orbit 45s linear infinite reverse; /* inner ring, other way */
+  --animate-orbit-dots: orbit 30s linear infinite; /* dots travelling round their ring */
+  --animate-glow: glow 5s ease-in-out infinite; /* soft "breathing" glow */
+  --animate-flow: flow 2.4s linear infinite; /* light running along dashed lines */
+  --animate-flow-reverse: flow 2.4s linear infinite reverse; /* same, other way */
+
+  /* Drifts in a small loop: up and to the right, over the top, back down.
+     It uses the "translate" property (not "transform"), so it can be combined
+     with Tailwind's rotate-* and scale-* classes on the same element. */
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    25% {
+      translate: 3px -6px;
+    }
+    50% {
+      translate: 0 -10px;
+    }
+    75% {
+      translate: -3px -5px;
+    }
+  }
+
+  /* A calmer, larger version of the same drift. */
+  @keyframes float-slow {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -12px;
+    }
+  }
+
+  /* One full turn. */
+  @keyframes orbit {
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  /* Grows and brightens a little, then relaxes again. */
+  @keyframes glow {
+    0%,
+    100% {
+      scale: 1;
+      opacity: 0.8;
+    }
+    50% {
+      scale: 1.1;
+      opacity: 1;
+    }
+  }
+
+  /* Slides a striped mask sideways by exactly one stripe (see "mask-flow"),
+     so the movement loops without a visible jump. */
+  @keyframes flow {
+    to {
+      mask-position: 6rem 0;
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      /* The logo list is rendered twice, so sliding by half loops seamlessly. */
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * CUSTOM UTILITIES
+ * Small reusable classes built from the tokens above.
+ * ---------------------------------------------------------------------------
+ */
+
+/* Left/right page padding: 20px on phones, 40px on tablets, 80px on desktop. */
+@utility page-x {
+  @apply px-5 md:px-10 xl:px-gutter;
+}
+
+/* Top/bottom padding of a section: 64px on phones, 80px on tablets, 112px on desktop. */
+@utility section-y {
+  @apply py-16 md:py-20 xl:py-section;
+}
+
+/* Space between the blocks inside a section: 24px / 32px / 48px. */
+@utility section-gap {
+  @apply gap-6 md:gap-8 xl:gap-12;
+}
+
+/* Purple -> blue brand gradient (buttons, icon tiles). */
+@utility bg-brand {
+  background-image: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+}
+
+/* Deep purple -> blue gradient (stats bar, footer call-to-action). */
+@utility bg-brand-deep {
+  background-image: linear-gradient(
+    to right,
+    var(--color-primary-dark),
+    var(--color-secondary)
+  );
+}
+
+/* Cyan -> violet gradient (badges on dark backgrounds). */
+@utility bg-accent-gradient {
+  background-image: linear-gradient(
+    to right,
+    var(--color-accent),
+    var(--color-accent-violet)
+  );
+}
+
+/* Gradient-coloured text for light backgrounds. */
+@utility text-gradient-brand {
+  background-image: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gradient-coloured text for dark backgrounds. */
+@utility text-gradient-accent {
+  background-image: linear-gradient(
+    to right,
+    var(--color-accent),
+    var(--color-accent-lilac)
+  );
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hollow "outline only" text (the big VALUE word). */
+@utility text-outlined {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-border);
+}
+
+/* Text that reads bottom-to-top (collapsed industry panels). */
+@utility writing-vertical {
+  writing-mode: vertical-rl;
+}
+
+/* Shows an element only through soft vertical stripes (one every 96px).
+     Combined with "animate-flow" the stripes slide sideways, which looks like
+     light running along whatever is drawn in the element. */
+@utility mask-flow {
+  mask-image: linear-gradient(to right, transparent, black, transparent);
+  mask-size: 6rem 100%;
+  mask-repeat: repeat-x;
+}
+
+/* Show only the left or the right half of an element. */
+@utility clip-left-half {
+  clip-path: inset(0 50% 0 0);
+}
+@utility clip-right-half {
+  clip-path: inset(0 0 0 50%);
+}
+
+/* Pause a running animation, e.g. "hover:animate-paused". */
+@utility animate-paused {
+  animation-play-state: paused;
+}
+
+/* Hide the scrollbar but keep scrolling (services carousel). */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/*
+ * ---------------------------------------------------------------------------
+ * BASE STYLES
+ * ---------------------------------------------------------------------------
+ */
+body {
+  background: var(--color-white);
+  color: var(--color-body);
+  font-family: var(--font-main);
+}
+
+/* Respect the "reduce motion" accessibility setting. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 1.5px border used by the outlined buttons. */
+@utility border-button {
+  border-width: 1.5px;
+  border-style: solid;
+}
