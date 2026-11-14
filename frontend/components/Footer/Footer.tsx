@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ActionButton from "@/components/Button/ActionButton";
+import HomeLink from "@/components/HomeLink/HomeLink";
 import Icon from "@/components/Icon/Icon";
 import { footer } from "@/data/homepage";
 import NewsletterForm from "./NewsletterForm";
@@ -64,7 +65,7 @@ function FooterCta() {
         {/* The same three buttons everywhere: "Free Consultation" (solid white),
             "Let's Talk" and "Schedule a Call" (no arrow), as in the design.
             Phones and tablets: large, full width and stacked.
-            Desktop: medium size, in a row. */}
+            Desktop: in a row. */}
         <div className="mt-1.5 flex flex-col gap-3.5 xl:hidden">
           {cta.actions.map((action, i) => (
             <ActionButton
@@ -78,13 +79,12 @@ function FooterCta() {
             </ActionButton>
           ))}
         </div>
-        <div className="hidden shrink-0 gap-3 xl:flex">
+        <div className="hidden shrink-0 gap-3.5 xl:flex">
           {cta.actions.map((action, i) => (
             <ActionButton
               key={action.label}
               href={action.href}
               variant={i === 0 ? "secondary" : "outlineLight"}
-              size="md"
               showIcon={i < cta.actions.length - 1}
             >
               {action.label}
@@ -104,7 +104,7 @@ function FooterCta() {
 function FooterCompact() {
   return (
     <div className="flex flex-col items-start gap-10 px-6 pt-14 pb-10 md:px-10 xl:hidden">
-      <Link href="/" className="relative h-9 w-37.5">
+      <HomeLink className="relative h-9 w-37.5">
         <Image
           src={footer.logo.src}
           alt={footer.logo.alt}
@@ -112,7 +112,7 @@ function FooterCompact() {
           sizes="150px"
           className="object-contain"
         />
-      </Link>
+      </HomeLink>
       <p className="text-body-sm text-on-dark">{footer.aboutShort}</p>
 
       {/* Two link columns of equal width */}
@@ -174,7 +174,8 @@ function FooterDesktop() {
       <div className="mx-auto flex w-full max-w-page items-start justify-between px-gutter pt-24 pb-20">
         {/* Brand */}
         <div className="flex w-95 flex-col items-start gap-7">
-          <Link href="/" className="relative h-11 w-45">
+          {/* The logo always goes to the top of the homepage. */}
+          <HomeLink className="relative h-11 w-45">
             <Image
               src={footer.logo.src}
               alt={footer.logo.alt}
@@ -182,7 +183,7 @@ function FooterDesktop() {
               sizes="180px"
               className="object-contain"
             />
-          </Link>
+          </HomeLink>
           <p className="max-w-90 text-body-sm text-on-dark">{footer.about}</p>
           <SocialLinks />
         </div>

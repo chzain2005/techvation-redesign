@@ -8,6 +8,8 @@ export type GlyphName =
   | "bar-chart"
   | "bell"
   | "bot"
+  | "briefcase"
+  | "calendar"
   | "cart"
   | "check"
   | "chevron-down"
@@ -18,6 +20,7 @@ export type GlyphName =
   | "cpu"
   | "database"
   | "dollar"
+  | "facebook"
   | "file-text"
   | "globe"
   | "headset"
@@ -27,8 +30,10 @@ export type GlyphName =
   | "mail"
   | "map-pin"
   | "megaphone"
+  | "message"
   | "minus"
   | "monitor"
+  | "paperclip"
   | "phone"
   | "plus"
   | "rocket"
@@ -42,6 +47,7 @@ export type GlyphName =
   | "truck"
   | "users"
   | "wrench"
+  | "x-logo"
   | "zap";
 
 type GlyphProps = {

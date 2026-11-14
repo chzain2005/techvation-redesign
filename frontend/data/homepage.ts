@@ -60,7 +60,7 @@ export const navbar = {
     { label: "About Us", href: "/about" },
     { label: "Careers", href: "/careers" },
     { label: "FAQs", href: "/faqs" },
-    { label: "Blogs", href: "/#insights" },
+    { label: "Blogs", href: "/blog" },
   ] as Array<LinkItem & { hasDropdown?: boolean; badge?: string }>,
   secondaryAction: cta.letsTalk,
   primaryAction: cta.freeConsultation,
@@ -428,7 +428,8 @@ export const industries = {
       description: "Plan production, track inventory in real time and close the books faster.",
       tags: ["MRP", "Inventory", "Quality"],
       exploreLabel: "Explore manufacturing solutions",
-      href: "/industries/manufacturing",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/manufacturing"),
       iconLarge: icon("factory-white-20"),
       iconSmall: icon("factory-white-16"),
@@ -439,7 +440,8 @@ export const industries = {
       description: "Unified POS, eCommerce and stock across every channel.",
       tags: ["POS", "eCommerce", "Pricing"],
       exploreLabel: "Explore retail & wholesale solutions",
-      href: "/industries/retail-wholesale",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/retail-wholesale"),
       iconLarge: icon("cart-white-20"),
       iconSmall: icon("cart-white-16"),
@@ -450,7 +452,8 @@ export const industries = {
       description: "Secure patient, billing and compliance workflows.",
       tags: ["HIPAA-ready", "Billing", "Scheduling"],
       exploreLabel: "Explore healthcare solutions",
-      href: "/industries/healthcare",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/healthcare"),
       iconLarge: icon("heart-white-20"),
       iconSmall: icon("heart-white-16"),
@@ -461,7 +464,8 @@ export const industries = {
       description: "Automated finance, risk reporting and real-time dashboards.",
       tags: ["Reporting", "Compliance", "BI"],
       exploreLabel: "Explore banking & finance solutions",
-      href: "/industries/banking-finance",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/banking-finance"),
       iconLarge: icon("landmark-white-20"),
       iconSmall: icon("landmark-white-16"),
@@ -472,7 +476,8 @@ export const industries = {
       description: "Warehouse, logistics and route visibility end to end.",
       tags: ["WMS", "Logistics", "Tracking"],
       exploreLabel: "Explore distribution solutions",
-      href: "/industries/distribution",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/distribution"),
       iconLarge: icon("truck-white-20"),
       iconSmall: icon("truck-white-16"),
@@ -483,7 +488,8 @@ export const industries = {
       description: "Projects, timesheets and billing in one place.",
       tags: ["PSA", "Billing", "CRM"],
       exploreLabel: "Explore professional services solutions",
-      href: "/industries/professional-services",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/professional-services"),
       iconLarge: icon("briefcase-white-20"),
       iconSmall: icon("briefcase-white-16"),
@@ -494,7 +500,8 @@ export const industries = {
       description: "Admissions, finance and learning systems connected.",
       tags: ["Admissions", "Finance", "Portals"],
       exploreLabel: "Explore education solutions",
-      href: "/industries/education",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/education"),
       iconLarge: icon("grad-cap-white-20"),
       iconSmall: icon("grad-cap-white-16"),
@@ -505,7 +512,8 @@ export const industries = {
       description: "Secure, transparent citizen and back-office services.",
       tags: ["Workflows", "Records", "Security"],
       exploreLabel: "Explore government sector solutions",
-      href: "/industries/government-sector",
+      // The industry pages don't exist yet, so "Explore" opens the Contact page.
+      href: cta.letsTalk.href,
       image: image("industries/government-sector"),
       iconLarge: icon("building-white-20"),
       iconSmall: icon("building-white-16"),

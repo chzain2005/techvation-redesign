@@ -10,8 +10,10 @@ import { navbar } from "@/data/homepage";
 import { isActiveLink } from "@/lib/active-link";
 import { cn } from "@/lib/cn";
 import { usePopups } from "@/components/Popups/PopupProvider";
+import HomeLink from "@/components/HomeLink/HomeLink";
 import MobileMenu from "./MobileMenu";
 import ServicesMegaMenu from "./ServicesMegaMenu";
+import { useHideOnScroll } from "./useHideOnScroll";
 
 /** The small gradient tag next to a link, e.g. "SOON". */
 function Badge({ children }: { children: string }) {
@@ -141,24 +143,46 @@ export default function Navbar() {
     };
   }, [isMenuOpen]);
 
+  /* ---------------- Hide while scrolling down ---------------- */
+  const { isScrolled, isHidden: scrolledAway } = useHideOnScroll();
+  // Never hide it while one of its menus is open.
+  const isHidden = scrolledAway && !isMenuOpen && !isMegaOpen;
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Tell the rest of the page how much of the top the navbar covers, so
+  // sticky bars (Services tabs, FAQ categories, article sidebar) sit just
+  // below it and move up when it slides away.
+  useEffect(() => {
+    const height = headerRef.current?.offsetHeight ?? 0;
+    document.documentElement.style.setProperty("--nav-offset", isHidden ? "0px" : `${height}px`);
+  }, [isHidden]);
+
   return (
     <>
       <header
+        ref={headerRef}
         className={cn(
-          "inset-x-0 top-0 z-20 border-b border-white/10 xl:absolute xl:bg-transparent xl:backdrop-blur-none",
-          // Normally the bar sits at the top of the page and scrolls away with
-          // it. While the menu is open it is pinned to the screen, on top of
-          // the menu, so the logo and the close button stay visible.
-          isMenuOpen ? "fixed bg-ink" : "absolute bg-ink/60 backdrop-blur-md",
+          // Always pinned to the top of the screen, floating over the hero.
+          "fixed inset-x-0 top-0 z-20 border-b border-white/10 transition-[translate,background-color] duration-300 ease-out motion-reduce:transition-none",
+          // Scrolling down slides it up out of view; keyboard focus inside
+          // it always brings it back.
+          isHidden ? "-translate-y-full focus-within:translate-y-0" : "translate-y-0",
+          isMenuOpen
+            ? "bg-ink"
+            : isScrolled
+              ? // Over page content it gets a solid, frosted backdrop.
+                "bg-ink/90 backdrop-blur-md"
+              : // At the very top it lets the dark hero show through.
+                "bg-ink/60 backdrop-blur-md xl:bg-transparent xl:backdrop-blur-none",
         )}
       >
         <div
           ref={barRef}
           className="relative mx-auto flex h-navbar-compact w-full max-w-page items-center justify-between page-x xl:h-navbar"
         >
-          {/* Logo: 136 x 32 on small screens, 176 x 42 on desktop */}
-          <Link
-            href="/"
+          {/* Logo: 136 x 32 on small screens, 176 x 42 on desktop. It always
+              goes to the top of the homepage. */}
+          <HomeLink
             onClick={() => setIsMenuOpen(false)}
             className="relative h-8 w-34 shrink-0 xl:h-10.5 xl:w-44"
           >
@@ -170,7 +194,7 @@ export default function Navbar() {
               className="object-contain"
               preload
             />
-          </Link>
+          </HomeLink>
 
           {/* Desktop links */}
           <nav aria-label="Main" className="hidden items-center gap-7.5 xl:flex">

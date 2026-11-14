@@ -12,7 +12,7 @@ export default function MissionVision() {
   return (
     <section className="relative isolate overflow-hidden bg-ink">
       <Image
-        src="/assets/images/service-page/process-glow-1.svg"
+        src="/assets/images/about/mission-glow-1.svg"
         alt=""
         width={800}
         height={700}
@@ -30,12 +30,14 @@ export default function MissionVision() {
         {cards.map((card) => (
           <li
             key={card.title}
-            className="flex flex-col items-start gap-4 rounded-feature border border-white/14 bg-white/6 p-7 backdrop-blur-md md:p-10"
+            className="flex flex-col items-start gap-4.5 rounded-feature border border-white/12 bg-white/5 p-7 md:p-10"
           >
-            <span className="rounded-chip bg-brand p-3 text-white">
-              <Glyph name={card.icon} size={22} />
+            <span className="rounded-2xl bg-brand p-3.5 text-white">
+              <Glyph name={card.icon} size={26} />
             </span>
-            <h2 className="mt-2 font-heading text-stat font-semibold text-white">{card.title}</h2>
+            <h2 className="font-heading text-popup-title-sm font-semibold text-white md:text-popup-title-lg">
+              {card.title}
+            </h2>
             <p className="text-body-base text-on-dark md:text-body-lg">{card.text}</p>
           </li>
         ))}

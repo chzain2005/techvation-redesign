@@ -3,11 +3,13 @@
  * ABOUT US PAGE CONTENT  (Figma "04 · About Us")
  * ---------------------------------------------------------------------------
  * The team members are placeholders in the design too: replace the names,
- * photos (square, at least 600 x 600) and links with the real people.
+ * photos and links with the real people.
  */
 
 import type { GlyphName } from "@/components/Icon/Glyph";
 import type { HighlightedHeading } from "./homepage";
+
+const image = (name: string) => `/assets/images/about/${name}`;
 
 export const aboutPage = {
   hero: {
@@ -20,7 +22,7 @@ export const aboutPage = {
     primaryLabel: "Work With Us",
     /** "Meet the Team" scrolls down to the Leadership section. */
     secondaryAction: { label: "Meet the Team", href: "#leadership" },
-    image: "/assets/images/service-page/office.jpg",
+    image: image("hero.jpg"),
   },
 
   story: {
@@ -37,11 +39,9 @@ export const aboutPage = {
       { value: "15+", label: "Active clients" },
       { value: "10+", label: "Years" },
     ],
-    // TODO: the design's second photo (hands stacked together) is not in the
-    // project yet; the office photo stands in for it.
     collage: {
-      main: "/assets/images/process/discover.png",
-      inset: "/assets/images/service-page/office.jpg",
+      main: image("story-main.jpg"),
+      inset: image("story-inset.jpg"),
       badge: { title: "4 regions", text: "One delivery standard" },
     },
   },
@@ -70,14 +70,14 @@ export const aboutPage = {
 
   leadership: {
     eyebrow: "Leadership",
-    heading: { lead: "The people behind ", highlight: "Techvation" } as HighlightedHeading,
+    heading: { lead: "The people ", highlight: "behind Techvation" } as HighlightedHeading,
     action: { label: "Join our team", href: "/careers" },
     // TODO: replace with the real team (name, photo, LinkedIn and email).
     members: [
-      { name: "[Team member name]", role: "Chief Executive Officer", photo: "/assets/images/popup/consultant.png", linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
-      { name: "[Team member name]", role: "Head of Delivery", photo: "/assets/images/cta/consultant-1.png", linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
-      { name: "[Team member name]", role: "Lead Solution Architect", photo: "/assets/images/cta/consultant-2.png", linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
-      { name: "[Team member name]", role: "Head of Client Success", photo: "/assets/images/cta/consultant-3.png", linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
+      { name: "[Team member name]", role: "Chief Executive Officer", photo: image("team-1.jpg"), linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
+      { name: "[Team member name]", role: "Head of Delivery", photo: image("team-2.jpg"), linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
+      { name: "[Team member name]", role: "Lead Solution Architect", photo: image("team-3.jpg"), linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
+      { name: "[Team member name]", role: "Head of Client Success", photo: image("team-4.jpg"), linkedin: "https://www.linkedin.com", email: "info@thetechvation.com" },
     ],
   },
 
@@ -86,7 +86,7 @@ export const aboutPage = {
     heading: { lead: "Serving clients across ", highlight: "four regions" } as HighlightedHeading,
     description:
       "Distributed delivery teams mean overlapping hours with your business, wherever you are.",
-    image: "/assets/images/about/globe.png",
+    image: image("globe.png"),
     regions: [
       { name: "North America", detail: "Wyoming, USA · +1 (307) 855-0572", phone: "tel:+13078550572" },
       { name: "Asia Pacific", detail: "Islamabad, Pakistan · +92 344 5450666", phone: "tel:+923445450666" },

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
+import BackToTop from "@/components/BackToTop/BackToTop";
 import Footer from "@/components/Footer/Footer";
 import Navbar from "@/components/Navbar/Navbar";
 import PopupProvider from "@/components/Popups/PopupProvider";
@@ -43,6 +44,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
           {children}
           <Footer />
+          {/* Round arrow in the bottom-right corner, back to the top of the page */}
+          <BackToTop />
         </PopupProvider>
       </body>
     </html>

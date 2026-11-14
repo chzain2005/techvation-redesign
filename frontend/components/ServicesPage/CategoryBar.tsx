@@ -57,7 +57,8 @@ export default function CategoryBar() {
   return (
     <nav
       aria-label="Practice areas"
-      className="sticky top-0 z-10 border-b border-border bg-white/92 backdrop-blur-md"
+      // Sticks just below the navbar, and moves up when the navbar slides away.
+      className="sticky top-(--nav-offset) z-10 border-b border-border bg-white/92 backdrop-blur-md transition-[top] duration-300 ease-out"
     >
       <ul className="scrollbar-none mx-auto flex w-full max-w-page gap-2.5 overflow-x-auto page-x py-6">
         {tabs.map((tab) => {

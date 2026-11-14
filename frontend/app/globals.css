@@ -48,6 +48,7 @@
   --color-subtle: #9c97c0; /* small index numbers "01" */
   --color-faint: #c9c5dd; /* disabled calendar days */
   --color-on-dark: #b9b4d9; /* paragraph text on dark backgrounds */
+  --color-danger: #d14343; /* form error messages */
 
   /* ---- Fonts (the CSS variables are created by next/font in app/layout.tsx) ---- */
   --font-main: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -88,6 +89,12 @@
   --text-h2-xs: 1.875rem; /* 30px - footer headline on phones */
   --text-h2-xs--line-height: 1.15;
   --text-h2-xs--letter-spacing: -1px;
+  --text-page-title-lg: 3.75rem; /* 60px - About Us hero headline */
+  --text-page-title-lg--line-height: 1.1;
+  --text-page-title-lg--letter-spacing: -1.5px;
+  --text-figure: 1.875rem; /* 30px - small stat figures (About Us story) */
+  --text-figure--line-height: 1.25;
+  --text-figure--letter-spacing: -0.5px;
   --text-page-title: 3.375rem; /* 54px - hero headline of inner pages (services) */
   --text-page-title--line-height: 1.1;
   --text-page-title--letter-spacing: -1.5px;
@@ -139,6 +146,8 @@
   /* ---- Font sizes: body text (Inter) ---- */
   --text-lead: 1.1875rem; /* 19px - "Trusted by..." */
   --text-lead--line-height: 1.4;
+  --text-body-xl: 1.25rem; /* 20px - first paragraph of a blog article */
+  --text-body-xl--line-height: 1.6;
   --text-body-lg: 1.125rem; /* 18px */
   --text-body-lg--line-height: 1.6;
   --text-body-md: 1.0625rem; /* 17px */
@@ -222,6 +231,8 @@
   --shadow-arrow: 0 12px 30px 0 rgb(43 26 110 / 0.25);
   --shadow-form: 0 30px 80px 0 rgb(0 0 0 / 0.45);
   --shadow-modal: 0 40px 120px 0 rgb(0 0 0 / 0.5); /* pop-up windows */
+  --shadow-panel: 0 30px 80px 0 rgb(43 26 110 / 0.12); /* white form panels (Careers) */
+  --shadow-search: 0 20px 50px 0 rgb(0 0 0 / 0.35); /* search bar on a dark hero (FAQs) */
   --shadow-brand-icon: 0 16px 40px 0 rgb(84 62 169 / 0.4); /* round success icon */
   --shadow-brand-sm: 0 14px 32px 0 rgb(84 62 169 / 0.35);
   --shadow-brand-md: 0 16px 40px 0 rgb(84 62 169 / 0.3);
@@ -478,6 +489,15 @@
   );
 }
 
+/*
+ * Gradient-coloured text. The gradient is a background clipped to the
+ * letters, and a background only covers the text's own box, so letters that
+ * lean past it ("V", "y", "f") lose their tip. A little padding on the right
+ * widens the painted area, and the matching negative margin keeps the
+ * spacing exactly as before. "box-decoration-break: clone" gives every line
+ * of a wrapped phrase the same treatment.
+ */
+
 /* Gradient-coloured text for light backgrounds. */
 @utility text-gradient-brand {
   background-image: linear-gradient(
@@ -487,6 +507,10 @@
   );
   background-clip: text;
   color: transparent;
+  padding-right: 0.08em;
+  margin-right: -0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* Gradient-coloured text for dark backgrounds. */
@@ -498,6 +522,10 @@
   );
   background-clip: text;
   color: transparent;
+  padding-right: 0.08em;
+  margin-right: -0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 /* Hollow "outline only" text (the big VALUE word). */
@@ -546,6 +574,12 @@
  * BASE STYLES
  * ---------------------------------------------------------------------------
  */
+/* How much of the top of the screen the fixed navbar covers right now
+   (set by the Navbar; 0 while it is slid away). Sticky bars use it. */
+:root {
+  --nav-offset: 0px;
+}
+
 body {
   background: var(--color-white);
   color: var(--color-body);

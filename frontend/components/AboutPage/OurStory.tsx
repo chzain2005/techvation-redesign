@@ -6,7 +6,8 @@ import { aboutPage } from "@/data/about";
 
 /**
  * "Our story": two paragraphs and four counting figures, next to a photo
- * collage.
+ * collage (Figma 580 x 560): a tall photo top-left, a framed photo
+ * overlapping it bottom-right and a gradient "4 regions" card.
  *
  * - Phones: text, figures in a 2 x 2 grid, then the collage.
  * - Tablets: the same, with the figures in one row.
@@ -30,13 +31,13 @@ export default function OurStory() {
             </p>
           ))}
 
-          <dl className="mt-2 grid w-full grid-cols-2 gap-3 md:grid-cols-4 xl:max-w-145">
+          <dl className="grid w-full grid-cols-2 gap-4 md:grid-cols-4">
             {story.stats.map((stat) => (
               // flex-col-reverse: the number shows above its label, while the
               // HTML keeps the label first for screen readers.
-              <div key={stat.label} className="flex flex-col-reverse gap-1 rounded-float border border-border bg-surface px-5 py-4.5">
+              <div key={stat.label} className="flex flex-col-reverse gap-1 rounded-2xl bg-surface px-5 py-4.5">
                 <dt className="text-caption font-medium text-body">{stat.label}</dt>
-                <dd className="font-heading text-h2-sm font-bold text-gradient-brand">
+                <dd className="font-heading text-figure font-semibold text-gradient-brand">
                   <CountUp value={stat.value} />
                 </dd>
               </div>
@@ -44,20 +45,20 @@ export default function OurStory() {
           </dl>
         </div>
 
-        {/* Collage: a large photo top-left, a smaller one overlapping it at
-            the bottom-right, and a purple "4 regions" card on the top-right.
-            Everything is placed in percentages, so it scales with the width. */}
+        {/* Collage. Positions are percentages of the 580 x 560 Figma frame,
+            so it keeps its shape at every width. */}
         <div className="relative aspect-[580/560] w-full max-w-145 self-center xl:w-145 xl:shrink-0">
-          <div className="absolute top-0 left-0 h-[72%] w-[64%] overflow-hidden rounded-feature shadow-card">
-            <Image src={story.collage.main} alt="" fill sizes="(min-width: 1280px) 372px, 64vw" className="object-cover" />
+          <div className="absolute top-0 left-0 h-[82.14%] w-[62.07%] overflow-hidden rounded-post md:rounded-feature">
+            <Image src={story.collage.main} alt="" fill sizes="(min-width: 1280px) 360px, 62vw" className="object-cover" />
           </div>
-          <div className="absolute right-0 bottom-0 h-[52%] w-[54%] overflow-hidden rounded-card border-4 border-white shadow-calendar md:border-6">
-            <Image src={story.collage.inset} alt="" fill sizes="(min-width: 1280px) 313px, 54vw" className="object-cover" />
+          <div className="absolute top-[42.86%] left-[48.28%] h-[57.14%] w-[51.72%] overflow-hidden rounded-card border-4 border-white shadow-feature md:border-8">
+            <Image src={story.collage.inset} alt="" fill sizes="(min-width: 1280px) 300px, 52vw" className="object-cover" />
           </div>
-          <div className="absolute top-[8%] right-[2%] flex items-center gap-2.5 rounded-chip bg-brand px-3.5 py-2.5 text-white shadow-brand-md md:gap-3 md:px-4 md:py-3">
-            <Glyph name="globe" size={20} />
-            <span className="flex flex-col">
-              <span className="text-label font-semibold">{story.collage.badge.title}</span>
+          {/* Phones: pinned to the right edge so it never sticks out of the screen. */}
+          <div className="absolute top-[10.7%] right-0 flex md:right-auto md:left-[56.9%] items-center gap-2.5 rounded-float bg-brand px-3.5 py-2.5 text-white shadow-brand-md md:gap-3 md:px-5 md:py-4">
+            <Glyph name="globe" size={22} />
+            <span className="flex flex-col gap-0.5 whitespace-nowrap">
+              <span className="font-heading text-subtitle font-semibold">{story.collage.badge.title}</span>
               <span className="text-caption font-medium text-white/80">{story.collage.badge.text}</span>
             </span>
           </div>
