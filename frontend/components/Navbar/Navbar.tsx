@@ -152,9 +152,20 @@ export default function Navbar() {
   // Tell the rest of the page how much of the top the navbar covers, so
   // sticky bars (Services tabs, FAQ categories, article sidebar) sit just
   // below it and move up when it slides away.
+  // The height changes between phone (68px) and desktop (88px), so it is
+  // measured again whenever the bar resizes.
   useEffect(() => {
-    const height = headerRef.current?.offsetHeight ?? 0;
-    document.documentElement.style.setProperty("--nav-offset", isHidden ? "0px" : `${height}px`);
+    const header = headerRef.current;
+    if (!header) return;
+    const update = () =>
+      document.documentElement.style.setProperty(
+        "--nav-offset",
+        isHidden ? "0px" : `${header.offsetHeight}px`,
+      );
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(header);
+    return () => observer.disconnect();
   }, [isHidden]);
 
   return (
@@ -164,9 +175,10 @@ export default function Navbar() {
         className={cn(
           // Always pinned to the top of the screen, floating over the hero.
           "fixed inset-x-0 top-0 z-20 border-b border-white/10 transition-[translate,background-color] duration-300 ease-out motion-reduce:transition-none",
-          // Scrolling down slides it up out of view; keyboard focus inside
-          // it always brings it back.
-          isHidden ? "-translate-y-full focus-within:translate-y-0" : "translate-y-0",
+          // Scrolling down slides it up out of view. Keyboard focus inside it
+          // (Tab key) brings it back. Only keyboard focus counts: a clicked
+          // link keeps focus after the new page opens, and must not pin it.
+          isHidden ? "-translate-y-full has-focus-visible:translate-y-0" : "translate-y-0",
           isMenuOpen
             ? "bg-ink"
             : isScrolled
