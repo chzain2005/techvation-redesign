@@ -1,5 +1,6 @@
 import Image from "next/image";
 import ActionButton from "@/components/Button/ActionButton";
+import CountUp from "@/components/CountUp/CountUp";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
 import { whyTechvation } from "@/data/homepage";
@@ -222,7 +223,8 @@ export default function WhyTechvation() {
             <div key={stat.label} className="flex flex-col-reverse items-center gap-0.5 p-2">
               <dt className="text-caption font-medium text-white/80">{stat.label}</dt>
               <dd className="font-heading text-h2-sm font-bold text-white xl:text-h3">
-                {stat.value}
+                {/* Counts up from 0 whenever the bar scrolls into view. */}
+                <CountUp value={stat.value} />
               </dd>
             </div>
           ))}

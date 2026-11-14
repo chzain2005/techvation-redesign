@@ -28,21 +28,28 @@ export default function ServiceCard({
         layout === "carousel" ? "w-75 shrink-0 snap-start xl:w-100" : "h-full w-full",
       )}
     >
-      {/* Photo */}
-      <div className="relative h-40 xl:h-55">
+      {/* Photo. Tapping it also opens the service page (handy on phones).
+          It repeats the "Learn more" link, so it is hidden from screen
+          readers and skipped by the Tab key. */}
+      <Link
+        href={service.href}
+        aria-hidden
+        tabIndex={-1}
+        className="group/photo relative block h-40 overflow-hidden xl:h-55"
+      >
         <Image
           src={service.image}
           alt=""
           fill
           sizes="(min-width: 768px) 400px, 100vw"
-          className="object-cover"
+          className="object-cover transition-transform duration-500 group-hover/photo:scale-105"
         />
         {/* Slight dark fade at the bottom of the photo */}
         <div className="absolute inset-0 bg-linear-to-b from-ink/0 to-ink/35" />
         <span className="absolute top-4 left-4 rounded-full bg-white/92 px-3 py-1.5 text-caption font-medium text-primary">
           {service.category}
         </span>
-      </div>
+      </Link>
 
       {/* Text */}
       <div className="flex flex-1 flex-col gap-2 p-4 xl:gap-3 xl:px-6 xl:pt-5.5 xl:pb-6">
@@ -55,7 +62,10 @@ export default function ServiceCard({
             <Icon src={service.icon} size={20} />
           </span>
           <h3 className="font-heading text-title-xs font-semibold text-heading xl:text-title">
-            {service.title}
+            {/* The title opens the service page too. */}
+            <Link href={service.href} className="transition-colors hover:text-primary">
+              {service.title}
+            </Link>
           </h3>
         </div>
 
@@ -67,7 +77,9 @@ export default function ServiceCard({
         <div className="mt-auto flex items-center justify-between xl:pt-1.5">
           <Link
             href={service.href}
-            className="flex items-center gap-1 text-label-sm font-semibold text-primary hover:underline xl:gap-1.5 xl:text-label"
+            // The vertical padding makes the link easier to tap on phones,
+            // without changing how the card looks.
+            className="-my-2.5 flex items-center gap-1 py-2.5 text-label-sm font-semibold text-primary hover:underline xl:gap-1.5 xl:text-label"
           >
             {services.learnMoreLabel}
             <span className="xl:hidden">

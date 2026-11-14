@@ -43,7 +43,7 @@ function SocialLinks() {
 /**
  * The gradient call-to-action band at the top of the footer.
  * - Phones and tablets: text, then three full-width stacked buttons.
- * - Desktop: text on the left, two buttons on the right.
+ * - Desktop: text on the left, the three buttons in a row on the right.
  */
 function FooterCta() {
   const { cta } = footer;
@@ -61,30 +61,31 @@ function FooterCta() {
           <p className="text-body-base text-white/85 xl:text-body-lg">{cta.description}</p>
         </div>
 
-        {/* Phones and tablets: three stacked buttons. The first is solid white,
-            the last has no arrow, as in the design. */}
+        {/* The same three buttons everywhere: "Free Consultation" (solid white),
+            "Let's Talk" and "Schedule a Call" (no arrow), as in the design.
+            Phones and tablets: large, full width and stacked.
+            Desktop: medium size, in a row. */}
         <div className="mt-1.5 flex flex-col gap-3.5 xl:hidden">
-          {cta.actionsCompact.map((action, i) => (
+          {cta.actions.map((action, i) => (
             <ActionButton
               key={action.label}
               href={action.href}
               variant={i === 0 ? "secondary" : "outlineLight"}
-              showIcon={i < cta.actionsCompact.length - 1}
+              showIcon={i < cta.actions.length - 1}
               className="w-full"
             >
               {action.label}
             </ActionButton>
           ))}
         </div>
-
-        {/* Desktop: two outlined buttons. Only the first has an arrow. */}
-        <div className="hidden gap-3.5 xl:flex">
+        <div className="hidden shrink-0 gap-3 xl:flex">
           {cta.actions.map((action, i) => (
             <ActionButton
               key={action.label}
               href={action.href}
-              variant="outlineLight"
-              showIcon={i === 0}
+              variant={i === 0 ? "secondary" : "outlineLight"}
+              size="md"
+              showIcon={i < cta.actions.length - 1}
             >
               {action.label}
             </ActionButton>

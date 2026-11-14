@@ -226,7 +226,7 @@ export const serviceDetailPage = {
       {
         icon: "award" as GlyphName,
         title: "Proven expertise",
-        text: "Certified specialists with 6+ years of enterprise delivery.",
+        text: "Certified specialists with 10+ years of enterprise delivery.",
       },
       {
         icon: "dollar" as GlyphName,

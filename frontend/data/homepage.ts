@@ -56,7 +56,7 @@ export const navbar = {
     // Hovering "Services" on desktop opens the services mega menu; clicking
     // it goes to the Services page.
     { label: "Services", href: "/services", hasDropdown: true },
-    { label: "Solutions", href: "/#industries", badge: "SOON" },
+    { label: "Solutions", href: "/solutions", badge: "SOON" },
     { label: "About Us", href: "/about" },
     { label: "Careers", href: "/careers" },
     { label: "FAQs", href: "/faqs" },
@@ -344,7 +344,7 @@ export const whyTechvation = {
     { value: "50+", label: "Projects delivered" },
     { value: "10+", label: "Countries" },
     { value: "15+", label: "Active clients" },
-    { value: "6+", label: "Years of expertise" },
+    { value: "10+", label: "Years of expertise" },
   ],
   primaryAction: { label: "Talk to an Expert", href: "#free-consultation" } as LinkItem,
   secondaryAction: { label: "About Techvation", href: "/about" } as LinkItem,
@@ -632,9 +632,8 @@ export const footer = {
       tail: ".",
     } as HighlightedHeading,
     description: "Choose how you’d like to start. We reply within 24 hours.",
-    actions: [cta.letsTalk, cta.scheduleCall],
-    /** Phones and tablets show three stacked buttons instead of two. */
-    actionsCompact: [cta.freeConsultation, cta.letsTalk, cta.scheduleCall],
+    /** The first is solid white, the last has no arrow (every screen size). */
+    actions: [cta.freeConsultation, cta.letsTalk, cta.scheduleCall],
   },
   logo: navbar.logo,
   about:
