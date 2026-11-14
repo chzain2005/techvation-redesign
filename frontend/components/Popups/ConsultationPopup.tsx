@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 import { PopupInput, PopupSelect, PopupTextarea } from "./PopupField";
 import { PopupCloseButton } from "./PopupShell";
 import type { Contact } from "./PopupProvider";
+import { trackFormSubmit } from "@/lib/analytics";
 
 type ConsultationPopupProps = {
   onClose: () => void;
@@ -28,6 +29,8 @@ export default function ConsultationPopup({ onClose, onSubmitted }: Consultation
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("consultation_popup");
     const data = new FormData(event.currentTarget);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 

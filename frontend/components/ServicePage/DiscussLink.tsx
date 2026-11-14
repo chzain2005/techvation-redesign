@@ -2,6 +2,7 @@
 
 import Glyph from "@/components/Icon/Glyph";
 import { usePopups } from "@/components/Popups/PopupProvider";
+import { trackCtaClick } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 /**
@@ -13,7 +14,10 @@ export default function DiscussLink({ label, className }: { label: string; class
   return (
     <button
       type="button"
-      onClick={openConsultation}
+      onClick={() => {
+        trackCtaClick(label, "popup:consultation");
+        openConsultation();
+      }}
       className={cn(
         "group inline-flex cursor-pointer items-center gap-1.5 text-label font-semibold text-primary",
         className,

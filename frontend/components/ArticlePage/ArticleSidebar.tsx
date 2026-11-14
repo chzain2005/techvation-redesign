@@ -6,6 +6,7 @@ import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph, { type GlyphName } from "@/components/Icon/Glyph";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { cn } from "@/lib/cn";
+import { trackFormSubmit } from "@/lib/analytics";
 
 type ArticleSidebarProps = {
   title: string;
@@ -51,6 +52,8 @@ export default function ArticleSidebar({ title, headings, cta }: ArticleSidebarP
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("article_sidebar_consultation");
     const email = String(new FormData(event.currentTarget).get("email") ?? "").trim();
     // TODO: send to the backend once the consultation endpoint exists.
     showConsultationSuccess({ email });

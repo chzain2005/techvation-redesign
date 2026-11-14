@@ -2,6 +2,7 @@
 
 import { useOptionalPopups } from "@/components/Popups/PopupProvider";
 import { cta } from "@/data/homepage";
+import { trackCtaClick } from "@/lib/analytics";
 import Button, { type ButtonProps } from "./Button";
 
 type ActionButtonProps = Omit<ButtonProps, "href" | "onClick"> & {
@@ -31,11 +32,17 @@ export default function ActionButton({ href, onClick, ...props }: ActionButtonPr
         ? popups?.openConsultation
         : undefined;
 
+  // Every call-to-action click is sent to Google Analytics.
+  const label = typeof props.children === "string" ? props.children : href;
+  const destination =
+    href === cta.scheduleCall.href ? "popup:schedule_call" : href === cta.freeConsultation.href ? "popup:consultation" : href;
+
   if (openPopup) {
     return (
       <Button
         {...props}
         onClick={() => {
+          trackCtaClick(label, destination);
           onClick?.();
           openPopup();
         }}
@@ -43,5 +50,5 @@ export default function ActionButton({ href, onClick, ...props }: ActionButtonPr
     );
   }
 
-  return <Button {...props} href={href} />;
+  return <Button {...props} href={href} onClick={() => trackCtaClick(label, destination)} />;
 }

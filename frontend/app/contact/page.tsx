@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/Seo/JsonLd";
+import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import ContactForm from "@/components/ContactPage/ContactForm";
 import ContactInfo from "@/components/ContactPage/ContactInfo";
 import QuickContact from "@/components/ContactPage/QuickContact";
 import PageHero from "@/components/PageHero/PageHero";
 import { contactPage } from "@/data/contact";
 
-export const metadata: Metadata = {
-  title: "Contact Us | Techvation",
+export const metadata: Metadata = pageMetadata({
+  title: "Contact Us: Free Consultation",
   description:
-    "Tell us what you’re building. A Techvation solution architect will get back to you within 24 hours.",
-};
+    "Contact Techvation for a free consultation on Dynamics 365, ERP, Power BI, custom software or AI. A solution architect replies within 24 hours.",
+  path: "/contact",
+});
 
 /**
  * The Contact Us page ("09 · Contact Us" in Figma). Every "Let's Talk"
@@ -21,6 +24,7 @@ export default function ContactPage() {
 
   return (
     <main>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Contact Us", path: "/contact" }])} />
       <PageHero
         centered
         image={hero.image}

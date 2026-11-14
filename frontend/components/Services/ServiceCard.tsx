@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import Button from "@/components/Button/Button";
+import ActionButton from "@/components/Button/ActionButton";
 import Icon from "@/components/Icon/Icon";
 import { services, type Service } from "@/data/homepage";
 import { cn } from "@/lib/cn";
@@ -91,14 +91,14 @@ export default function ServiceCard({
           </Link>
           {/* The button has no arrow on small screens */}
           <div className="xl:hidden">
-            <Button href={services.cardAction.href} size="md" showIcon={false}>
+            <ActionButton href={services.cardAction.href} size="md" showIcon={false}>
               {services.cardAction.label}
-            </Button>
+            </ActionButton>
           </div>
           <div className="hidden xl:block">
-            <Button href={services.cardAction.href} size="md">
+            <ActionButton href={services.cardAction.href} size="md">
               {services.cardAction.label}
-            </Button>
+            </ActionButton>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import type { FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import { footer } from "@/data/homepage";
+import { trackFormSubmit } from "@/lib/analytics";
 
 /**
  * The email field + "Subscribe" button in the footer, styled as one pill.
@@ -14,6 +15,8 @@ export default function NewsletterForm() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("footer_newsletter", "sign_up");
     // TODO: send the email to the backend once the API endpoint exists.
   }
 

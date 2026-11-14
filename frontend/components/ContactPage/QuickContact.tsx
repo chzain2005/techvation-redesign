@@ -3,6 +3,7 @@
 import Glyph from "@/components/Icon/Glyph";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { contactPage } from "@/data/contact";
+import { trackCtaClick } from "@/lib/analytics";
 
 const cardClasses =
   "flex h-full w-full items-center gap-3 rounded-reason border border-border bg-white p-3.5 text-left shadow-card transition duration-300 hover:-translate-y-0.5 hover:border-primary/35 md:gap-3.5 md:p-5.5";
@@ -45,12 +46,21 @@ export default function QuickContact() {
           return (
             <li key={item.title}>
               {item.href === "#schedule-a-call" ? (
-                <button type="button" onClick={openScheduleCall} className={`${cardClasses} cursor-pointer`}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    trackCtaClick(item.title, "popup:schedule_call", "contact_quick_contact");
+                    openScheduleCall();
+                  }}
+                  className={`${cardClasses} cursor-pointer`}
+                >
                   {content}
                 </button>
               ) : (
                 <a
                   href={item.href}
+                  // Only the kind of link is recorded ("tel", "mailto", "https"), not the number or address.
+                  onClick={() => trackCtaClick(item.title, item.href.split(":")[0], "contact_quick_contact")}
                   {...(item.href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
                   className={cardClasses}
                 >

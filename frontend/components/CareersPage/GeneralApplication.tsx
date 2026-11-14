@@ -8,6 +8,7 @@ import Icon from "@/components/Icon/Icon";
 import { careersPage, type Position } from "@/data/careers";
 import { cn } from "@/lib/cn";
 import { APPLY_EVENT } from "./OpenPositions";
+import { trackFormSubmit } from "@/lib/analytics";
 
 const fieldClasses =
   "w-full rounded-xl border border-border bg-white px-4 py-3.5 text-small text-heading outline-none transition-colors placeholder:text-muted focus:border-primary";
@@ -64,6 +65,11 @@ export default function GeneralApplication() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("careers_application", "job_application", {
+      job_role: role?.title ?? "general",
+      job_area: area || undefined,
+    });
     // TODO: send the form (with the CV file and `role`) to the backend once
     // the careers endpoint exists, e.g. as multipart/form-data.
     setIsSent(true);

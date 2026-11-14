@@ -7,6 +7,7 @@ import Icon from "@/components/Icon/Icon";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { contactPage } from "@/data/contact";
 import { cn } from "@/lib/cn";
+import { trackFormSubmit } from "@/lib/analytics";
 
 const fieldClasses =
   "w-full rounded-xl border border-border bg-white px-4 py-3.5 text-small text-heading outline-none transition-colors placeholder:text-muted focus:border-primary";
@@ -72,6 +73,13 @@ export default function ContactForm() {
 
     // TODO: send the request to the backend once the contact endpoint exists,
     // including `services`, budget, timeline and details.
+
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("contact_page", "generate_lead", {
+      services: services.join(", ") || undefined,
+      budget: text("budget") || undefined,
+      timeline: text("timeline") || undefined,
+    });
 
     showConsultationSuccess({
       name: text("name"),

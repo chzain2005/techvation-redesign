@@ -8,6 +8,7 @@ import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { navbar } from "@/data/homepage";
 import { isActiveLink } from "@/lib/active-link";
+import { trackCtaClick } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import HomeLink from "@/components/HomeLink/HomeLink";
@@ -86,6 +87,11 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // The "Free Consultation" buttons open the consultation pop-up.
   const { openConsultation } = usePopups();
+  // ...and the click is recorded in Google Analytics.
+  const openNavbarConsultation = () => {
+    trackCtaClick(navbar.primaryAction.label, "popup:consultation", "navbar");
+    openConsultation();
+  };
   // The page we are on: decides which link gets the underline.
   const pathname = usePathname();
 
@@ -286,10 +292,11 @@ export default function Navbar() {
               variant="outlineLight"
               size="md"
               showIcon={false}
+              onClick={() => trackCtaClick(navbar.secondaryAction.label, navbar.secondaryAction.href, "navbar")}
             >
               {navbar.secondaryAction.label}
             </Button>
-            <Button onClick={openConsultation} size="md">
+            <Button onClick={openNavbarConsultation} size="md">
               {navbar.primaryAction.label}
             </Button>
           </div>
@@ -298,7 +305,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2.5 xl:hidden">
             {/* A click on the main button also closes the menu if it is open. */}
             <div className="hidden md:block" onClick={() => setIsMenuOpen(false)}>
-              <Button onClick={openConsultation} size="md" showIcon={false}>
+              <Button onClick={openNavbarConsultation} size="md" showIcon={false}>
                 {navbar.primaryAction.label}
               </Button>
             </div>

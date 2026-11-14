@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Glyph from "@/components/Icon/Glyph";
 import { solutionsPage } from "@/data/solutions";
+import { trackFormSubmit } from "@/lib/analytics";
 
 /**
  * "Notify me" email form. After sending, a short thank-you replaces it.
@@ -18,6 +19,8 @@ export default function NotifyForm() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("solutions_notify", "sign_up");
     // TODO: send the email to the backend once the newsletter endpoint exists, e.g.
     // fetch(`${process.env.NEXT_PUBLIC_API_URL}/solutions/notify`, { method: "POST", ... })
     setIsSent(true);

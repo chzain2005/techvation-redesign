@@ -5,6 +5,7 @@ import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { hero, services } from "@/data/homepage";
+import { trackFormSubmit } from "@/lib/analytics";
 
 /* Shared look of the three inputs (glass style on the dark card). */
 const fieldClasses =
@@ -35,6 +36,9 @@ export default function ConsultationForm() {
 
     // TODO: send the form to the backend once the API endpoint exists, e.g.
     // fetch(`${process.env.NEXT_PUBLIC_API_URL}/consultations`, { method: "POST", ... })
+
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("home_hero_consultation", "generate_lead", { service: text("service") || undefined });
 
     // Same next step as the consultation pop-up: the thank-you pop-up, which
     // offers to book a call right away (name and email are carried over).

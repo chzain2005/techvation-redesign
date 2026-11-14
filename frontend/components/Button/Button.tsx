@@ -17,7 +17,7 @@ export type ButtonProps = {
   /** Show the small arrow after the label. */
   showIcon?: boolean;
   type?: "button" | "submit";
-  /** Runs when a button without an href is clicked (e.g. to open a pop-up). */
+  /** Runs on click: opens a pop-up on a button, or e.g. records an analytics event on a link. */
   onClick?: () => void;
   /** Greys the button out and ignores clicks. */
   disabled?: boolean;
@@ -133,6 +133,7 @@ export default function Button({
     return (
       <Link
         href={href}
+        onClick={onClick}
         className={classes}
         target={newTab ? "_blank" : undefined}
         rel={newTab ? "noopener noreferrer" : undefined}

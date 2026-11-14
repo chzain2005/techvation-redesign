@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/Seo/JsonLd";
+import { breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import Button from "@/components/Button/Button";
 import CultureGallery from "@/components/CareersPage/CultureGallery";
 import GeneralApplication from "@/components/CareersPage/GeneralApplication";
@@ -8,11 +10,12 @@ import Perks from "@/components/CareersPage/Perks";
 import PageHero from "@/components/PageHero/PageHero";
 import { careersPage } from "@/data/careers";
 
-export const metadata: Metadata = {
-  title: "Careers | Techvation",
+export const metadata: Metadata = pageMetadata({
+  title: "Careers: Microsoft, ERP & AI Jobs",
   description:
-    "Work on global Microsoft, ERP and AI projects with a team that invests in your growth. See open roles at Techvation.",
-};
+    "Join Techvation and work on global Microsoft Dynamics, ERP and AI projects. Remote-friendly roles, learning budget and a team that invests in your growth.",
+  path: "/careers",
+});
 
 /**
  * The Careers page ("05 · Careers" in Figma). Its text and the list of
@@ -24,6 +27,7 @@ export default function CareersPage() {
 
   return (
     <main>
+      <JsonLd data={breadcrumbJsonLd([{ name: "Careers", path: "/careers" }])} />
       <PageHero
         image={hero.image}
         breadcrumb={hero.breadcrumb}

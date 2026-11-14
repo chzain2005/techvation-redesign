@@ -6,6 +6,7 @@ import Icon from "@/components/Icon/Icon";
 import { scheduleCall } from "@/data/popups";
 import { PopupInput, PopupTextarea } from "./PopupField";
 import type { Contact } from "./PopupProvider";
+import { trackFormSubmit } from "@/lib/analytics";
 
 type ScheduleDetailsStepProps = {
   /** The chosen slot as text, e.g. "Wed, Nov 18 · 11:30 AM – 12:00 PM (PKT)". */
@@ -33,6 +34,8 @@ export default function ScheduleDetailsStep({
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("schedule_call_popup");
     const data = new FormData(event.currentTarget);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 

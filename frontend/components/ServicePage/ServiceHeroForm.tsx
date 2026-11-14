@@ -5,6 +5,7 @@ import Button from "@/components/Button/Button";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { serviceDetailPage } from "@/data/services";
 import { cn } from "@/lib/cn";
+import { trackFormSubmit } from "@/lib/analytics";
 
 /* Glass inputs on the dark card (same look as the homepage hero form). */
 const fieldClasses =
@@ -28,6 +29,9 @@ export default function ServiceHeroForm({ title }: { title: string }) {
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
     // TODO: send the form to the backend once the API endpoint exists.
+
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("service_hero_consultation", "generate_lead", { service: title });
 
     showConsultationSuccess({ name: text("name"), email: text("email"), phone: text("phone") });
     formElement.reset();

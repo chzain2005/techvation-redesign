@@ -8,7 +8,9 @@ import ServiceOutcomes from "@/components/ServicePage/ServiceOutcomes";
 import ServiceOverview from "@/components/ServicePage/ServiceOverview";
 import ServiceProcess from "@/components/ServicePage/ServiceProcess";
 import ServiceTech from "@/components/ServicePage/ServiceTech";
+import JsonLd from "@/components/Seo/JsonLd";
 import { getService, serviceDetails } from "@/data/services";
+import { absoluteUrl, breadcrumbJsonLd, pageMetadata, site } from "@/lib/seo";
 
 /** Build one page per service ahead of time, e.g. /services/power-bi. */
 export function generateStaticParams() {
@@ -19,10 +21,12 @@ export async function generateMetadata({ params }: PageProps<"/services/[slug]">
   const { slug } = await params;
   const service = getService(slug);
   if (!service) return {};
-  return {
-    title: `${service.title} | Techvation`,
+  return pageMetadata({
+    title: `${service.title} Services`,
     description: service.hero.description,
-  };
+    path: `/services/${service.slug}`,
+    image: service.image,
+  });
 }
 
 /**
@@ -37,6 +41,34 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
 
   return (
     <main>
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([
+            { name: "Services", path: "/services" },
+            { name: service.title, path: `/services/${service.slug}` },
+          ]),
+          {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            name: service.title,
+            serviceType: service.title,
+            description: service.hero.description,
+            url: absoluteUrl(`/services/${service.slug}`),
+            image: absoluteUrl(service.image),
+            provider: { "@id": `${site.url}/#organization` },
+            areaServed: ["North America", "Middle East", "Africa", "Asia Pacific"],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: service.faqs.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+          },
+        ]}
+      />
       <ServiceHero service={service} />
       <ServiceOutcomes outcomes={service.outcomes} />
       <ServiceOverview service={service} />

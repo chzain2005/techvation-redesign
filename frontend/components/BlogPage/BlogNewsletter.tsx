@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Glyph from "@/components/Icon/Glyph";
 import { blogPage } from "@/data/blog";
+import { trackFormSubmit } from "@/lib/analytics";
 
 /**
  * "Get our monthly tech digest": mail icon and text on the left, an email
@@ -15,6 +16,8 @@ export default function BlogNewsletter() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("blog_newsletter", "sign_up");
     // TODO: send the email to the newsletter service once it is connected.
     setIsSent(true);
   }
