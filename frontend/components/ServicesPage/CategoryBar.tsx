@@ -2,20 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Glyph, { type GlyphName } from "@/components/Icon/Glyph";
-import { serviceCategories, servicesPage } from "@/data/services";
+import { servicesPage, type ServiceCategory } from "@/data/services";
 import { cn } from "@/lib/cn";
 
 /** The id of the first group; "All services" jumps to it. */
 const ALL = "all-services";
 
-const tabs: Array<{ anchor: string; label: string; icon: GlyphName }> = [
-  { anchor: ALL, label: servicesPage.allTab, icon: "sparkles" },
-  ...serviceCategories.map((category) => ({
-    anchor: category.anchor,
-    label: category.name,
-    icon: category.icon,
-  })),
-];
 
 /**
  * The row of practice-area tabs under the hero ("Category bar" in Figma).
@@ -23,8 +15,16 @@ const tabs: Array<{ anchor: string; label: string; icon: GlyphName }> = [
  * and the tab of the group you are reading is highlighted. On small
  * screens the row scrolls sideways.
  */
-export default function CategoryBar() {
+export default function CategoryBar({ serviceCategories }: { serviceCategories: ServiceCategory[] }) {
   const [current, setCurrent] = useState(ALL);
+  const tabs: Array<{ anchor: string; label: string; icon: GlyphName }> = [
+    { anchor: ALL, label: servicesPage.allTab, icon: "sparkles" },
+    ...serviceCategories.map((category) => ({
+      anchor: category.anchor,
+      label: category.name,
+      icon: category.icon,
+    })),
+  ];
 
   useEffect(() => {
     const groups = serviceCategories
@@ -52,7 +52,7 @@ export default function CategoryBar() {
       observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [serviceCategories]);
 
   return (
     <nav

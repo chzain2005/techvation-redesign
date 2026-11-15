@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
-import { aboutPage } from "@/data/about";
+import { getAboutPage } from "@/lib/cms/content";
 
 /**
  * "Global presence": heading, paragraph and the four regions (with phone
@@ -11,7 +11,8 @@ import { aboutPage } from "@/data/about";
  * - Tablets: regions in two columns, photo below.
  * - Desktop (xl and up): text on the left, photo on the right.
  */
-export default function GlobalPresence() {
+export default async function GlobalPresence() {
+  const aboutPage = await getAboutPage();
   const { presence } = aboutPage;
 
   return (

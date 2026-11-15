@@ -7,8 +7,8 @@ import { useState } from "react";
 import ActionButton from "@/components/Button/ActionButton";
 import Glyph from "@/components/Icon/Glyph";
 import Icon from "@/components/Icon/Icon";
-import { footer, navbar } from "@/data/homepage";
-import { serviceCategories, serviceHref, servicesIn } from "@/data/services";
+import { useSiteContent } from "@/components/SiteContent/SiteContent";
+import { serviceHref, servicesIn } from "@/data/services";
 import { isActiveLink } from "@/lib/active-link";
 import { cn } from "@/lib/cn";
 
@@ -26,6 +26,7 @@ function MobileServicesList({
   pathname: string;
   onNavigate: () => void;
 }) {
+  const { serviceCategories, services } = useSiteContent();
   return (
     <div
       id="mobile-services"
@@ -49,7 +50,7 @@ function MobileServicesList({
             <div key={category.id} className="flex flex-col gap-1">
               <p className="text-eyebrow-sm font-semibold text-white/45 uppercase">{category.name}</p>
               <ul>
-                {servicesIn(category).map((service) => {
+                {servicesIn(category, services).map((service) => {
                   const href = serviceHref(service.slug);
                   return (
                     <li key={service.slug}>
@@ -127,6 +128,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     transitionDelay: isOpen ? `${100 + position * 50}ms` : "0ms",
   });
 
+  const { navbar, footer } = useSiteContent();
   const linkCount = navbar.links.length;
 
   return (

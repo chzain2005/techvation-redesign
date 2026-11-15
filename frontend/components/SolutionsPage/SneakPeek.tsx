@@ -3,13 +3,14 @@ import ActionButton from "@/components/Button/ActionButton";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { cta } from "@/data/homepage";
-import { solutionsPage } from "@/data/solutions";
+import { getSolutionsPage } from "@/lib/cms/content";
 
 /**
  * "A sneak peek at what's coming": three upcoming industry suites, then two
  * buttons. Cards are 1 per row on phones, 2 on tablets, 3 on desktop.
  */
-export default function SneakPeek() {
+export default async function SneakPeek() {
+  const solutionsPage = await getSolutionsPage();
   const { sneakPeek } = solutionsPage;
 
   return (

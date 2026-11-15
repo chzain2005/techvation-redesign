@@ -1,12 +1,13 @@
 import Image from "next/image";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { careersPage } from "@/data/careers";
+import { getCareersPage } from "@/lib/cms/content";
 
 /**
  * "Simple, respectful and quick": the four hiring steps as glass cards on
  * the dark background. 1 per row on phones, 2 on tablets, 4 on desktop.
  */
-export default function HiringProcess() {
+export default async function HiringProcess() {
+  const careersPage = await getCareersPage();
   const { process } = careersPage;
 
   return (

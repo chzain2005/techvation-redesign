@@ -2,7 +2,8 @@ import Image from "next/image";
 import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import { cta } from "@/data/homepage";
-import { getCategory, serviceDetailPage, type ServiceDetail } from "@/data/services";
+import { getCategory, type ServiceDetail } from "@/data/services";
+import { getServices, getServicesPageContent } from "@/lib/cms/content";
 import Breadcrumb from "./Breadcrumb";
 import ServiceHeroForm from "./ServiceHeroForm";
 
@@ -15,9 +16,10 @@ import ServiceHeroForm from "./ServiceHeroForm";
  *   skip the two buttons (the form is right below).
  * - Desktop (xl and up): text and form side by side.
  */
-export default function ServiceHero({ service }: { service: ServiceDetail }) {
+export default async function ServiceHero({ service }: { service: ServiceDetail }) {
+  const [{ serviceDetailPage }, { categories }] = await Promise.all([getServicesPageContent(), getServices()]);
   const { breadcrumb } = serviceDetailPage;
-  const category = getCategory(service.categoryId);
+  const category = getCategory(service.categoryId, categories);
 
   return (
     // The top padding leaves room for the navbar that floats above the hero.
@@ -82,7 +84,7 @@ export default function ServiceHero({ service }: { service: ServiceDetail }) {
           </div>
         </div>
 
-        <ServiceHeroForm title={service.hero.formTitle} />
+        <ServiceHeroForm title={service.hero.formTitle} heroForm={serviceDetailPage.heroForm} />
       </div>
     </section>
   );

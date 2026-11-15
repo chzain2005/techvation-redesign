@@ -1,6 +1,6 @@
 import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
-import { hero } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 import ConsultationForm from "./ConsultationForm";
 import HeroBackground from "./HeroBackground";
 
@@ -11,7 +11,8 @@ import HeroBackground from "./HeroBackground";
  *   buttons, then the form.
  * - Desktop (xl and up): headline + buttons on the left, form on the right.
  */
-export default function Hero() {
+export default async function Hero() {
+  const { hero } = await getHomepage();
   return (
     // "isolate" keeps the background layers behind the content of this section only.
     // The top padding leaves room for the navbar that floats above the hero.
@@ -64,7 +65,7 @@ export default function Hero() {
         </div>
 
         {/* Form */}
-        <ConsultationForm />
+        <ConsultationForm form={hero.form} />
       </div>
     </section>
   );

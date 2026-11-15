@@ -1,7 +1,7 @@
 import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Icon from "@/components/Icon/Icon";
-import { uniqueValue } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 import ValueVisual from "./ValueVisual";
 
 /**
@@ -13,7 +13,8 @@ import ValueVisual from "./ValueVisual";
  * The text comes first in the HTML (better for screen readers and search
  * engines); "flex-col-reverse" flips the visual order on small screens.
  */
-export default function UniqueValue() {
+export default async function UniqueValue() {
+  const { uniqueValue } = await getHomepage();
   return (
     // "overflow-x-clip": the turning dashed ring of the illustration is a
     // square, and its corners swing past the screen edge on phones. Clipping
@@ -48,7 +49,7 @@ export default function UniqueValue() {
         </div>
 
         {/* Illustration */}
-        <ValueVisual />
+        <ValueVisual visual={uniqueValue.visual} />
       </div>
     </section>
   );

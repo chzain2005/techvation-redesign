@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
-import { services } from "@/data/homepage";
+import { useSiteContent } from "@/components/SiteContent/SiteContent";
 import { consultationPopup } from "@/data/popups";
 import { cn } from "@/lib/cn";
 import { PopupInput, PopupSelect, PopupTextarea } from "./PopupField";
@@ -25,6 +25,7 @@ type ConsultationPopupProps = {
  */
 export default function ConsultationPopup({ onClose, onSubmitted }: ConsultationPopupProps) {
   const { fields } = consultationPopup;
+  const { serviceOptions } = useSiteContent();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
@@ -83,9 +84,9 @@ export default function ConsultationPopup({ onClose, onSubmitted }: Consultation
 
       {/* The same services as the Services section of the homepage */}
       <PopupSelect name="service" required {...fields.service}>
-        {services.items.map((service) => (
-          <option key={service.title} value={service.title} className="text-heading">
-            {service.title}
+        {serviceOptions.map((service) => (
+          <option key={service} value={service} className="text-heading">
+            {service}
           </option>
         ))}
       </PopupSelect>

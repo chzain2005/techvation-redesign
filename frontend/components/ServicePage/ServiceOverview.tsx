@@ -4,13 +4,22 @@ import Button from "@/components/Button/Button";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
 import { cta } from "@/data/homepage";
-import { serviceDetailPage, type ServiceDetail } from "@/data/services";
+import type { ServiceDetail } from "@/data/services";
+import { getServicesPageContent } from "@/lib/cms/content";
 import { cn } from "@/lib/cn";
 
 const photo = "/assets/images/service-page/office.jpg";
 
 /** The team photo with the small white "Certified … team" card on it. */
-function OverviewPhoto({ service, className }: { service: ServiceDetail; className?: string }) {
+function OverviewPhoto({
+  service,
+  badgeSubtitle,
+  className,
+}: {
+  service: ServiceDetail;
+  badgeSubtitle: string;
+  className?: string;
+}) {
   return (
     <div className={cn("relative", className)}>
       <div className="relative aspect-16/10 overflow-hidden rounded-post md:aspect-16/9 xl:h-135 xl:w-140 xl:rounded-feature">
@@ -26,7 +35,7 @@ function OverviewPhoto({ service, className }: { service: ServiceDetail; classNa
             {service.overview.badge}
           </span>
           <span className="text-caption font-medium text-body">
-            {serviceDetailPage.overviewBadgeSubtitle}
+            {badgeSubtitle}
           </span>
         </span>
       </div>
@@ -43,7 +52,8 @@ function OverviewPhoto({ service, className }: { service: ServiceDetail; classNa
  * - Tablets: the same order, plus the points and buttons.
  * - Desktop (xl and up): text on the left, photo on the right.
  */
-export default function ServiceOverview({ service }: { service: ServiceDetail }) {
+export default async function ServiceOverview({ service }: { service: ServiceDetail }) {
+  const { serviceDetailPage } = await getServicesPageContent();
   const { overview } = serviceDetailPage;
 
   return (
@@ -57,7 +67,7 @@ export default function ServiceOverview({ service }: { service: ServiceDetail })
           </h2>
 
           {/* Below desktop the photo sits between the heading and the paragraph. */}
-          <OverviewPhoto service={service} className="my-2 w-full xl:hidden" />
+          <OverviewPhoto service={service} badgeSubtitle={serviceDetailPage.overviewBadgeSubtitle} className="my-2 w-full xl:hidden" />
 
           <p className="text-body-sm text-body md:text-body-base xl:max-w-145 xl:text-body-lg">
             {service.overview.description}
@@ -82,7 +92,7 @@ export default function ServiceOverview({ service }: { service: ServiceDetail })
           </div>
         </div>
 
-        <OverviewPhoto service={service} className="hidden shrink-0 xl:block" />
+        <OverviewPhoto service={service} badgeSubtitle={serviceDetailPage.overviewBadgeSubtitle} className="hidden shrink-0 xl:block" />
       </div>
     </section>
   );

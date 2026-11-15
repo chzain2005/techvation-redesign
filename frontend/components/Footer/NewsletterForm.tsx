@@ -2,15 +2,14 @@
 
 import type { FormEvent } from "react";
 import Button from "@/components/Button/Button";
-import { footer } from "@/data/homepage";
+import type { footer } from "@/data/homepage";
 import { trackFormSubmit } from "@/lib/analytics";
 
 /**
  * The email field + "Subscribe" button in the footer, styled as one pill.
  * It is full width on phones and tablets and 460px wide on desktop.
  */
-export default function NewsletterForm() {
-  const { newsletter } = footer;
+export default function NewsletterForm({ newsletter }: { newsletter: (typeof footer)["newsletter"] }) {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.

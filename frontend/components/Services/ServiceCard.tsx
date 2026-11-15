@@ -1,9 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import ActionButton from "@/components/Button/ActionButton";
+import Glyph, { type GlyphName } from "@/components/Icon/Glyph";
 import Icon from "@/components/Icon/Icon";
 import { services, type Service } from "@/data/homepage";
 import { cn } from "@/lib/cn";
+
+/**
+ * The white icon in the purple tile. Services use the exported white icon
+ * file when there is one, otherwise the matching line glyph.
+ */
+function ServiceIcon({ icon, size }: { icon: string; size: number }) {
+  return icon.startsWith("/") ? (
+    <Icon src={icon} size={size} scale={size === 16} />
+  ) : (
+    <Glyph name={icon as GlyphName} size={size} className="text-white" />
+  );
+}
 
 /**
  * One card in the services carousel: photo with a category tag on top,
@@ -56,10 +69,10 @@ export default function ServiceCard({
         <div className="flex items-center gap-2.5 xl:gap-3">
           {/* Icon tile: 30px on small screens, 40px on desktop */}
           <span className="rounded-lg bg-brand p-1.75 xl:hidden">
-            <Icon src={service.icon} size={16} scale />
+            <ServiceIcon icon={service.icon} size={16} />
           </span>
           <span className="hidden rounded-xl bg-brand p-2.5 xl:block">
-            <Icon src={service.icon} size={20} />
+            <ServiceIcon icon={service.icon} size={20} />
           </span>
           <h3 className="font-heading text-title-xs font-semibold text-heading xl:text-title">
             {/* The title opens the service page too. */}

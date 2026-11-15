@@ -6,6 +6,7 @@ import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
 import Icon from "@/components/Icon/Icon";
 import { careersPage, type Position } from "@/data/careers";
+import { mergeContent } from "@/lib/cms/normalize";
 import { cn } from "@/lib/cn";
 import { APPLY_EVENT } from "./OpenPositions";
 import { trackFormSubmit } from "@/lib/analytics";
@@ -21,8 +22,8 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-headi
  * "Apply now" on a role fills in that role and its department here. The CV
  * box takes a PDF of up to 5 MB, by clicking or by dragging it in.
  */
-export default function GeneralApplication() {
-  const { application, positions } = careersPage;
+export default function GeneralApplication({ content }: { content: Partial<typeof careersPage> }) {
+  const { application, positions } = mergeContent(careersPage, content);
   const [role, setRole] = useState<Position | null>(null);
   const [area, setArea] = useState("");
   const [file, setFile] = useState<File | null>(null);

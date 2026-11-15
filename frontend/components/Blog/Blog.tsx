@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/Button/Button";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { blog } from "@/data/homepage";
+import type { blog as blogContent, BlogPost } from "@/data/homepage";
 import { cn } from "@/lib/cn";
 import FeaturedPost from "./FeaturedPost";
 import PostCard from "./PostCard";
@@ -17,7 +17,14 @@ import PostCard from "./PostCard";
  * - Desktop (xl and up): chips and the button sit in the header row, with
  *   the featured article on the left and the list on the right.
  */
-export default function Blog() {
+/** The section's text and posts, as getHomepage() returns them. */
+type BlogSection = Omit<typeof blogContent, "featured" | "posts" | "categories"> & {
+  categories: string[];
+  featured?: (typeof blogContent)["featured"];
+  posts: BlogPost[];
+};
+
+export default function Blog({ blog }: { blog: BlogSection }) {
   // null means "All" (no filter).
   const [category, setCategory] = useState<string | null>(null);
 
@@ -66,7 +73,7 @@ export default function Blog() {
         </SectionHeader>
 
         <div className="flex flex-col gap-3.5 xl:flex-row xl:gap-6">
-          <FeaturedPost />
+          {blog.featured && <FeaturedPost featured={blog.featured} />}
 
           {/* Latest articles (filtered) */}
           <div className="flex min-w-0 flex-1 flex-col gap-3 xl:gap-4">

@@ -6,6 +6,7 @@ import Glyph from "@/components/Icon/Glyph";
 import Icon from "@/components/Icon/Icon";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { contactPage } from "@/data/contact";
+import { mergeContent } from "@/lib/cms/normalize";
 import { cn } from "@/lib/cn";
 import { trackFormSubmit } from "@/lib/analytics";
 
@@ -53,8 +54,8 @@ function Select({ name, label, placeholder, options }: { name: string; label: st
  * Sending it shows the thank-you pop-up, which offers to book a call
  * straight away with the details filled in.
  */
-export default function ContactForm() {
-  const { form } = contactPage;
+export default function ContactForm({ content }: { content: Partial<(typeof contactPage)["form"]> }) {
+  const form = mergeContent(contactPage.form, content);
   const { showConsultationSuccess } = usePopups();
   const [services, setServices] = useState<string[]>([]);
 

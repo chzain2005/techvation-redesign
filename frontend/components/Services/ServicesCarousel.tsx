@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import Icon from "@/components/Icon/Icon";
-import { services } from "@/data/homepage";
+import { services, type Service } from "@/data/homepage";
 import { cn } from "@/lib/cn";
 import ServiceCard from "./ServiceCard";
 
@@ -22,12 +22,12 @@ const CARDS_PER_PAGE = 3;
  * - Desktop (xl and up): large arrows on the left and right edges of the
  *   row, four page dots and a counter ("01 / 12 services") underneath.
  */
-export default function ServicesCarousel() {
+export default function ServicesCarousel({ items }: { items: Service[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   // Index of the first visible card (0 = first card).
   const [index, setIndex] = useState(0);
 
-  const total = services.items.length;
+  const total = items.length;
   const pageCount = Math.ceil(total / CARDS_PER_PAGE);
   const activePage = Math.floor(index / CARDS_PER_PAGE);
   const isAtStart = index === 0;
@@ -80,7 +80,7 @@ export default function ServicesCarousel() {
         onScroll={handleScroll}
         className="flex snap-x snap-mandatory scroll-px-5 items-start gap-3.5 overflow-x-auto page-x pt-2.5 pb-5 scrollbar-none md:scroll-px-10 xl:scroll-px-gutter xl:items-stretch xl:gap-6 xl:pt-5 xl:pb-8.5"
       >
-        {services.items.map((service) => (
+        {items.map((service) => (
           <ServiceCard key={service.title} service={service} />
         ))}
       </div>
@@ -89,7 +89,7 @@ export default function ServicesCarousel() {
       <div className="flex items-center justify-between page-x pb-2 xl:hidden">
         {/* One dot per card. They are indicators only, so they are not buttons. */}
         <div aria-hidden className="flex items-center gap-1.25">
-          {services.items.map((service, i) => (
+          {items.map((service, i) => (
             <span
               key={service.title}
               className={cn(

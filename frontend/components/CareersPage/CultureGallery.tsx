@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { careersPage } from "@/data/careers";
+import { getCareersPage } from "@/lib/cms/content";
 import { cn } from "@/lib/cn";
 
 /* Which photos take two columns on desktop: the 1st and the last. */
@@ -13,7 +13,8 @@ const isWide = (i: number) => i === 0 || i === 5;
  * - Desktop (xl and up): two rows of four columns, as in the design:
  *   wide, narrow, narrow / narrow, narrow, wide.
  */
-export default function CultureGallery() {
+export default async function CultureGallery() {
+  const careersPage = await getCareersPage();
   return (
     // "id" lets the hero's "Life at Techvation" button scroll here.
     <section id="life-at-techvation" aria-label="Life at Techvation" className="scroll-mt-navbar bg-white">

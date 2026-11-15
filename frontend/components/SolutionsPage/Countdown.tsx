@@ -23,11 +23,11 @@ function timeLeft(target: number): Parts {
  * The page is built ahead of time, when "now" is unknown, so the boxes show
  * "--" until the browser takes over a moment later.
  */
-export default function Countdown() {
+export default function Countdown({ launchDate }: { launchDate: string }) {
   const [parts, setParts] = useState<Parts | null>(null);
 
   useEffect(() => {
-    const target = new Date(solutionsPage.launchDate).getTime();
+    const target = new Date(launchDate).getTime();
     const tick = () => setParts(timeLeft(target));
     const first = setTimeout(tick, 0);
     const timer = setInterval(tick, 1000);
@@ -35,7 +35,7 @@ export default function Countdown() {
       clearTimeout(first);
       clearInterval(timer);
     };
-  }, []);
+  }, [launchDate]);
 
   const labels = solutionsPage.countdownLabels;
   const units: Array<keyof Parts> = ["days", "hours", "minutes", "seconds"];

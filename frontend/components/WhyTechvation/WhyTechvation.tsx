@@ -3,9 +3,10 @@ import ActionButton from "@/components/Button/ActionButton";
 import CountUp from "@/components/CountUp/CountUp";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { whyTechvation } from "@/data/homepage";
+import type { whyTechvation as whyTechvationContent } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 
-type Reason = (typeof whyTechvation.reasons)[number];
+type Reason = (typeof whyTechvationContent.reasons)[number];
 
 /*
  * Positions of the six small dots on the middle ring of the orbit
@@ -63,8 +64,7 @@ function ReasonCard({ reason, number }: { reason: Reason; number: number }) {
  * - the six dots travel round the solid ring              (animate-orbit-dots)
  * - the app icon bobs gently                              (animate-float-slow)
  */
-function OrbitHub() {
-  const { hub } = whyTechvation;
+function OrbitHub({ hub }: { hub: (typeof whyTechvationContent)["hub"] }) {
 
   return (
     <div
@@ -141,7 +141,8 @@ function OrbitHub() {
  *   stats. Between 1280px and 1440px the orbit stage does not fit, so the
  *   tablet arrangement of graphic + cards is used there.
  */
-export default function WhyTechvation() {
+export default async function WhyTechvation() {
+  const { whyTechvation } = await getHomepage();
   const { reasons, stats } = whyTechvation;
   const half = Math.ceil(reasons.length / 2);
 
@@ -196,7 +197,7 @@ export default function WhyTechvation() {
             height={600}
             className={`${connectorClasses} animate-flow mask-flow clip-right-half`}
           />
-          <OrbitHub />
+          <OrbitHub hub={whyTechvation.hub} />
 
           {/* Reason cards: 1 column on phones, 2 on tablets */}
           <div className="grid gap-3.5 md:grid-cols-2 desktop:contents">

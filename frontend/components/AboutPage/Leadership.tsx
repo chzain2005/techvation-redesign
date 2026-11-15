@@ -2,14 +2,15 @@ import Image from "next/image";
 import Button from "@/components/Button/Button";
 import Glyph from "@/components/Icon/Glyph";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { aboutPage } from "@/data/about";
+import { getAboutPage } from "@/lib/cms/content";
 
 /**
  * "Leadership": heading with a "Join our team" button, then one card per
  * team member (photo, name, role, LinkedIn and email links).
  * 1 card per row on phones, 2 on tablets, 4 on desktop.
  */
-export default function Leadership() {
+export default async function Leadership() {
+  const aboutPage = await getAboutPage();
   const { leadership } = aboutPage;
 
   return (

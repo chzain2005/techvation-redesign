@@ -2,14 +2,15 @@ import Image from "next/image";
 import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import { cta } from "@/data/homepage";
-import { serviceDetailPage } from "@/data/services";
+import { getServicesPageContent } from "@/lib/cms/content";
 
 /**
  * "Our process": four numbered steps on the dark background, with a
  * "Start Your Project" button. The phone design leaves this section out,
  * so it shows from tablets up: two columns on tablets, four on desktop.
  */
-export default function ServiceProcess({ serviceTitle }: { serviceTitle: string }) {
+export default async function ServiceProcess({ serviceTitle }: { serviceTitle: string }) {
+  const { serviceDetailPage } = await getServicesPageContent();
   const { process } = serviceDetailPage;
 
   return (

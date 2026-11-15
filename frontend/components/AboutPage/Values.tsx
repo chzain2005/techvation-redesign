@@ -1,12 +1,13 @@
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
-import { aboutPage } from "@/data/about";
+import { getAboutPage } from "@/lib/cms/content";
 
 /**
  * "Our values": centred heading and four lavender value cards.
  * 1 card per row on phones, 2 on tablets, 4 on desktop.
  */
-export default function Values() {
+export default async function Values() {
+  const aboutPage = await getAboutPage();
   const { values } = aboutPage;
 
   return (

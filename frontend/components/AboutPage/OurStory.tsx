@@ -2,7 +2,7 @@ import Image from "next/image";
 import CountUp from "@/components/CountUp/CountUp";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
-import { aboutPage } from "@/data/about";
+import { getAboutPage } from "@/lib/cms/content";
 
 /**
  * "Our story": two paragraphs and four counting figures, next to a photo
@@ -13,7 +13,8 @@ import { aboutPage } from "@/data/about";
  * - Tablets: the same, with the figures in one row.
  * - Desktop (xl and up): text on the left, collage on the right.
  */
-export default function OurStory() {
+export default async function OurStory() {
+  const aboutPage = await getAboutPage();
   const { story } = aboutPage;
 
   return (

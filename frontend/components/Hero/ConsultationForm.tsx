@@ -4,7 +4,8 @@ import type { FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { usePopups } from "@/components/Popups/PopupProvider";
-import { hero, services } from "@/data/homepage";
+import type { hero } from "@/data/homepage";
+import { useSiteContent } from "@/components/SiteContent/SiteContent";
 import { trackFormSubmit } from "@/lib/analytics";
 
 /* Shared look of the three inputs (glass style on the dark card). */
@@ -23,8 +24,8 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-white
  * - Desktop (xl and up): a 440px card next to the headline, with a larger
  *   header and an extra reassurance line under the button.
  */
-export default function ConsultationForm() {
-  const { form } = hero;
+export default function ConsultationForm({ form }: { form: (typeof hero)["form"] }) {
+  const { serviceOptions } = useSiteContent();
   const { showConsultationSuccess } = usePopups();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -114,9 +115,9 @@ export default function ConsultationForm() {
             <option value="" disabled>
               {form.fields.service.placeholder}
             </option>
-            {services.items.map((service) => (
-              <option key={service.title} value={service.title} className="text-heading">
-                {service.title}
+            {serviceOptions.map((service) => (
+              <option key={service} value={service} className="text-heading">
+                {service}
               </option>
             ))}
           </select>

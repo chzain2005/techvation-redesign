@@ -190,17 +190,13 @@ export function formatLongDate(date: string) {
   return day ? `${MONTHS[month - 1]} ${day}, ${year}` : `${MONTHS[month - 1]} ${year}`;
 }
 
-/** Finds an article by its slug. */
-export function getPost(slug: string) {
-  return blogPosts.find((post) => post.slug === slug);
-}
-
 /**
  * Three articles to suggest under an article: the same category first,
- * then the newest of the rest.
+ * then the newest of the rest. (The posts come from the CMS; the list above
+ * is what the CMS was first filled with.)
  */
-export function relatedPosts(post: BlogPost, count = 3) {
-  const others = blogPosts
+export function relatedPosts(post: BlogPost, posts: BlogPost[], count = 3) {
+  const others = posts
     .filter((other) => other.slug !== post.slug)
     .sort((a, b) => b.date.localeCompare(a.date));
   return [

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import Icon from "@/components/Icon/Icon";
-import { industries } from "@/data/homepage";
+import type { Industry } from "@/data/homepage";
 import { cn } from "@/lib/cn";
 
 /**
@@ -16,14 +16,14 @@ import { cn } from "@/lib/cn";
  *
  * On phones and tablets this is replaced by swipe cards (IndustrySwiper.tsx).
  */
-export default function IndustryPanels() {
+export default function IndustryPanels({ items }: { items: Industry[] }) {
   // Index of the open panel. The first one is open to start with.
   const [activeIndex, setActiveIndex] = useState(0);
-  const total = industries.items.length;
+  const total = items.length;
 
   return (
     <div className="hidden h-135 w-full gap-3 xl:flex">
-      {industries.items.map((industry, i) => {
+      {items.map((industry, i) => {
         const isActive = i === activeIndex;
         const number = String(i + 1).padStart(2, "0");
 

@@ -1,12 +1,13 @@
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { services } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 import ServicesCarousel from "./ServicesCarousel";
 
 /**
  * "Our services" section: heading + the scrolling carousel of 12 cards.
  * The paragraph next to the heading is only shown on desktop.
  */
-export default function Services() {
+export default async function Services() {
+  const { services } = await getHomepage();
   return (
     <section id="services" className="scroll-mt-navbar bg-surface">
       <div className="mx-auto flex w-full max-w-page flex-col section-gap section-y">
@@ -22,7 +23,7 @@ export default function Services() {
             </p>
           </SectionHeader>
         </div>
-        <ServicesCarousel />
+        <ServicesCarousel items={services.items} />
       </div>
     </section>
   );

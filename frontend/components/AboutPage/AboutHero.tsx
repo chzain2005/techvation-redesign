@@ -1,14 +1,15 @@
 import ActionButton from "@/components/Button/ActionButton";
 import Button from "@/components/Button/Button";
 import PageHero from "@/components/PageHero/PageHero";
-import { aboutPage } from "@/data/about";
+import { getAboutPage } from "@/lib/cms/content";
 import { cta } from "@/data/homepage";
 
 /**
  * The About Us hero: "Work With Us" opens the consultation pop-up and
  * "Meet the Team" scrolls to the Leadership section.
  */
-export default function AboutHero() {
+export default async function AboutHero() {
+  const aboutPage = await getAboutPage();
   const { hero } = aboutPage;
 
   return (

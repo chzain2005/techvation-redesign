@@ -3,7 +3,7 @@
 import type { FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import { usePopups } from "@/components/Popups/PopupProvider";
-import { serviceDetailPage } from "@/data/services";
+import type { serviceDetailPage } from "@/data/services";
 import { cn } from "@/lib/cn";
 import { trackFormSubmit } from "@/lib/analytics";
 
@@ -17,8 +17,13 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-white
  * Phones leave out the phone field, as in the mobile design.
  * Sending it shows the thank-you pop-up, which leads on to booking a call.
  */
-export default function ServiceHeroForm({ title }: { title: string }) {
-  const { heroForm } = serviceDetailPage;
+export default function ServiceHeroForm({
+  title,
+  heroForm,
+}: {
+  title: string;
+  heroForm: (typeof serviceDetailPage)["heroForm"];
+}) {
   const { showConsultationSuccess } = usePopups();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {

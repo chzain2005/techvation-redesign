@@ -3,8 +3,12 @@ import Link from "next/link";
 import ActionButton from "@/components/Button/ActionButton";
 import HomeLink from "@/components/HomeLink/HomeLink";
 import Icon from "@/components/Icon/Icon";
-import { footer } from "@/data/homepage";
+import type { footer as footerContent } from "@/data/homepage";
+import { getSiteContent } from "@/lib/cms/content";
 import NewsletterForm from "./NewsletterForm";
+
+type Footer = typeof footerContent;
+type FooterProps = { footer: Footer };
 
 /* Shared styles for the footer columns. */
 const columnTitleClasses = "text-eyebrow font-semibold text-accent uppercase";
@@ -21,7 +25,7 @@ function Badge({ children }: { children: string }) {
 }
 
 /** Row of round social media buttons (used by both footer layouts). */
-function SocialLinks() {
+function SocialLinks({ footer }: FooterProps) {
   return (
     <ul className="flex gap-3">
       {footer.social.map((item) => (
@@ -46,7 +50,7 @@ function SocialLinks() {
  * - Phones and tablets: text, then three full-width stacked buttons.
  * - Desktop: text on the left, the three buttons in a row on the right.
  */
-function FooterCta() {
+function FooterCta({ footer }: FooterProps) {
   const { cta } = footer;
 
   return (
@@ -101,7 +105,7 @@ function FooterCta() {
  * one column with logo, short text, two link columns, a contact card,
  * the newsletter form and the social buttons.
  */
-function FooterCompact() {
+function FooterCompact({ footer }: FooterProps) {
   return (
     <div className="flex flex-col items-start gap-10 px-6 pt-14 pb-10 md:px-10 xl:hidden">
       <HomeLink className="relative h-9 w-37.5">
@@ -156,10 +160,10 @@ function FooterCompact() {
         <h3 className="font-heading text-title-sm font-semibold text-white">
           {footer.newsletter.titleShort}
         </h3>
-        <NewsletterForm />
+        <NewsletterForm newsletter={footer.newsletter} />
       </div>
 
-      <SocialLinks />
+      <SocialLinks footer={footer} />
     </div>
   );
 }
@@ -168,7 +172,7 @@ function FooterCompact() {
  * Footer body for desktop: logo + about text + social buttons on the left,
  * three link columns on the right, and the newsletter box underneath.
  */
-function FooterDesktop() {
+function FooterDesktop({ footer }: FooterProps) {
   return (
     <div className="hidden xl:block">
       <div className="mx-auto flex w-full max-w-page items-start justify-between px-gutter pt-24 pb-20">
@@ -185,7 +189,7 @@ function FooterDesktop() {
             />
           </HomeLink>
           <p className="max-w-90 text-body-sm text-on-dark">{footer.about}</p>
-          <SocialLinks />
+          <SocialLinks footer={footer} />
         </div>
 
         {/* Columns */}
@@ -249,7 +253,7 @@ function FooterDesktop() {
             </h3>
             <p className="text-small text-on-dark">{footer.newsletter.description}</p>
           </div>
-          <NewsletterForm />
+          <NewsletterForm newsletter={footer.newsletter} />
         </div>
       </div>
     </div>
@@ -263,12 +267,13 @@ function FooterDesktop() {
  *      for desktop; each hides itself on the other screen sizes)
  *   3. copyright bar
  */
-export default function Footer() {
+export default async function Footer() {
+  const { footer } = await getSiteContent();
   return (
     <footer className="bg-ink">
-      <FooterCta />
-      <FooterCompact />
-      <FooterDesktop />
+      <FooterCta footer={footer} />
+      <FooterCompact footer={footer} />
+      <FooterDesktop footer={footer} />
 
       {/* Copyright bar: centred and stacked on small screens, one row on desktop */}
       <div className="border-t border-white/8">

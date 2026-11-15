@@ -5,14 +5,20 @@ import HeroBackground from "@/components/Hero/HeroBackground";
 import Glyph from "@/components/Icon/Glyph";
 import Breadcrumb from "@/components/ServicePage/Breadcrumb";
 import { cta } from "@/data/homepage";
-import { serviceCategories, servicesPage } from "@/data/services";
+import type { ServiceCategory, servicesPage } from "@/data/services";
+import { getServices, getServicesPageContent } from "@/lib/cms/content";
 
 /**
  * The "Service finder" card on the right of the hero: one row per practice
  * area that jumps down to its group, plus the free consultation button.
  */
-function ServiceFinder() {
-  const { finder } = servicesPage.hero;
+function ServiceFinder({
+  finder,
+  serviceCategories,
+}: {
+  finder: (typeof servicesPage)["hero"]["finder"];
+  serviceCategories: ServiceCategory[];
+}) {
 
   return (
     <div className="flex w-full flex-col gap-3 rounded-post border border-white/14 bg-ink-card/75 p-5 shadow-form backdrop-blur-md md:p-7 xl:w-110 xl:shrink-0 xl:rounded-card">
@@ -62,7 +68,8 @@ function ServiceFinder() {
  * the same moving tech background as the homepage, headline and buttons on
  * the left, the service finder on the right (below the text on smaller screens).
  */
-export default function ServicesHero() {
+export default async function ServicesHero() {
+  const [{ servicesPage }, { categories }] = await Promise.all([getServicesPageContent(), getServices()]);
   const { hero } = servicesPage;
 
   return (
@@ -92,7 +99,7 @@ export default function ServicesHero() {
           </div>
         </div>
 
-        <ServiceFinder />
+        <ServiceFinder finder={hero.finder} serviceCategories={categories} />
       </div>
     </section>
   );

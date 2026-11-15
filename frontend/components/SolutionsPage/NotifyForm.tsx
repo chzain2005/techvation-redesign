@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Glyph from "@/components/Icon/Glyph";
-import { solutionsPage } from "@/data/solutions";
+import type { solutionsPage } from "@/data/solutions";
 import { trackFormSubmit } from "@/lib/analytics";
 
 /**
@@ -12,8 +12,12 @@ import { trackFormSubmit } from "@/lib/analytics";
  * - Phones: the field and the button are stacked, both full width.
  * - Tablets and up: one glass pill with the button inside on the right.
  */
-export default function NotifyForm() {
-  const { notify } = solutionsPage;
+type NotifyText = Pick<
+  (typeof solutionsPage)["notify"],
+  "label" | "placeholder" | "submitLabel" | "successTitle" | "successText"
+>;
+
+export default function NotifyForm({ notify }: { notify: NotifyText }) {
   const [isSent, setIsSent] = useState(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {

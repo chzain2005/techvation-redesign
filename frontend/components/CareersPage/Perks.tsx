@@ -1,13 +1,14 @@
 import Glyph from "@/components/Icon/Glyph";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { careersPage } from "@/data/careers";
+import { getCareersPage } from "@/lib/cms/content";
 
 /**
  * "Perks that help you do your best work": six lavender cards with a
  * gradient icon tile on the left. 1 per row on phones, 2 on tablets,
  * 3 on desktop.
  */
-export default function Perks() {
+export default async function Perks() {
+  const careersPage = await getCareersPage();
   const { perks } = careersPage;
 
   return (

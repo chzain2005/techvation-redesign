@@ -1163,19 +1163,19 @@ export const serviceDetails: ServiceDetail[] = [
 /** The page address of a service, e.g. "/services/power-bi". */
 export const serviceHref = (slug: string) => `/services/${slug}`;
 
-/** Finds a service by its slug (undefined if there is none). */
-export function getService(slug: string) {
-  return serviceDetails.find((service) => service.slug === slug);
-}
+/*
+ * The lists themselves come from the CMS (lib/cms/content.ts); the data
+ * above is the content the CMS was first filled with (cms/seed).
+ */
 
-/** Finds the category a service belongs to. */
-export function getCategory(id: string) {
-  return serviceCategories.find((category) => category.id === id);
+/** Finds a category by its id. */
+export function getCategory(id: string, categories: ServiceCategory[]) {
+  return categories.find((category) => category.id === id);
 }
 
 /** The services of one category, in display order. */
-export function servicesIn(category: ServiceCategory) {
+export function servicesIn<T extends { slug: string }>(category: ServiceCategory, services: T[]) {
   return category.services
-    .map(getService)
-    .filter((service): service is ServiceDetail => Boolean(service));
+    .map((slug) => services.find((service) => service.slug === slug))
+    .filter((service): service is T => Boolean(service));
 }

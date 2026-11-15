@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Glyph from "@/components/Icon/Glyph";
-import { contactPage } from "@/data/contact";
+import { getContactPage } from "@/lib/cms/content";
 
 /**
  * The column next to the form: the two offices and the business hours.
@@ -10,7 +10,8 @@ import { contactPage } from "@/data/contact";
  * - Tablets: the two full office cards side by side, hours below.
  * - Desktop (xl and up): one column of 440px next to the form.
  */
-export default function ContactInfo() {
+export default async function ContactInfo() {
+  const contactPage = await getContactPage();
   const { offices, hours } = contactPage;
 
   return (

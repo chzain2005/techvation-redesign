@@ -5,6 +5,7 @@ import Glyph from "@/components/Icon/Glyph";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
 import { careersPage, type Department, type Position } from "@/data/careers";
+import { mergeContent } from "@/lib/cms/normalize";
 import { cn } from "@/lib/cn";
 
 /** The event "Apply now" sends, so the application form can fill in the role. */
@@ -25,8 +26,9 @@ function applyFor(position: Position) {
  * - Tablets and up: chips on the left, dropdown on the right, button at
  *   the end of each row.
  */
-export default function OpenPositions() {
-  const { positions } = careersPage;
+export default function OpenPositions({ content }: { content: Partial<(typeof careersPage)["positions"]> }) {
+  // CMS content (jobs, departments, headings) over the built-in labels.
+  const positions = mergeContent(careersPage.positions, content);
   const [department, setDepartment] = useState<Department | null>(null);
   const [location, setLocation] = useState("");
 

@@ -1,13 +1,14 @@
 import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
-import { faqPage } from "@/data/faqs";
+import { getFaqPage } from "@/lib/cms/content";
 
 /**
  * "Still have questions? Talk to a real person": call, email or book a call.
  * 1 card per row on phones, 3 in a row from tablets up.
  */
-export default function ContactCards() {
+export default async function ContactCards() {
+  const faqPage = await getFaqPage();
   const { contact } = faqPage;
 
   return (

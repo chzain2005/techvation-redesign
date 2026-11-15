@@ -1,13 +1,14 @@
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
-import { serviceDetailPage } from "@/data/services";
+import { getServicesPageContent } from "@/lib/cms/content";
 
 /**
  * "Technologies" chips on the left and the dark "Why choose Techvation"
  * card on the right. The phone design leaves this section out, so it shows
  * from tablets up: stacked on tablets, side by side on desktop.
  */
-export default function ServiceTech({ serviceTitle, tools }: { serviceTitle: string; tools: string[] }) {
+export default async function ServiceTech({ serviceTitle, tools }: { serviceTitle: string; tools: string[] }) {
+  const { serviceDetailPage } = await getServicesPageContent();
   const { tech } = serviceDetailPage;
 
   return (

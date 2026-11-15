@@ -40,3 +40,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# payload cms: local sqlite database and uploaded files
+*.db
+*.db-journal
+/media

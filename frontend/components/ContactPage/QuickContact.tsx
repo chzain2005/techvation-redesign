@@ -2,7 +2,7 @@
 
 import Glyph from "@/components/Icon/Glyph";
 import { usePopups } from "@/components/Popups/PopupProvider";
-import { contactPage } from "@/data/contact";
+import type { contactPage } from "@/data/contact";
 import { trackCtaClick } from "@/lib/analytics";
 
 const cardClasses =
@@ -15,13 +15,13 @@ const cardClasses =
  * - Tablets: 2 x 2 with the number or address under the title.
  * - Desktop (xl and up): four cards in a row.
  */
-export default function QuickContact() {
+export default function QuickContact({ items }: { items: (typeof contactPage)["quickContact"] }) {
   const { openScheduleCall } = usePopups();
 
   return (
     <section aria-label="Quick contact" className="bg-white">
       <ul className="mx-auto grid w-full max-w-page grid-cols-2 gap-3 page-x pt-6 md:gap-5 md:pt-14 xl:grid-cols-4">
-        {contactPage.quickContact.map((item) => {
+        {items.map((item) => {
           const content = (
             <>
               <span className="shrink-0 rounded-chip bg-brand p-2 text-white md:p-3">

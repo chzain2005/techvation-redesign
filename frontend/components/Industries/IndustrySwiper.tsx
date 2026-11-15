@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import Icon from "@/components/Icon/Icon";
-import { industries } from "@/data/homepage";
+import type { Industry } from "@/data/homepage";
 import { cn } from "@/lib/cn";
 
 /**
@@ -16,11 +16,11 @@ import { cn } from "@/lib/cn";
  *
  * Each card is a link to the industry page.
  */
-export default function IndustrySwiper() {
+export default function IndustrySwiper({ items }: { items: Industry[] }) {
   const trackRef = useRef<HTMLUListElement>(null);
   // Index of the first visible card.
   const [index, setIndex] = useState(0);
-  const total = industries.items.length;
+  const total = items.length;
 
   /** Runs while the row scrolls: work out which card is first. */
   function handleScroll() {
@@ -41,7 +41,7 @@ export default function IndustrySwiper() {
         onScroll={handleScroll}
         className="flex snap-x snap-mandatory scroll-px-5 gap-3.5 overflow-x-auto page-x scrollbar-none md:scroll-px-10"
       >
-        {industries.items.map((industry) => (
+        {items.map((industry) => (
           // Card: 270 x 360 on phones, 300 x 380 on tablets.
           <li key={industry.name} className="shrink-0 snap-start">
             <Link
@@ -72,7 +72,7 @@ export default function IndustrySwiper() {
 
       {/* Dots: the active one is a wider gradient pill */}
       <div aria-hidden className="flex gap-1.5 page-x">
-        {industries.items.map((industry, i) => (
+        {items.map((industry, i) => (
           <span
             key={industry.name}
             className={cn(

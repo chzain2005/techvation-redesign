@@ -1,7 +1,7 @@
 import Image from "next/image";
 import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
-import { strategyCall } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 import CalendarCollage from "./CalendarCollage";
 
 /**
@@ -14,7 +14,8 @@ import CalendarCollage from "./CalendarCollage";
  * The text comes first in the HTML; "flex-col-reverse" flips the visual
  * order on small screens.
  */
-export default function StrategyCall() {
+export default async function StrategyCall() {
+  const { strategyCall } = await getHomepage();
   return (
     <section
       id="schedule-a-call"

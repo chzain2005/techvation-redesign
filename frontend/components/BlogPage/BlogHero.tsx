@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
-import { blogPage } from "@/data/blog";
+import { getBlog } from "@/lib/cms/content";
 import { BlogSearchBar } from "./BlogSearch";
 
 /**
  * The dark, centred top section of the Blog page: two soft colour glows,
  * label, headline, paragraph and the article search bar.
  */
-export default function BlogHero() {
+export default async function BlogHero() {
+  const { blogPage } = await getBlog();
   const { hero } = blogPage;
 
   return (

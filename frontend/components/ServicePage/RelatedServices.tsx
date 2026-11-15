@@ -1,17 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import Glyph from "@/components/Icon/Glyph";
-import { getService, serviceDetailPage, serviceHref, type ServiceDetail } from "@/data/services";
+import { serviceDetailPage, serviceHref, type ServiceDetail } from "@/data/services";
+import { getServices } from "@/lib/cms/content";
 
 /**
  * Three cards linking to related services, each with a small photo.
  * The phone design leaves this section out, so it shows from tablets up:
  * stacked on tablets, three in a row on desktop.
  */
-export default function RelatedServices({ slugs }: { slugs: string[] }) {
+export default async function RelatedServices({ slugs }: { slugs: string[] }) {
   const { related } = serviceDetailPage;
+  const { services: allServices } = await getServices();
   const services = slugs
-    .map(getService)
+    .map((slug) => allServices.find((service) => service.slug === slug))
     .filter((service): service is ServiceDetail => Boolean(service));
 
   return (

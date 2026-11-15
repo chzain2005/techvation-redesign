@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { industries } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 import IndustryPanels from "./IndustryPanels";
 import IndustrySwiper from "./IndustrySwiper";
 
@@ -13,7 +13,8 @@ import IndustrySwiper from "./IndustrySwiper";
  * - Desktop (xl and up): eight panels that expand on hover or click.
  * Each component hides itself on the screen sizes it is not meant for.
  */
-export default function Industries() {
+export default async function Industries() {
+  const { industries } = await getHomepage();
   return (
     // "isolate" + "overflow-hidden" keep the glows inside this section.
     <section
@@ -53,11 +54,11 @@ export default function Industries() {
         </div>
 
         {/* Phones and tablets */}
-        <IndustrySwiper />
+        <IndustrySwiper items={industries.items} />
 
         {/* Desktop */}
         <div className="hidden w-full page-x xl:block">
-          <IndustryPanels />
+          <IndustryPanels items={industries.items} />
         </div>
 
         {/* Small hint under the panels (desktop only) */}

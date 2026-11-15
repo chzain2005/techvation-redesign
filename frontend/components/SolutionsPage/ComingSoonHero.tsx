@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Glyph from "@/components/Icon/Glyph";
-import { solutionsPage } from "@/data/solutions";
+import { getSolutionsPage } from "@/lib/cms/content";
 import Countdown from "./Countdown";
 import NotifyForm from "./NotifyForm";
 
@@ -10,7 +10,8 @@ import NotifyForm from "./NotifyForm";
  * Behind it: two soft colour glows and a faint grid that fades out at the
  * edges.
  */
-export default function ComingSoonHero() {
+export default async function ComingSoonHero() {
+  const solutionsPage = await getSolutionsPage();
   const { hero, notify } = solutionsPage;
 
   return (
@@ -48,8 +49,16 @@ export default function ComingSoonHero() {
         <p className="max-w-160 text-body-sm text-white/82 md:text-body-lg">{hero.description}</p>
 
         <div className="mt-2 flex w-full flex-col items-center gap-5 md:mt-4 md:gap-6">
-          <Countdown />
-          <NotifyForm />
+          <Countdown launchDate={solutionsPage.launchDate} />
+          <NotifyForm
+            notify={{
+              label: notify.label,
+              placeholder: notify.placeholder,
+              submitLabel: notify.submitLabel,
+              successTitle: notify.successTitle,
+              successText: notify.successText,
+            }}
+          />
           <p className="text-caption font-medium text-white/55">{notify.note}</p>
         </div>
       </div>

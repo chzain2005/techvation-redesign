@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { trustedLogos } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 
 /**
  * The strip of client logos under the hero. The logos slide to the left in
@@ -13,7 +13,8 @@ import { trustedLogos } from "@/data/homepage";
  * globals.css). When the first copy has left the screen the second copy is in
  * the same place, so the jump back to the start is invisible.
  */
-export default function TrustedLogos() {
+export default async function TrustedLogos() {
+  const { trustedLogos } = await getHomepage();
   const { title, titleLines, logos } = trustedLogos;
 
   return (

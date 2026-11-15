@@ -6,12 +6,12 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
-import { navbar } from "@/data/homepage";
 import { isActiveLink } from "@/lib/active-link";
 import { trackCtaClick } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import HomeLink from "@/components/HomeLink/HomeLink";
+import { useSiteContent } from "@/components/SiteContent/SiteContent";
 import MobileMenu from "./MobileMenu";
 import ServicesMegaMenu from "./ServicesMegaMenu";
 import { useHideOnScroll } from "./useHideOnScroll";
@@ -84,6 +84,7 @@ function MenuButton({ isOpen, onClick }: { isOpen: boolean; onClick: () => void 
  *   Hovering "Services" drops down the services mega menu.
  */
 export default function Navbar() {
+  const { navbar } = useSiteContent();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   // The "Free Consultation" buttons open the consultation pop-up.
   const { openConsultation } = usePopups();

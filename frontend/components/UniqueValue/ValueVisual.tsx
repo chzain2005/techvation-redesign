@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Icon from "@/components/Icon/Icon";
-import { uniqueValue } from "@/data/homepage";
+import type { uniqueValue } from "@/data/homepage";
 
 /*
  * Where each floating pill sits inside the 560 x 560 illustration.
@@ -36,8 +36,7 @@ const pillPositions = {
  * - hovering a pill or the chip pauses its drift and lifts it slightly
  * People who turn on "reduce motion" on their device see it standing still.
  */
-export default function ValueVisual() {
-  const { visual } = uniqueValue;
+export default function ValueVisual({ visual }: { visual: (typeof uniqueValue)["visual"] }) {
 
   return (
     // Small top/bottom padding below desktop, as in the tablet and phone frames.

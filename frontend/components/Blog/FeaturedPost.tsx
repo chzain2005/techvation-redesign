@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "@/components/Icon/Icon";
-import { blog } from "@/data/homepage";
+import type { blog } from "@/data/homepage";
 
 /**
  * The large featured article card: a photo with the text on top of it.
@@ -10,8 +10,7 @@ import { blog } from "@/data/homepage";
  * Height: 380px on phones, 420px on tablets, 464px on desktop (where it is
  * also fixed to 640px wide and sits next to the list).
  */
-export default function FeaturedPost() {
-  const { featured } = blog;
+export default function FeaturedPost({ featured }: { featured: (typeof blog)["featured"] }) {
 
   return (
     <Link

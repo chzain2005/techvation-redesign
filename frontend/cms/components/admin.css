@@ -1,0 +1,233 @@
+/* Styles for the custom parts of the Techvation admin (uses Payload's theme variables). */
+
+/* ------------------------------- Brand ------------------------------- */
+.tv-brand-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.tv-brand-logo img {
+  width: 200px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  background: #0b0820; /* the logo is made for a dark background */
+}
+.tv-brand-logo span {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+/* ----------------------------- Dashboard ----------------------------- */
+.tv-dashboard {
+  margin-bottom: 8px;
+}
+.tv-dashboard__intro {
+  padding: 28px 32px;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(120deg, #2a1a6e 0%, #5b3df5 55%, #8a5cff 100%);
+  margin-bottom: 32px;
+}
+.tv-dashboard__title {
+  margin: 0 0 8px;
+  font-size: 26px;
+  line-height: 1.25;
+  color: #fff;
+}
+.tv-dashboard__lead {
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.9;
+}
+.tv-dashboard__heading {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+.tv-dashboard__tasks {
+  list-style: none;
+  margin: 0 0 28px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+.tv-dashboard__task {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  row-gap: 4px;
+  height: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.tv-dashboard__task:hover {
+  border-color: #6d4aff;
+  transform: translateY(-2px);
+}
+.tv-dashboard__task-icon {
+  grid-row: span 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: #6d4aff;
+  mask-size: 20px;
+  -webkit-mask-size: 20px;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+.tv-dashboard__task-title {
+  font-weight: 600;
+  font-size: 15px;
+}
+.tv-dashboard__task-text {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--theme-elevation-600);
+}
+.tv-dashboard__tips {
+  list-style: none;
+  margin: 0 0 36px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.tv-dashboard__tip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border-left: 4px solid #6d4aff;
+  background: var(--theme-elevation-50);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--theme-elevation-700);
+}
+.tv-dashboard__tip strong {
+  font-size: 14px;
+  color: var(--theme-text);
+}
+
+/* ---------------------------- Icon picker ---------------------------- */
+.tv-icon-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+  margin: 6px 0;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 2px;
+}
+.tv-icon-picker__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px 8px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: var(--theme-elevation-50);
+  color: var(--theme-elevation-700);
+  cursor: pointer;
+  font: inherit;
+}
+.tv-icon-picker__option:hover {
+  border-color: var(--theme-elevation-250);
+}
+.tv-icon-picker__option.is-selected {
+  border-color: #6d4aff;
+  background: color-mix(in srgb, #6d4aff 14%, var(--theme-elevation-50));
+  color: var(--theme-text);
+}
+.tv-icon-picker__current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 8px;
+  font-size: 13px;
+}
+.tv-icon-picker__empty {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 2px dashed var(--theme-elevation-250);
+}
+/* Icons are white or brand coloured, so they sit on a dark tile. */
+.tv-icon-picker__glyph,
+.tv-icon-picker__img {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background-color: #1d1640;
+}
+.tv-icon-picker__glyph {
+  background-color: #6d4aff;
+  mask-size: 20px;
+  -webkit-mask-size: 20px;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+.tv-icon-picker__img {
+  padding: 8px;
+  object-fit: contain;
+}
+.tv-icon-picker__name {
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* ------------------------------- Select ------------------------------ */
+.tv-select__input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--style-radius-s, 4px);
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-input-bg, var(--theme-elevation-0));
+  color: var(--theme-text);
+  font: inherit;
+}
+
+/* -------------------------- Heading preview -------------------------- */
+.tv-heading-preview {
+  margin-top: 4px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: #0b0820;
+}
+.tv-heading-preview__label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.5);
+}
+.tv-heading-preview__text {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+}
+.tv-heading-preview__highlight {
+  background: linear-gradient(90deg, #b79bff, #6fd3ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

@@ -4,13 +4,8 @@ import ActionButton from "@/components/Button/ActionButton";
 import Eyebrow from "@/components/Eyebrow/Eyebrow";
 import Glyph from "@/components/Icon/Glyph";
 import { cta } from "@/data/homepage";
-import {
-  getCategory,
-  megaMenu,
-  serviceHref,
-  servicesIn,
-  type ServiceCategory,
-} from "@/data/services";
+import { getCategory, serviceHref, servicesIn, type ServiceCategory } from "@/data/services";
+import { useSiteContent } from "@/components/SiteContent/SiteContent";
 import { cn } from "@/lib/cn";
 
 type ServicesMegaMenuProps = {
@@ -26,11 +21,12 @@ function CategoryList({
   pathname,
   onNavigate,
 }: { category: ServiceCategory } & ServicesMegaMenuProps) {
+  const { services } = useSiteContent();
   return (
     <div className="flex flex-col gap-3">
       <p className="text-eyebrow-sm font-semibold text-subtle uppercase">{category.name}</p>
       <ul className="flex flex-col gap-3">
-        {servicesIn(category).map((service) => {
+        {servicesIn(category, services).map((service) => {
           const href = serviceHref(service.slug);
           const isCurrent = pathname === href;
           return (
@@ -80,6 +76,7 @@ function CategoryList({
  * Opening and closing is handled by the Navbar.
  */
 export default function ServicesMegaMenu({ pathname, onNavigate }: ServicesMegaMenuProps) {
+  const { megaMenu, serviceCategories } = useSiteContent();
   const { promo } = megaMenu;
 
   return (
@@ -90,7 +87,7 @@ export default function ServicesMegaMenu({ pathname, onNavigate }: ServicesMegaM
           {megaMenu.columns.map((ids) => (
             <div key={ids.join()} className="flex min-w-0 flex-1 flex-col gap-7">
               {ids.map((id) => {
-                const category = getCategory(id);
+                const category = getCategory(id, serviceCategories);
                 return category ? (
                   <CategoryList
                     key={id}

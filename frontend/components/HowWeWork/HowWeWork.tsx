@@ -2,7 +2,7 @@ import Image from "next/image";
 import ActionButton from "@/components/Button/ActionButton";
 import Icon from "@/components/Icon/Icon";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
-import { howWeWork } from "@/data/homepage";
+import { getHomepage } from "@/lib/cms/content";
 
 /**
  * "How we work" section: heading + four step cards (Discover, Design,
@@ -10,7 +10,8 @@ import { howWeWork } from "@/data/homepage";
  *
  * The cards are in 1 column on phones, 2 on tablets and 4 on desktop.
  */
-export default function HowWeWork() {
+export default async function HowWeWork() {
+  const { howWeWork } = await getHomepage();
   return (
     <section className="bg-white">
       <div className="mx-auto flex w-full max-w-page flex-col section-gap page-x section-y">

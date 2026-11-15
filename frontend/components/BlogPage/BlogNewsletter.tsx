@@ -4,14 +4,15 @@ import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Glyph from "@/components/Icon/Glyph";
 import { blogPage } from "@/data/blog";
+import { mergeContent } from "@/lib/cms/normalize";
 import { trackFormSubmit } from "@/lib/analytics";
 
 /**
  * "Get our monthly tech digest": mail icon and text on the left, an email
  * field with a "Subscribe" button on the right (stacked below xl).
  */
-export default function BlogNewsletter() {
-  const { newsletter } = blogPage;
+export default function BlogNewsletter({ content }: { content: Partial<(typeof blogPage)["newsletter"]> }) {
+  const newsletter = mergeContent(blogPage.newsletter, content);
   const [isSent, setIsSent] = useState(false);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {

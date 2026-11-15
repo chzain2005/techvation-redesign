@@ -17,12 +17,12 @@ const normalise = (text: string) => text.toLowerCase().normalize("NFD").replace(
  * are none, questions containing any of the words are shown instead, so
  * "ERP cost" still finds the cost and ERP questions.
  */
-function filterCategories(query: string): FaqCategory[] {
+function filterCategories(all: FaqCategory[], query: string): FaqCategory[] {
   const words = normalise(query).split(/\s+/).filter(Boolean);
-  if (!words.length) return faqPage.categories;
+  if (!words.length) return all;
 
   const search = (matches: (text: string) => boolean) =>
-    faqPage.categories
+    all
       .map((category) => ({
         ...category,
         questions: category.questions.filter((item) =>
@@ -98,13 +98,19 @@ function FaqItem({ question, answer, defaultOpen }: { question: string; answer: 
  * The first question of each group starts open, as in the design. While
  * searching, every matching question is open.
  */
-export default function FaqBody() {
-  const { sidebar, hero, countLabel } = faqPage;
+export default function FaqBody({
+  categories: allCategories,
+  sidebar,
+}: {
+  categories: FaqCategory[];
+  sidebar: (typeof faqPage)["sidebar"];
+}) {
+  const { hero, countLabel } = faqPage;
   const { query, setQuery } = useFaqSearch();
-  const categories = filterCategories(query);
+  const categories = filterCategories(allCategories, query);
   const isSearching = query.trim().length > 0;
   const total = categories.reduce((sum, category) => sum + category.questions.length, 0);
-  const [current, setCurrent] = useState(faqPage.categories[0].id);
+  const [current, setCurrent] = useState(allCategories[0]?.id ?? "");
 
   // Highlight the category whose group is in the upper part of the screen.
   useEffect(() => {
@@ -142,7 +148,7 @@ export default function FaqBody() {
             {sidebar.title}
           </p>
           <ul className="scrollbar-none -mx-5 flex gap-2 overflow-x-auto px-5 md:-mx-10 md:px-10 xl:mx-0 xl:mt-2 xl:flex-col xl:overflow-visible xl:px-0">
-            {faqPage.categories.map((category) => {
+            {allCategories.map((category) => {
               const shown = categories.find((item) => item.id === category.id);
               const isCurrent = category.id === current && Boolean(shown);
               return (

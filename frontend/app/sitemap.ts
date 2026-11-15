@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/data/blog";
-import { serviceDetails } from "@/data/services";
+import { getBlog, getServices } from "@/lib/cms/content";
 import { absoluteUrl } from "@/lib/seo";
 
 /**
  * /sitemap.xml: every page of the site, so search engines find them all.
- * Services and articles are read from the data files, so new ones are
- * added automatically.
+ * Services and articles are read from the CMS, so new ones are added
+ * automatically.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [{ services: serviceDetails }, { posts: blogPosts }] = await Promise.all([getServices(), getBlog()]);
   const pages: Array<{ path: string; priority: number; changeFrequency: "weekly" | "monthly" }> = [
     { path: "/", priority: 1, changeFrequency: "weekly" },
     { path: "/services", priority: 0.9, changeFrequency: "monthly" },

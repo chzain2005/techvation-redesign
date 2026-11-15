@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Glyph from "@/components/Icon/Glyph";
-import { aboutPage } from "@/data/about";
+import { getAboutPage } from "@/lib/cms/content";
 
 /**
  * "Our mission" and "Our vision" as two glass cards on the dark background,
  * stacked on phones and tablets, side by side on desktop.
  */
-export default function MissionVision() {
+export default async function MissionVision() {
+  const aboutPage = await getAboutPage();
   const cards = [aboutPage.mission, aboutPage.vision];
 
   return (

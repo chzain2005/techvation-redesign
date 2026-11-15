@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Glyph from "@/components/Icon/Glyph";
-import { blogPage, blogPosts, type BlogCategory } from "@/data/blog";
+import { blogPage, type BlogCategory, type BlogPost } from "@/data/blog";
 import { cn } from "@/lib/cn";
 import ArticleCard from "./ArticleCard";
 import { useBlogSearch } from "./BlogSearch";
@@ -20,7 +20,7 @@ const normalise = (text: string) => text.toLowerCase().normalize("NFD").replace(
  * The featured article has its own card above, so it is left out here
  * unless the visitor is searching or filtering.
  */
-export default function AllArticles() {
+export default function AllArticles({ posts: allPosts, categories }: { posts: BlogPost[]; categories: BlogCategory[] }) {
   const { query, setQuery } = useBlogSearch();
   const [category, setCategory] = useState<BlogCategory | null>(null);
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
@@ -29,7 +29,7 @@ export default function AllArticles() {
   const words = normalise(query).split(/\s+/).filter(Boolean);
   const isFiltering = words.length > 0 || category !== null;
 
-  const posts = blogPosts
+  const posts = allPosts
     .filter((post) => isFiltering || !post.featured)
     .filter((post) => !category || post.category === category)
     .filter((post) => {
@@ -55,7 +55,7 @@ export default function AllArticles() {
 
   const chips: Array<{ label: string; value: BlogCategory | null }> = [
     { label: blogPage.allLabel, value: null },
-    ...blogPage.categories.map((value) => ({ label: value, value })),
+    ...categories.map((value) => ({ label: value, value })),
   ];
 
   const pageButton =

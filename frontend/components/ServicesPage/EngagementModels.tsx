@@ -2,14 +2,15 @@ import ActionButton from "@/components/Button/ActionButton";
 import Glyph from "@/components/Icon/Glyph";
 import SectionHeader from "@/components/SectionHeader/SectionHeader";
 import { cta } from "@/data/homepage";
-import { servicesPage } from "@/data/services";
+import { getServicesPageContent } from "@/lib/cms/content";
 import { cn } from "@/lib/cn";
 
 /**
  * "Flexible ways to work with us": three engagement models side by side on
  * desktop (stacked below xl). The middle one is marked "Most popular".
  */
-export default function EngagementModels() {
+export default async function EngagementModels() {
+  const { servicesPage } = await getServicesPageContent();
   const { engagement } = servicesPage;
 
   return (

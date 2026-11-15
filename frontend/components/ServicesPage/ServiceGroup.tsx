@@ -2,22 +2,10 @@ import ActionButton from "@/components/Button/ActionButton";
 import Glyph from "@/components/Icon/Glyph";
 import ServiceCard from "@/components/Services/ServiceCard";
 import DiscussLink from "@/components/ServicePage/DiscussLink";
-import { cta, services as homepageServices, type Service } from "@/data/homepage";
-import {
-  serviceHref,
-  servicesIn,
-  servicesPage,
-  type ServiceCategory,
-  type ServiceDetail,
-} from "@/data/services";
+import { cta, type Service } from "@/data/homepage";
+import { servicesIn, type ServiceCategory } from "@/data/services";
+import { getServices, getServicesPageContent } from "@/lib/cms/content";
 import { cn } from "@/lib/cn";
-
-/** Turns a service into the shape the homepage ServiceCard expects. */
-function toCard(service: ServiceDetail): Service | undefined {
-  const href = serviceHref(service.slug);
-  const card = homepageServices.items.find((item) => item.href === href);
-  return card && { ...card, description: service.cardDescription };
-}
 
 /** The dark card that fills the empty column of a group with only two services. */
 function PromoCard({ promo }: { promo: NonNullable<ServiceCategory["promo"]> }) {
@@ -42,9 +30,13 @@ function PromoCard({ promo }: { promo: NonNullable<ServiceCategory["promo"]> }) 
  * - Phones: one card per row. Tablets: two. Desktop (xl and up): three,
  *   with the promo card filling the third column when there are two services.
  */
-export default function ServiceGroup({ category, index }: { category: ServiceCategory; index: number }) {
-  const cards = servicesIn(category)
-    .map(toCard)
+export default async function ServiceGroup({ category, index }: { category: ServiceCategory; index: number }) {
+  const [{ services, cards: cardsBySlug }, { servicesPage }] = await Promise.all([
+    getServices(),
+    getServicesPageContent(),
+  ]);
+  const cards = servicesIn(category, services)
+    .map((service) => cardsBySlug[service.slug])
     .filter((card): card is Service => Boolean(card));
   const count = category.services.length;
 
