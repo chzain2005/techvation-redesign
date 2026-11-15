@@ -10,6 +10,8 @@ import { mergeContent } from "@/lib/cms/normalize";
 import { cn } from "@/lib/cn";
 import { APPLY_EVENT } from "./OpenPositions";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 const fieldClasses =
   "w-full rounded-xl border border-border bg-white px-4 py-3.5 text-small text-heading outline-none transition-colors placeholder:text-muted focus:border-primary";
@@ -20,7 +22,7 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-headi
  * application form on the right (stacked below xl).
  *
  * "Apply now" on a role fills in that role and its department here. The CV
- * box takes a PDF of up to 5 MB, by clicking or by dragging it in.
+ * box takes a PDF of up to 4 MB, by clicking or by dragging it in.
  */
 export default function GeneralApplication({ content }: { content: Partial<typeof careersPage> }) {
   const { application, positions } = mergeContent(careersPage, content);
@@ -30,6 +32,8 @@ export default function GeneralApplication({ content }: { content: Partial<typeo
   const [fileError, setFileError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [isSent, setIsSent] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
   const fileInput = useRef<HTMLInputElement>(null);
 
   // Listen for "Apply now" on the open roles list.
@@ -44,7 +48,7 @@ export default function GeneralApplication({ content }: { content: Partial<typeo
     return () => window.removeEventListener(APPLY_EVENT, handleApply);
   }, []);
 
-  /** Accepts a PDF up to 5 MB, otherwise shows why not. */
+  /** Accepts a PDF up to 4 MB, otherwise shows why not. */
   function pickFile(candidate: File | undefined) {
     if (!candidate) return;
     if (candidate.type !== "application/pdf" && !candidate.name.toLowerCase().endsWith(".pdf")) {
@@ -63,21 +67,32 @@ export default function GeneralApplication({ content }: { content: Partial<typeo
     pickFile(event.dataTransfer.files[0]);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    const formElement = event.currentTarget;
+    const data = new FormData(formElement);
+    // The CV may have been dropped onto the box rather than chosen in the input.
+    data.delete("cv");
+    if (file) data.set("cv", file);
+
+    // Save it (and the CV) to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("job-application", data, { service: role?.title ?? "General application" });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
+
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("careers_application", "job_application", {
       job_role: role?.title ?? "general",
       job_area: area || undefined,
     });
-    // TODO: send the form (with the CV file and `role`) to the backend once
-    // the careers endpoint exists, e.g. as multipart/form-data.
     setIsSent(true);
     setRole(null);
     setArea("");
     setFile(null);
-    event.currentTarget.reset();
+    formElement.reset();
   }
 
   return (
@@ -199,7 +214,9 @@ export default function GeneralApplication({ content }: { content: Partial<typeo
                 )}
               </div>
 
-              <Button type="submit" className="w-full">
+              <FormError message={error} />
+              <Honeypot />
+              <Button type="submit" className="w-full" disabled={isSending}>
                 {application.submitLabel}
               </Button>
             </form>

@@ -67,6 +67,8 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'form-submissions': FormSubmission;
+    'cv-uploads': CvUpload;
     services: Service;
     'service-categories': ServiceCategory;
     posts: Post;
@@ -90,6 +92,8 @@ export interface Config {
     };
   };
   collectionsSelect: {
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
+    'cv-uploads': CvUploadsSelect<false> | CvUploadsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
@@ -162,7 +166,78 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Each service gets its own page, a card on the Services page and a link in the Services menu. To also show it on the homepage, add it under Website pages → Homepage → Services. Drag the ⠿ handle to change the order.
+ * Everything sent through the forms on the website, newest first. Open one to read it, then set its status to "In progress" or "Done".
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: number;
+  status: 'new' | 'in-progress' | 'done';
+  /**
+   * Only your team sees this, e.g. who is following up.
+   */
+  notes?: string | null;
+  form:
+    | 'contact'
+    | 'consultation'
+    | 'home-consultation'
+    | 'service-consultation'
+    | 'article-consultation'
+    | 'booking'
+    | 'job-application'
+    | 'newsletter'
+    | 'solutions-notify';
+  page?: string | null;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  company?: string | null;
+  /**
+   * The service they asked about, or the job they applied for.
+   */
+  service?: string | null;
+  message?: string | null;
+  /**
+   * Everything else they filled in (budget, timeline, chosen time…).
+   */
+  details?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Click the file to open it.
+   */
+  cv?: (number | null) | CvUpload;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cv-uploads".
+ */
+export interface CvUpload {
+  id: number;
+  originalName?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Each service gets its own page, a card on the Services page and on the homepage, and a link in the Services menu. Drag the ⠿ handle to change the order.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
@@ -217,6 +292,10 @@ export interface Service {
     | 'users'
     | 'wrench'
     | 'zap';
+  /**
+   * Shows this service in the sliding cards on the homepage (in the order of this list).
+   */
+  showOnHomepage?: boolean | null;
   image: number | Media;
   /**
    * Shown under the name in the "Services" drop-down menu.
@@ -780,6 +859,14 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
+      } | null)
+    | ({
+        relationTo: 'cv-uploads';
+        value: number | CvUpload;
+      } | null)
+    | ({
         relationTo: 'services';
         value: number | Service;
       } | null)
@@ -871,6 +958,44 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  status?: T;
+  notes?: T;
+  form?: T;
+  page?: T;
+  name?: T;
+  email?: T;
+  phone?: T;
+  company?: T;
+  service?: T;
+  message?: T;
+  details?: T;
+  cv?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "cv-uploads_select".
+ */
+export interface CvUploadsSelect<T extends boolean = true> {
+  originalName?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
@@ -879,6 +1004,7 @@ export interface ServicesSelect<T extends boolean = true> {
   slug?: T;
   category?: T;
   icon?: T;
+  showOnHomepage?: T;
   image?: T;
   menuDescription?: T;
   cardDescription?: T;
@@ -1366,10 +1492,6 @@ export interface Homepage {
       tail?: string | null;
     };
     description: string;
-    /**
-     * Which services appear in the sliding cards, in this order. New services are not added automatically: pick them here. Drag to reorder.
-     */
-    items: (number | Service)[];
   };
   whyTechvation: {
     eyebrow: string;
@@ -2688,7 +2810,6 @@ export interface HomepageSelect<T extends boolean = true> {
               tail?: T;
             };
         description?: T;
-        items?: T;
       };
   whyTechvation?:
     | T

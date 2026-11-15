@@ -5,6 +5,8 @@ import Button from "@/components/Button/Button";
 import Glyph from "@/components/Icon/Glyph";
 import type { solutionsPage } from "@/data/solutions";
 import { trackFormSubmit } from "@/lib/analytics";
+import { Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 /**
  * "Notify me" email form. After sending, a short thank-you replaces it.
@@ -19,13 +21,20 @@ type NotifyText = Pick<
 
 export default function NotifyForm({ notify }: { notify: NotifyText }) {
   const [isSent, setIsSent] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("solutions-notify", event.currentTarget);
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("solutions_notify", "sign_up");
-    // TODO: store the email address once form submissions are saved (e.g. in the CMS).
     setIsSent(true);
   }
 
@@ -63,9 +72,15 @@ export default function NotifyForm({ notify }: { notify: NotifyText }) {
           className="w-full min-w-0 bg-transparent text-body-base text-white outline-none placeholder:text-white/55"
         />
       </label>
-      <Button type="submit" className="w-full md:w-auto">
+      <Honeypot />
+      <Button type="submit" className="w-full md:w-auto" disabled={isSending}>
         {notify.submitLabel}
       </Button>
+      {error && (
+        <p role="alert" className="text-small font-medium text-white md:sr-only">
+          {error}
+        </p>
+      )}
     </form>
   );
 }

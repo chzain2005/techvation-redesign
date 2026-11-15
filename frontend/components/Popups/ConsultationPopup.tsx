@@ -1,6 +1,6 @@
 "use client"; // Forms need the browser: we handle the submit event here.
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { useSiteContent } from "@/components/SiteContent/SiteContent";
@@ -10,6 +10,8 @@ import { PopupInput, PopupSelect, PopupTextarea } from "./PopupField";
 import { PopupCloseButton } from "./PopupShell";
 import type { Contact } from "./PopupProvider";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 type ConsultationPopupProps = {
   onClose: () => void;
@@ -26,16 +28,24 @@ type ConsultationPopupProps = {
 export default function ConsultationPopup({ onClose, onSubmitted }: ConsultationPopupProps) {
   const { fields } = consultationPopup;
   const { serviceOptions } = useSiteContent();
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
-    // Record the sent form in Google Analytics (no personal details).
-    trackFormSubmit("consultation_popup");
     const data = new FormData(event.currentTarget);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: store the form once form submissions are saved (e.g. in the CMS).
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("consultation", data);
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
+
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("consultation_popup");
 
     onSubmitted({
       name: text("name"),
@@ -92,7 +102,9 @@ export default function ConsultationPopup({ onClose, onSubmitted }: Consultation
 
       <PopupTextarea name="goal" {...fields.goal} />
 
-      <Button type="submit" className="w-full">
+      <FormError message={error} />
+      <Honeypot />
+      <Button type="submit" className="w-full" disabled={isSending}>
         {consultationPopup.submitLabel}
       </Button>
 

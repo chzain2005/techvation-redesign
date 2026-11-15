@@ -7,6 +7,8 @@ import Glyph, { type GlyphName } from "@/components/Icon/Glyph";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import { cn } from "@/lib/cn";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 type ArticleSidebarProps = {
   title: string;
@@ -33,6 +35,8 @@ const shareLinks: Array<{ name: string; icon: GlyphName; url: (url: string, text
 export default function ArticleSidebar({ title, headings, cta }: ArticleSidebarProps) {
   const { showConsultationSuccess } = usePopups();
   const [current, setCurrent] = useState(headings[0]?.id);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
 
   // Highlight the heading whose section is in the upper part of the screen.
   useEffect(() => {
@@ -50,14 +54,20 @@ export default function ArticleSidebar({ title, headings, cta }: ArticleSidebarP
     return () => observer.disconnect();
   }, [headings]);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
+    const email = String(new FormData(formElement).get("email") ?? "").trim();
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("article-consultation", formElement, { article: title });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("article_sidebar_consultation");
-    const email = String(new FormData(event.currentTarget).get("email") ?? "").trim();
-    // TODO: send to the backend once the consultation endpoint exists.
     showConsultationSuccess({ email });
-    event.currentTarget.reset();
+    formElement.reset();
   }
 
   function share(build: (url: string, text: string) => string) {
@@ -116,7 +126,9 @@ export default function ArticleSidebar({ title, headings, cta }: ArticleSidebarP
             className="w-full rounded-xl border border-white/18 bg-white/8 px-4 py-3.5 text-small font-normal text-white outline-none placeholder:text-white/55 focus:border-accent"
           />
         </label>
-        <Button type="submit" className="w-full">
+        <FormError message={error} className="w-full" />
+        <Honeypot />
+        <Button type="submit" className="w-full" disabled={isSending}>
           {cta.buttonLabel}
         </Button>
       </form>

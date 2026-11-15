@@ -1,22 +1,35 @@
 "use client"; // Forms need the browser: we handle the submit event here.
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import type { footer } from "@/data/homepage";
 import { trackFormSubmit } from "@/lib/analytics";
+import { Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 /**
  * The email field + "Subscribe" button in the footer, styled as one pill.
  * It is full width on phones and tablets and 460px wide on desktop.
  */
 export default function NewsletterForm({ newsletter }: { newsletter: (typeof footer)["newsletter"] }) {
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
+  const [isSent, setIsSent] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
+    const formElement = event.currentTarget;
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("newsletter", formElement, { source: "Footer" });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("footer_newsletter", "sign_up");
-    // TODO: send the email to the backend once the API endpoint exists.
+    setIsSent(true);
+    formElement.reset();
   }
 
   return (
@@ -33,9 +46,15 @@ export default function NewsletterForm({ newsletter }: { newsletter: (typeof foo
         placeholder={newsletter.placeholder}
         className="min-w-0 flex-1 bg-transparent text-small text-white outline-none placeholder:text-white/45 xl:text-body-sm"
       />
-      <Button type="submit" size="md" showIcon={false}>
-        {newsletter.submitLabel}
+      <Honeypot />
+      <Button type="submit" size="md" showIcon={false} disabled={isSending || isSent}>
+        {isSent ? "Subscribed ✓" : newsletter.submitLabel}
       </Button>
+      {error && (
+        <span role="alert" className="sr-only">
+          {error}
+        </span>
+      )}
     </form>
   );
 }

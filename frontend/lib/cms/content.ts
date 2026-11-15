@@ -169,10 +169,9 @@ export async function getServicesPageContent() {
 /** The navbar, footer and menus shown on every page. */
 export async function getSiteContent(): Promise<SiteContent> {
   "use cache";
-  tags("site-settings", "homepage", "services", "service-categories", "services-page");
-  const [settings, homepage, { services, categories }, { megaMenu }] = await Promise.all([
+  tags("site-settings", "services", "service-categories", "services-page");
+  const [settings, { services, categories }, { megaMenu }] = await Promise.all([
     global("site-settings", 0),
-    global("homepage", 1),
     getServices(),
     getServicesPageContent(),
   ]);
@@ -183,7 +182,6 @@ export async function getSiteContent(): Promise<SiteContent> {
     icon: `/assets/icons/social/${item.name === "X" ? "x" : item.name.toLowerCase()}.svg`,
   }));
 
-  const homeServices = ((homepage.services?.items ?? []) as Doc[]).filter((s) => typeof s === "object");
   return {
     navbar: withDefaults(home.navbar, settings.navbar),
     footer,
@@ -196,7 +194,7 @@ export async function getSiteContent(): Promise<SiteContent> {
       menuDescription,
       categoryId,
     })),
-    serviceOptions: (homeServices.length ? homeServices : services).map((service) => service.title),
+    serviceOptions: services.map((service) => service.title),
   };
 }
 
@@ -280,8 +278,9 @@ const readTime = (minutes: number) => `${minutes} min read`;
 export async function getHomepage() {
   "use cache";
   tags("homepage", "services", "clients", "industries", "posts", "blog-categories");
-  const [doc, clientDocs, industryDocs, { posts }] = await Promise.all([
-    global("homepage", 2), // depth 2: the picked services and their photos
+  const [doc, serviceDocs, clientDocs, industryDocs, { posts }] = await Promise.all([
+    global("homepage", 1),
+    all("services"),
     all("clients"),
     all("industries"),
     getBlog(),
@@ -301,7 +300,8 @@ export async function getHomepage() {
 
   const services = {
     ...withDefaults(home.services, { eyebrow: _services?.eyebrow, heading: _services?.heading, description: _services?.description }),
-    items: ((_services?.items ?? []) as Doc[]).filter((s) => typeof s === "object").map(toHomeCard),
+    // Every service with "Show on homepage" ticked, in the Services order.
+    items: serviceDocs.filter((service) => service.slug && service.showOnHomepage !== false).map(toHomeCard),
   };
 
   const trustedLogos = {

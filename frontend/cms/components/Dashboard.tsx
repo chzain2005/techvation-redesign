@@ -4,6 +4,7 @@
  * that can be edited follows below it.
  */
 import Link from "next/link";
+import type { Payload } from "payload";
 import "./admin.css";
 
 const tasks = [
@@ -23,7 +24,18 @@ const tips = [
   { title: "See it live", text: "Use the ↗ button at the top of an edit screen to open that page on the website." },
 ];
 
-export function Dashboard() {
+/** How many form submissions have not been handled yet. */
+async function countNew(payload: Payload) {
+  try {
+    const { totalDocs } = await payload.count({ collection: "form-submissions", where: { status: { equals: "new" } } });
+    return totalDocs;
+  } catch {
+    return 0;
+  }
+}
+
+export async function Dashboard({ payload }: { payload: Payload }) {
+  const newCount = await countNew(payload);
   return (
     <div className="tv-dashboard">
       <div className="tv-dashboard__intro">
@@ -32,6 +44,18 @@ export function Dashboard() {
           Everything on thetechvation.com can be changed here. Pick a task below, or use the menu on the left.
         </p>
       </div>
+
+      <Link
+        href="/admin/collections/form-submissions?where[status][equals]=new"
+        className={`tv-dashboard__inbox${newCount ? " has-new" : ""}`}
+      >
+        <span className="tv-dashboard__inbox-count">{newCount}</span>
+        <span className="tv-dashboard__inbox-text">
+          <strong>{newCount === 1 ? "new request" : "new requests"} in the inbox</strong>
+          <span>Contact forms, consultations, call bookings, job applications and sign-ups from the website.</span>
+        </span>
+        <span className="tv-dashboard__inbox-cta">Open inbox →</span>
+      </Link>
 
       <h2 className="tv-dashboard__heading">What would you like to do?</h2>
       <ul className="tv-dashboard__tasks">

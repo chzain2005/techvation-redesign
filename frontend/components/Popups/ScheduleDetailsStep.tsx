@@ -1,12 +1,14 @@
 "use client"; // Forms need the browser: we handle the submit event here.
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { scheduleCall } from "@/data/popups";
 import { PopupInput, PopupTextarea } from "./PopupField";
 import type { Contact } from "./PopupProvider";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 type ScheduleDetailsStepProps = {
   /** The chosen slot as text, e.g. "Wed, Nov 18 · 11:30 AM – 12:00 PM (PKT)". */
@@ -30,17 +32,25 @@ export default function ScheduleDetailsStep({
   onConfirmed,
 }: ScheduleDetailsStepProps) {
   const { fields, changeLabel, backLabel, submitLabel } = scheduleCall.detailsStep;
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
-    // Record the sent form in Google Analytics (no personal details).
-    trackFormSubmit("schedule_call_popup");
     const data = new FormData(event.currentTarget);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: store the booking once form submissions are saved (e.g. in the CMS).
-    // That should also send the calendar invite promised in step 3.
+    // Save the booking, with the chosen slot, to the CMS inbox. The team sends
+    // the calendar invite promised in step 3 from there.
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("booking", data, { slot: summary });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
+
+    // Record the sent form in Google Analytics (no personal details).
+    trackFormSubmit("schedule_call_popup");
 
     onConfirmed({
       name: text("name"),
@@ -116,10 +126,12 @@ export default function ScheduleDetailsStep({
           />
           {backLabel}
         </button>
-        <Button type="submit" className="w-full md:w-auto">
+        <Honeypot />
+        <Button type="submit" className="w-full md:w-auto" disabled={isSending}>
           {submitLabel}
         </Button>
       </div>
+      <FormError message={error} />
     </form>
   );
 }

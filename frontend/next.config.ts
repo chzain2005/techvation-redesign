@@ -4,6 +4,11 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  experimental: {
+    // Job applications send a CV (max 4 MB) through a server action; Vercel
+    // accepts requests up to 4.5 MB.
+    serverActions: { bodySizeLimit: "4.5mb" },
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {

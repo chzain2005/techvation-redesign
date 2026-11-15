@@ -6,6 +6,8 @@ import Glyph from "@/components/Icon/Glyph";
 import { blogPage } from "@/data/blog";
 import { mergeContent } from "@/lib/cms/normalize";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 /**
  * "Get our monthly tech digest": mail icon and text on the left, an email
@@ -14,12 +16,19 @@ import { trackFormSubmit } from "@/lib/analytics";
 export default function BlogNewsletter({ content }: { content: Partial<(typeof blogPage)["newsletter"]> }) {
   const newsletter = mergeContent(blogPage.newsletter, content);
   const [isSent, setIsSent] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("newsletter", event.currentTarget, { source: "Blog" });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("blog_newsletter", "sign_up");
-    // TODO: send the email to the newsletter service once it is connected.
     setIsSent(true);
   }
 
@@ -62,11 +71,13 @@ export default function BlogNewsletter({ content }: { content: Partial<(typeof b
                   className="w-full bg-transparent text-body-sm text-heading outline-none placeholder:text-muted md:text-body-base"
                 />
               </label>
-              <Button type="submit" size="md">
+              <Honeypot />
+              <Button type="submit" size="md" disabled={isSending}>
                 {newsletter.submitLabel}
               </Button>
             </form>
           )}
+          {!isSent && <FormError message={error} className="w-full xl:w-115" />}
         </div>
       </div>
     </section>

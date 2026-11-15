@@ -19,7 +19,7 @@ export const Services: CollectionConfig = {
     defaultColumns: ["title", "category", "updatedAt"],
     group: "Services",
     description:
-      "Each service gets its own page, a card on the Services page and a link in the Services menu. To also show it on the homepage, add it under Website pages → Homepage → Services. Drag the ⠿ handle to change the order.",
+      "Each service gets its own page, a card on the Services page and on the homepage, and a link in the Services menu. Drag the ⠿ handle to change the order.",
     preview: (doc) => `/services/${doc.slug}`,
   },
   access: { read: anyone, create: signedIn, update: signedIn, delete: signedIn },
@@ -36,6 +36,16 @@ export const Services: CollectionConfig = {
       admin: { position: "sidebar" },
     },
     glyphField("icon", { admin: { position: "sidebar" } }),
+    {
+      name: "showOnHomepage",
+      label: "Show on homepage",
+      type: "checkbox",
+      defaultValue: true,
+      admin: {
+        position: "sidebar",
+        description: "Shows this service in the sliding cards on the homepage (in the order of this list).",
+      },
+    },
     {
       type: "tabs",
       tabs: [

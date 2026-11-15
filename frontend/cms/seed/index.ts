@@ -387,7 +387,6 @@ async function seed() {
       eyebrow: homeServices.eyebrow,
       heading: homeServices.heading,
       description: homeServices.description,
-      items: homeServices.items.map((item) => serviceIds.get(item.href.replace("/services/", ""))!),
     },
     whyTechvation: {
       eyebrow: whyTechvation.eyebrow,

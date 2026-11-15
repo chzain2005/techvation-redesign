@@ -11,6 +11,7 @@ The admin dashboard is **Payload CMS 3**, running inside this Next.js app:
 
 | Sidebar group | What |
 | --- | --- |
+| **Inbox** | Form submissions from the website (contact, consultations, call bookings, job applications with CVs, newsletter and notify-me sign-ups). Set each one to In progress / Done. |
 | **Services** | Services (each gets its page `/services/<slug>`, card and mega-menu entry), practice areas |
 | **Blog** | Blog posts (drafts, versions, block editor), blog categories |
 | **Careers** | Job openings (tick "Show on the site" off to hide a filled role) |
@@ -65,7 +66,10 @@ Those files also hold the original content, which the seed script copies into th
    - the production `DATABASE_URI` and `S3_*`
    - `SEED_RESET=1`
    - `MEDIA_DIR` set to an empty folder, so local uploads don't affect file names
-5. Supabase's Data API is switched off (Project Settings → Data API), so the CMS tables are not exposed through it.
+5. CVs from job applications go to a **private** bucket (`S3_PRIVATE_BUCKET`, "Public" off).
+   They are only served through Payload, to signed-in users.
+   Forms save through the server action in `lib/forms/actions.ts`, which has a honeypot spam check.
+6. Supabase's Data API is switched off (Project Settings → Data API), so the CMS tables are not exposed through it.
 
 ## Changing the content model
 

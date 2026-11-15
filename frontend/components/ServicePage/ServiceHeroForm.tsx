@@ -1,11 +1,13 @@
 "use client"; // Forms need the browser: we handle the submit event here.
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import type { serviceDetailPage } from "@/data/services";
 import { cn } from "@/lib/cn";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 /* Glass inputs on the dark card (same look as the homepage hero form). */
 const fieldClasses =
@@ -26,14 +28,22 @@ export default function ServiceHeroForm({
 }) {
   const { showConsultationSuccess } = usePopups();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
     const formElement = event.currentTarget;
     const data = new FormData(formElement);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: send the form to the backend once the API endpoint exists.
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("service-consultation", data, { service: title });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
 
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("service_hero_consultation", "generate_lead", { service: title });
@@ -85,7 +95,9 @@ export default function ServiceHeroForm({
         />
       </label>
 
-      <Button type="submit" className="mt-1 w-full">
+      <FormError message={error} />
+      <Honeypot />
+      <Button type="submit" className="mt-1 w-full" disabled={isSending}>
         {heroForm.submitLabel}
       </Button>
     </form>

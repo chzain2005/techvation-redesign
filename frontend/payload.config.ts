@@ -19,6 +19,8 @@ import { sqliteAdapter } from "@payloadcms/db-sqlite";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
+import { CvUploads } from "./cms/collections/CvUploads";
+import { FormSubmissions } from "./cms/collections/FormSubmissions";
 import { Media } from "./cms/collections/Media";
 import { Posts } from "./cms/collections/Posts";
 import { ServiceCategories } from "./cms/collections/ServiceCategories";
@@ -65,6 +67,16 @@ const db = databaseUri.startsWith("file:")
 
 const useS3 = Boolean(process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID);
 
+const s3Config = {
+  endpoint: process.env.S3_ENDPOINT,
+  region: process.env.S3_REGION || "us-east-1",
+  forcePathStyle: true,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY_ID ?? "",
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? "",
+  },
+};
+
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || undefined,
   secret: process.env.PAYLOAD_SECRET || "",
@@ -86,6 +98,8 @@ export default buildConfig({
   },
   // The order here is the order of the groups in the admin sidebar.
   collections: [
+    FormSubmissions,
+    CvUploads,
     Services,
     ServiceCategories,
     Posts,
@@ -117,18 +131,14 @@ export default buildConfig({
   telemetry: false,
   plugins: useS3
     ? [
+        // Website images: a public bucket.
+        s3Storage({ collections: { media: true }, bucket: process.env.S3_BUCKET!, config: s3Config }),
+        // CVs: a private bucket (S3_PRIVATE_BUCKET). Files are always served
+        // through Payload, which only lets signed-in users open them.
         s3Storage({
-          collections: { media: true },
-          bucket: process.env.S3_BUCKET!,
-          config: {
-            endpoint: process.env.S3_ENDPOINT,
-            region: process.env.S3_REGION || "us-east-1",
-            forcePathStyle: true,
-            credentials: {
-              accessKeyId: process.env.S3_ACCESS_KEY_ID!,
-              secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
-            },
-          },
+          collections: { "cv-uploads": { prefix: "cvs" } },
+          bucket: process.env.S3_PRIVATE_BUCKET || process.env.S3_BUCKET!,
+          config: s3Config,
         }),
       ]
     : [],

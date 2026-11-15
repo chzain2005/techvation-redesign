@@ -90,19 +90,7 @@ export const Homepage = pageGlobal("homepage", "Homepage", [
     text("eyebrow"),
     headingField(),
     textarea("description"),
-    {
-      name: "items",
-      label: "Services shown",
-      type: "relationship",
-      relationTo: "services",
-      hasMany: true,
-      required: true,
-      admin: {
-        description:
-          "Which services appear in the sliding cards, in this order. New services are not added automatically: pick them here. Drag to reorder.",
-      },
-    },
-  ]),
+  ], 'The sliding cards show every service with "Show on homepage" ticked, in the order of the Services list.'),
   tab("whyTechvation", "Why Techvation", [
     text("eyebrow"),
     headingField(),

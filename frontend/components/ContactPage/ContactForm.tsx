@@ -9,6 +9,8 @@ import { contactPage } from "@/data/contact";
 import { mergeContent } from "@/lib/cms/normalize";
 import { cn } from "@/lib/cn";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 const fieldClasses =
   "w-full rounded-xl border border-border bg-white px-4 py-3.5 text-small text-heading outline-none transition-colors placeholder:text-muted focus:border-primary";
@@ -58,6 +60,8 @@ export default function ContactForm({ content }: { content: Partial<(typeof cont
   const form = mergeContent(contactPage.form, content);
   const { showConsultationSuccess } = usePopups();
   const [services, setServices] = useState<string[]>([]);
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
 
   function toggle(service: string) {
     setServices((current) =>
@@ -65,15 +69,20 @@ export default function ContactForm({ content }: { content: Partial<(typeof cont
     );
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
     const formElement = event.currentTarget;
     const data = new FormData(formElement);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: send the request to the backend once the contact endpoint exists,
-    // including `services`, budget, timeline and details.
+    // Save it to the CMS inbox (Inbox → Form submissions), with the chosen
+    // services, budget, timeline and project details.
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("contact", data, { service: services.join(", ") || undefined });
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
 
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("contact_page", "generate_lead", {
@@ -189,7 +198,9 @@ export default function ContactForm({ content }: { content: Partial<(typeof cont
         </span>
       </label>
 
-      <Button type="submit" className="w-full">
+      <FormError message={error} />
+      <Honeypot />
+      <Button type="submit" className="w-full" disabled={isSending}>
         {form.submitLabel}
       </Button>
 

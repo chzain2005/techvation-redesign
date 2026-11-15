@@ -1,12 +1,14 @@
 "use client"; // Forms need the browser: we handle the submit event here.
 
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { usePopups } from "@/components/Popups/PopupProvider";
 import type { hero } from "@/data/homepage";
 import { useSiteContent } from "@/components/SiteContent/SiteContent";
 import { trackFormSubmit } from "@/lib/analytics";
+import { FormError, Honeypot } from "@/components/Forms/FormExtras";
+import { sendForm } from "@/lib/forms/send";
 
 /* Shared look of the three inputs (glass style on the dark card). */
 const fieldClasses =
@@ -26,16 +28,23 @@ const labelClasses = "flex flex-col gap-2 text-label-sm font-semibold text-white
  */
 export default function ConsultationForm({ form }: { form: (typeof hero)["form"] }) {
   const { serviceOptions } = useSiteContent();
+  const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState("");
   const { showConsultationSuccess } = usePopups();
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     // Stop the browser from reloading the page.
     event.preventDefault();
     const formElement = event.currentTarget;
     const data = new FormData(formElement);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: store the form once form submissions are saved (e.g. in the CMS).
+    // Save it to the CMS inbox (Inbox → Form submissions).
+    setIsSending(true);
+    setError("");
+    const result = await sendForm("home-consultation", data);
+    setIsSending(false);
+    if (!result.ok) return setError(result.error);
 
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("home_hero_consultation", "generate_lead", { service: text("service") || undefined });
@@ -128,7 +137,9 @@ export default function ConsultationForm({ form }: { form: (typeof hero)["form"]
         </span>
       </label>
 
-      <Button type="submit" className="w-full">
+      <FormError message={error} />
+      <Honeypot />
+      <Button type="submit" className="w-full" disabled={isSending}>
         {form.submitLabel}
       </Button>
 

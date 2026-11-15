@@ -95,11 +95,11 @@ export const careersPage = {
     /** Shown above the form after "Apply now" was clicked on a role. */
     applyingFor: "Applying for",
     upload: {
-      title: "Upload CV (PDF, max 5 MB)",
+      title: "Upload CV (PDF, max 4 MB)",
       hint: "Drag & drop or browse",
-      maxBytes: 5 * 1024 * 1024,
+      maxBytes: 4 * 1024 * 1024,
       wrongType: "Please choose a PDF file.",
-      tooBig: "That file is larger than 5 MB.",
+      tooBig: "That file is larger than 4 MB.",
       remove: "Remove",
     },
     submitLabel: "Submit Application",
