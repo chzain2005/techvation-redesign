@@ -19,12 +19,28 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 export const isMedia = (value: unknown): value is { url: string; alt?: string } =>
   isObject(value) && typeof value.url === "string" && typeof value.mimeType === "string";
 
+/**
+ * The site's own image address, always as a path ("/api/media/file/x.png").
+ * With a server URL configured, Payload returns full addresses
+ * ("https://www.thetechvation.com/api/media/…"), which next/image rejects
+ * unless the domain is allow-listed; a path works on every domain
+ * (www and non-www, preview deployments, localhost).
+ */
+function sitePath(url: string) {
+  try {
+    const parsed = new URL(url);
+    return parsed.pathname.startsWith("/api/media/") ? `${parsed.pathname}${parsed.search}` : url;
+  } catch {
+    return url; // already a path
+  }
+}
+
 /** The URL of an image field (populated media document), or "" if missing. */
-export const mediaUrl = (value: unknown) => (isMedia(value) ? value.url : "");
+export const mediaUrl = (value: unknown) => (isMedia(value) ? sitePath(value.url) : "");
 
 export function normalize(value: unknown): Plain {
   if (value === null || value === undefined) return undefined;
-  if (isMedia(value)) return value.url;
+  if (isMedia(value)) return sitePath(value.url);
 
   if (Array.isArray(value)) {
     const items = value.map(normalize).filter((item) => item !== undefined);
