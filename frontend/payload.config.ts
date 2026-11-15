@@ -16,6 +16,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { sqliteAdapter } from "@payloadcms/db-sqlite";
+import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
+import { resendAdapter } from "@payloadcms/email-resend";
 import { s3Storage } from "@payloadcms/storage-s3";
 import { buildConfig } from "payload";
 import sharp from "sharp";
@@ -37,6 +39,7 @@ import {
 import { Users } from "./cms/collections/Users";
 import { friendlyCollection, friendlyGlobal } from "./cms/friendly";
 import { Homepage } from "./cms/globals/Homepage";
+import { Notifications } from "./cms/globals/Notifications";
 import {
   AboutPage,
   BlogPage,
@@ -66,6 +69,29 @@ const db = databaseUri.startsWith("file:")
     });
 
 const useS3 = Boolean(process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID);
+
+/*
+ * Email (form alerts and "forgot password"): Resend when RESEND_API_KEY is
+ * set, otherwise any SMTP mailbox when SMTP_HOST is set. Without either,
+ * emails are only printed in the server log.
+ */
+const emailFrom = {
+  defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || "no-reply@thetechvation.com",
+  defaultFromName: process.env.EMAIL_FROM_NAME || "Techvation Website",
+};
+const email = process.env.RESEND_API_KEY
+  ? resendAdapter({ ...emailFrom, apiKey: process.env.RESEND_API_KEY })
+  : process.env.SMTP_HOST
+    ? nodemailerAdapter({
+        ...emailFrom,
+        transportOptions: {
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT || 587),
+          secure: Number(process.env.SMTP_PORT || 587) === 465,
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD },
+        },
+      })
+    : undefined;
 
 const s3Config = {
   endpoint: process.env.S3_ENDPOINT,
@@ -123,8 +149,10 @@ export default buildConfig({
     ContactPage,
     SolutionsPage,
     SiteSettings,
+    Notifications,
   ].map(friendlyGlobal),
   db,
+  email,
   sharp,
   typescript: { outputFile: path.resolve(dirname, "cms/payload-types.ts") },
   graphQL: { disable: true },

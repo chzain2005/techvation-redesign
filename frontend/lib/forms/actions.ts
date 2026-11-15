@@ -8,8 +8,10 @@
  * is not one of the standard fields is kept under "Other answers".
  */
 import config from "@payload-config";
+import { after } from "next/server";
 import { getPayload } from "payload";
 import { FORM_KINDS, type FormKind } from "@/cms/collections/FormSubmissions";
+import { sendAlert } from "./alerts";
 
 export type FormResult = { ok: true } | { ok: false; error: string };
 
@@ -75,23 +77,26 @@ export async function submitForm(data: FormData): Promise<FormResult> {
       cv = upload.id as number;
     }
 
-    await payload.create({
+    const fields = {
+      form: form as FormKind,
+      page: clean(data.get("page"), 300),
+      name: clean(data.get("name"), 200),
+      email,
+      phone: clean(data.get("phone"), 60),
+      company: clean(data.get("company"), 200),
+      service: clean(data.get("service"), 200),
+      message,
+      details: Object.keys(details).length ? details : undefined,
+    };
+    const submission = await payload.create({
       collection: "form-submissions",
-      data: {
-        form: form as FormKind,
-        status: "new",
-        page: clean(data.get("page"), 300),
-        name: clean(data.get("name"), 200),
-        email,
-        phone: clean(data.get("phone"), 60),
-        company: clean(data.get("company"), 200),
-        service: clean(data.get("service"), 200),
-        message,
-        details: Object.keys(details).length ? details : undefined,
-        cv,
-      },
+      data: { ...fields, status: "new", cv },
       overrideAccess: true,
     });
+
+    // Email the team (Settings → Email alerts) after the visitor already has
+    // their answer, so a slow or failing email never affects the form.
+    after(() => sendAlert(payload, { ...fields, id: submission.id, hasCv: Boolean(cv) }));
     return { ok: true };
   } catch (error) {
     const details = (error as { data?: { errors?: unknown } }).data?.errors;

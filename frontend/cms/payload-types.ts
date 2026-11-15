@@ -125,6 +125,7 @@ export interface Config {
     'contact-page': ContactPage;
     'solutions-page': SolutionsPage;
     'site-settings': SiteSetting;
+    notifications: Notification;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
@@ -136,6 +137,7 @@ export interface Config {
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'solutions-page': SolutionsPageSelect<false> | SolutionsPageSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    notifications: NotificationsSelect<false> | NotificationsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -2708,6 +2710,40 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * Get an email whenever someone sends a form on the website. Press Reply in that email to answer the visitor directly.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications".
+ */
+export interface Notification {
+  id: number;
+  enabled?: boolean | null;
+  /**
+   * Everyone here gets an email for each new request. If the list is empty, alerts go to info@thetechvation.com.
+   */
+  recipients?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * If you add addresses here, job applications go to them instead of the list above, e.g. your HR team.
+   */
+  jobRecipients?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Off by default: sign-ups are still saved in the inbox.
+   */
+  newsletterAlerts?: boolean | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage_select".
  */
@@ -3697,6 +3733,29 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               id?: T;
             };
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notifications_select".
+ */
+export interface NotificationsSelect<T extends boolean = true> {
+  enabled?: T;
+  recipients?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  jobRecipients?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  newsletterAlerts?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

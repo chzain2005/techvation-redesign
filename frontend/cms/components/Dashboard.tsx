@@ -16,6 +16,7 @@ const tasks = [
   { title: "Manage the team", text: "People shown under Leadership on the About page.", href: "/admin/collections/team-members", icon: "users" },
   { title: "Client logos", text: "The scrolling logos under the homepage hero.", href: "/admin/collections/clients", icon: "award" },
   { title: "Contact details & footer", text: "Phone numbers, email, social links and menus.", href: "/admin/globals/site-settings", icon: "phone" },
+  { title: "Email alerts", text: "Choose who gets an email for each new request.", href: "/admin/globals/notifications", icon: "bell" },
 ];
 
 const tips = [
