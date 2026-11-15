@@ -132,8 +132,12 @@ export function stringList(name: string, label?: string, extra: Partial<ArrayFie
   } as ArrayField;
 }
 
-/** A URL-safe slug, unique within its collection. */
-export function slugField(from = "title", base = ""): TextField {
+/**
+ * A URL-safe slug, unique within its collection. It is made from the
+ * `from` field when left empty; `fromLabel` is that field's name in the
+ * help text.
+ */
+export function slugField(from = "title", base = "", fromLabel = from): TextField {
   return {
     name: "slug",
     label: "Web address",
@@ -143,7 +147,7 @@ export function slugField(from = "title", base = ""): TextField {
     index: true,
     admin: {
       position: "sidebar",
-      description: `The end of the page address${base ? `: thetechvation.com${base}/…` : ""}. Filled in from the ${from} if you leave it empty. Changing it breaks old links to this page.`,
+      description: `The end of the page address${base ? `: thetechvation.com${base}/…` : ""}. Filled in from the ${fromLabel} if you leave it empty. Changing it breaks old links to this page.`,
     },
     hooks: {
       beforeValidate: [
@@ -159,8 +163,11 @@ export function slugField(from = "title", base = ""): TextField {
         },
       ],
     },
+    // A custom validate replaces Payload's own "required" check, so it is repeated here.
     validate: (value: string | null | undefined) =>
-      !value || /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) || "Use lowercase letters, numbers and dashes only.",
+      !value
+        ? "Please enter a web address (or a name it can be made from)."
+        : /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value) || "Use lowercase letters, numbers and dashes only.",
   };
 }
 

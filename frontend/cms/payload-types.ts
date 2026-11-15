@@ -162,7 +162,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Each service has its own page on the website. Drag the ⠿ handle to change the order.
+ * Each service gets its own page, a card on the Services page and a link in the Services menu. To also show it on the homepage, add it under Website pages → Homepage → Services. Drag the ⠿ handle to change the order.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
@@ -1367,7 +1367,7 @@ export interface Homepage {
     };
     description: string;
     /**
-     * Which services appear in the sliding cards, in this order. Drag to reorder.
+     * Which services appear in the sliding cards, in this order. New services are not added automatically: pick them here. Drag to reorder.
      */
     items: (number | Service)[];
   };

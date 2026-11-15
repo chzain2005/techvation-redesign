@@ -118,7 +118,8 @@ export async function getServices() {
   "use cache";
   tags("services", "service-categories");
   const [serviceDocs, categoryDocs] = await Promise.all([all("services"), all("service-categories", { depth: 0 })]);
-  const services = serviceDocs.map(toService);
+  // A service without a web address has no page to link to, so leave it out.
+  const services = serviceDocs.filter((doc) => doc.slug).map(toService);
   /** Card of each service for the Services page, by slug. */
   const cards: Record<string, home.Service> = Object.fromEntries(
     serviceDocs.map((doc) => [doc.slug, { ...toHomeCard(doc), description: doc.cardDescription }]),

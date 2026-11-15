@@ -97,7 +97,10 @@ export const Homepage = pageGlobal("homepage", "Homepage", [
       relationTo: "services",
       hasMany: true,
       required: true,
-      admin: { description: "Which services appear in the sliding cards, in this order. Drag to reorder." },
+      admin: {
+        description:
+          "Which services appear in the sliding cards, in this order. New services are not added automatically: pick them here. Drag to reorder.",
+      },
     },
   ]),
   tab("whyTechvation", "Why Techvation", [

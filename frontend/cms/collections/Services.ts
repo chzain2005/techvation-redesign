@@ -18,14 +18,15 @@ export const Services: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["title", "category", "updatedAt"],
     group: "Services",
-    description: "Each service has its own page on the website. Drag the ⠿ handle to change the order.",
+    description:
+      "Each service gets its own page, a card on the Services page and a link in the Services menu. To also show it on the homepage, add it under Website pages → Homepage → Services. Drag the ⠿ handle to change the order.",
     preview: (doc) => `/services/${doc.slug}`,
   },
   access: { read: anyone, create: signedIn, update: signedIn, delete: signedIn },
   hooks: revalidateCollection("services"),
   fields: [
     { name: "title", label: "Service name", type: "text", required: true, admin: { description: 'Full name, e.g. "MS Dynamics 365".' } },
-    slugField("service name", "/services"),
+    slugField("title", "/services", "service name"),
     {
       name: "category",
       label: "Practice area",
