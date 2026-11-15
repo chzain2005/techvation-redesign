@@ -25,8 +25,7 @@ export default function NotifyForm({ notify }: { notify: NotifyText }) {
     event.preventDefault();
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("solutions_notify", "sign_up");
-    // TODO: send the email to the backend once the newsletter endpoint exists, e.g.
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/solutions/notify`, { method: "POST", ... })
+    // TODO: store the email address once form submissions are saved (e.g. in the CMS).
     setIsSent(true);
   }
 

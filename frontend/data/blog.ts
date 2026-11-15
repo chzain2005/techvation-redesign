@@ -2,9 +2,10 @@
  * ---------------------------------------------------------------------------
  * BLOG CONTENT  (Figma "07 · Blogs")
  * ---------------------------------------------------------------------------
- * The list of articles shown on /blog. Add an article by adding an object
- * to `posts`; the newest article marked `featured` gets the big card.
- * Later these can come from the CMS with the same shape.
+ * The articles shown on /blog (add new ones in the CMS); the newest article
+ * marked `featured` gets the big card.
+ * The live posts come from the CMS (Blog posts); the list below is what the
+ * CMS was first filled with.
  */
 
 import type { HighlightedHeading } from "./homepage";

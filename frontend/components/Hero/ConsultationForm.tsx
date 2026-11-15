@@ -35,8 +35,7 @@ export default function ConsultationForm({ form }: { form: (typeof hero)["form"]
     const data = new FormData(formElement);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: send the form to the backend once the API endpoint exists, e.g.
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/consultations`, { method: "POST", ... })
+    // TODO: store the form once form submissions are saved (e.g. in the CMS).
 
     // Record the sent form in Google Analytics (no personal details).
     trackFormSubmit("home_hero_consultation", "generate_lead", { service: text("service") || undefined });

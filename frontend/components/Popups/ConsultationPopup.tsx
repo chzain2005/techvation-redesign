@@ -35,8 +35,7 @@ export default function ConsultationPopup({ onClose, onSubmitted }: Consultation
     const data = new FormData(event.currentTarget);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: send the form to the backend once the API endpoint exists, e.g.
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/consultations`, { method: "POST", ... })
+    // TODO: store the form once form submissions are saved (e.g. in the CMS).
 
     onSubmitted({
       name: text("name"),

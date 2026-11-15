@@ -39,9 +39,8 @@ export default function ScheduleDetailsStep({
     const data = new FormData(event.currentTarget);
     const text = (name: string) => String(data.get(name) ?? "").trim();
 
-    // TODO: send the booking to the backend once the API endpoint exists, e.g.
-    // fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookings`, { method: "POST", ... })
-    // The backend should also send the calendar invite promised in step 3.
+    // TODO: store the booking once form submissions are saved (e.g. in the CMS).
+    // That should also send the calendar invite promised in step 3.
 
     onConfirmed({
       name: text("name"),

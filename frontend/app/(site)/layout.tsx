@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import PopupProvider from "@/components/Popups/PopupProvider";
 import JsonLd from "@/components/Seo/JsonLd";
 import { SiteContentProvider } from "@/components/SiteContent/SiteContent";
-import { getSiteContent } from "@/lib/cms/content";
+import { getSeoSettings, getSiteContent } from "@/lib/cms/content";
 import { organizationJsonLd, site, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
 
@@ -34,48 +34,58 @@ const outfit = Outfit({
  * Each page sets its own title and description with pageMetadata() from
  * lib/seo.ts; " | Techvation" is added to its title here. The tab icons
  * come from app/favicon.ico, app/icon.png and app/apple-icon.png.
+ *
+ * The website title, description and keywords can be changed in the CMS
+ * (Website pages → Menu & footer → Google & sharing); empty fields keep the
+ * built-in text from lib/seo.ts.
  */
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: { default: site.title, template: `%s | ${site.name}` },
-  description: site.description,
-  keywords: site.keywords,
-  applicationName: site.name,
-  authors: [{ name: site.name, url: site.url }],
-  creator: site.name,
-  publisher: site.name,
-  category: "technology",
-  alternates: { canonical: "/" },
-  openGraph: {
-    type: "website",
-    url: "/",
-    siteName: site.name,
-    locale: "en_US",
-    title: site.title,
-    description: site.description,
-    images: [site.shareImage],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: site.title,
-    description: site.description,
-    images: [site.shareImage.url],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
-  },
-  // Paste the code from Google Search Console / Bing Webmaster Tools here
-  // (or set the environment variables) to verify the site.
-  verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-    other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
-      ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
-      : undefined,
-  },
-  formatDetection: { telephone: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getSeoSettings();
+  const title = seo?.title || site.title;
+  const description = seo?.description || site.description;
+  const keywords = seo?.keywords?.length ? seo.keywords : site.keywords;
+  return {
+    metadataBase: new URL(site.url),
+    title: { default: title, template: `%s | ${site.name}` },
+    description,
+    keywords,
+    applicationName: site.name,
+    authors: [{ name: site.name, url: site.url }],
+    creator: site.name,
+    publisher: site.name,
+    category: "technology",
+    alternates: { canonical: "/" },
+    openGraph: {
+      type: "website",
+      url: "/",
+      siteName: site.name,
+      locale: "en_US",
+      title,
+      description,
+      images: [site.shareImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [site.shareImage.url],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+    },
+    // Paste the code from Google Search Console / Bing Webmaster Tools here
+    // (or set the environment variables) to verify the site.
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+        : undefined,
+    },
+    formatDetection: { telephone: false },
+  };
+}
 
 /** Colours the phone's browser bar to match the dark navbar. */
 export const viewport: Viewport = {

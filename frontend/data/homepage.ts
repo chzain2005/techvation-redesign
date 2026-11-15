@@ -2,12 +2,12 @@
  * ---------------------------------------------------------------------------
  * HOMEPAGE CONTENT
  * ---------------------------------------------------------------------------
- * All text, links and image paths for the homepage live in this one file.
- * The components only decide HOW things look; this file decides WHAT they say.
+ * The homepage content: the components decide HOW things look, the content
+ * decides WHAT they say.
  *
- * Later this content will be loaded from the backend CMS. When that happens,
- * the API should return objects with the same shape as the ones below, and
- * the components will not need to change.
+ * The live content now comes from the CMS (lib/cms/content.ts), which returns
+ * objects of exactly these shapes. This file holds the types, the small
+ * interface labels, and the content the CMS was first filled with (cms/seed).
  *
  * Image paths start with "/assets/..." which points to /frontend/public/assets.
  */
