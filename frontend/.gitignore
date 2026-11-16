@@ -46,3 +46,6 @@ next-env.d.ts
 *.db-journal
 /media
 /private-uploads
+
+# test database and files (npm test)
+/.test-data

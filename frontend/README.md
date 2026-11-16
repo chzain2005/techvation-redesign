@@ -22,6 +22,9 @@ npm run dev                  # http://localhost:3000 and http://localhost:3000/a
 | `npm run dev` | Development server |
 | `npm run build` / `npm start` | Production build / server |
 | `npm run lint` | ESLint |
+| `npm test` | All tests (unit + integration) |
+| `npm run test:unit` | Unit tests only (fast, no database) |
+| `npm run test:integration` | Integration tests against a throwaway SQLite database in `.test-data/` |
 | `npm run seed` | Copy the `data/` content into an empty CMS |
 | `npm run generate:types` | Refresh `cms/payload-types.ts` after changing `cms/` |
 | `npm run payload migrate:create <name>` | Database migration after changing `cms/` (see cms/README.md) |

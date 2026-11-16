@@ -71,6 +71,23 @@ Those files also hold the original content, which the seed script copies into th
    Forms save through the server action in `lib/forms/actions.ts`, which has a honeypot spam check.
 6. Supabase's Data API is switched off (Project Settings → Data API), so the CMS tables are not exposed through it.
 
+## Security (what is in place)
+
+- **Accounts:** only admins create accounts. The first account can only be made while none exist.
+  Passwords must be at least 12 characters and are hashed by Payload with PBKDF2-SHA256 (600,000 rounds, random salt).
+  An account locks for 15 minutes after 5 wrong passwords. The login cookie is httpOnly, and Secure on the live site.
+- **Access:** only signed-in users can see the inbox and CVs; users can only see or edit their own account unless they are admins.
+  Unpublished blog drafts are never public.
+- **API:** only the site's own domain may call it from a browser (`cors` / `csrf` in `payload.config.ts`). GraphQL is off.
+- **Forms:** checked and trimmed on the server (`lib/forms/actions.ts`), with a honeypot.
+  Rate limited by a one-way hash of the IP (5 per 10 minutes, 30 per day; `lib/forms/rate-limit.ts`).
+- **Content:** link fields only accept `/`, `#`, `https://`, `mailto:` and `tel:` addresses (`cms/friendly.ts`).
+  Uploads are raster images only, so no SVG with scripts can be uploaded.
+- **Headers:** frame protection, nosniff, referrer and permissions policies (`next.config.ts`), plus HSTS from Vercel.
+  `robots.txt` keeps `/admin` and `/api` out of search engines.
+- **Database:** encrypted connection (TLS); set `DATABASE_CA_CERT` to also verify Supabase's certificate.
+  Supabase's public Data API is switched off.
+
 ## Changing the content model
 
 After editing anything in `cms/`, run:

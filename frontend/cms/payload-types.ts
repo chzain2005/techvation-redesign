@@ -175,7 +175,14 @@ export interface UserAuthOperations {
  */
 export interface FormSubmission {
   id: number;
-  status: 'new' | 'in-progress' | 'done';
+  /**
+   * For a call booking, Cancelled frees its time slot so someone else can book it.
+   */
+  status: 'new' | 'in-progress' | 'done' | 'cancelled';
+  /**
+   * Shown in your own time zone.
+   */
+  bookingStart?: string | null;
   /**
    * Only your team sees this, e.g. who is following up.
    */
@@ -212,6 +219,7 @@ export interface FormSubmission {
     | number
     | boolean
     | null;
+  visitor?: string | null;
   /**
    * Click the file to open it.
    */
@@ -964,6 +972,7 @@ export interface PayloadMigration {
  */
 export interface FormSubmissionsSelect<T extends boolean = true> {
   status?: T;
+  bookingStart?: T;
   notes?: T;
   form?: T;
   page?: T;
@@ -974,6 +983,7 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
   service?: T;
   message?: T;
   details?: T;
+  visitor?: T;
   cv?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -108,8 +108,9 @@ export const scheduleCall = {
   /** How many months ahead a visitor can book. */
   monthsAhead: 3,
 
-  /** Start times offered on every available day, as minutes after midnight.
-      "booked" slots are shown greyed out. */
+  /** Start times offered on every available day, as minutes after midnight in
+      the visitor's time zone. Times someone already booked (see
+      lib/forms/booking-rules.ts) are shown greyed out as "booked". */
   slots: [
     { minutes: 9 * 60 + 30 },
     { minutes: 10 * 60 + 30 },
@@ -117,8 +118,8 @@ export const scheduleCall = {
     { minutes: 13 * 60 },
     { minutes: 14 * 60 + 30 },
     { minutes: 16 * 60 },
-    { minutes: 17 * 60 + 30, booked: true },
-  ] as Array<{ minutes: number; booked?: boolean }>,
+    { minutes: 17 * 60 + 30 },
+  ] as Array<{ minutes: number }>,
 
   /** Time zones in the dropdown. "id" is the official zone name, "short" is
       the label shown after a time, e.g. "11:30 AM (PKT)". */
@@ -157,12 +158,12 @@ export const scheduleCall = {
   confirmedStep: {
     title: "Your call is booked!",
     /** The visitor's email is placed between these two parts. */
-    descriptionStart: "A calendar invite with the meeting link has been sent to ",
-    descriptionEnd: ".",
-    meeting: "Google Meet · link in your invite",
+    descriptionStart: "We'll email the meeting invite with the call link to ",
+    descriptionEnd: " shortly.",
+    meeting: "Google Meet or Microsoft Teams · link in our email",
     googleLabel: "Add to Google Calendar",
     outlookLabel: "Add to Outlook",
-    note: "Need to reschedule? Use the link in your email.",
+    note: "Need to reschedule? Just reply to our email.",
     /** Title and text of the event created by the two calendar buttons. */
     eventTitle: "Techvation strategy call",
     eventDetails: "Free 30-minute strategy call with the Techvation consulting team.",

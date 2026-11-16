@@ -30,7 +30,7 @@ export const FormSubmissions: CollectionConfig = {
   admin: {
     group: "Inbox",
     useAsTitle: "name",
-    defaultColumns: ["name", "form", "email", "status", "createdAt"],
+    defaultColumns: ["name", "form", "email", "status", "bookingStart", "createdAt"],
     description:
       'Everything sent through the forms on the website, newest first. Open one to read it, then set its status to "In progress" or "Done".',
     listSearchableFields: ["name", "email", "company", "message"],
@@ -53,8 +53,25 @@ export const FormSubmissions: CollectionConfig = {
         { label: "New", value: "new" },
         { label: "In progress", value: "in-progress" },
         { label: "Done", value: "done" },
+        { label: "Cancelled", value: "cancelled" },
       ],
-      admin: { position: "sidebar" },
+      admin: {
+        position: "sidebar",
+        description: "For a call booking, Cancelled frees its time slot so someone else can book it.",
+      },
+    },
+    {
+      name: "bookingStart",
+      label: "Call time",
+      type: "date",
+      index: true,
+      admin: {
+        readOnly: true,
+        position: "sidebar",
+        date: { pickerAppearance: "dayAndTime", displayFormat: "EEE d MMM yyyy, h:mm a" },
+        condition: (data) => data?.form === "booking",
+        description: "Shown in your own time zone.",
+      },
     },
     {
       name: "notes",
@@ -102,6 +119,13 @@ export const FormSubmissions: CollectionConfig = {
       label: "Other answers",
       type: "json",
       admin: { ...readOnly, description: "Everything else they filled in (budget, timeline, chosen time…)." },
+    },
+    {
+      // One-way hash of the sender's IP address, only used for rate limiting.
+      name: "visitor",
+      type: "text",
+      index: true,
+      admin: { hidden: true },
     },
     {
       name: "cv",

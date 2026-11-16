@@ -77,12 +77,30 @@ const LABELS: Record<string, string> = {
 const humanise = (name: string) =>
   name.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/^./, (c) => c.toUpperCase()).toLowerCase().replace(/^./, (c) => c.toUpperCase());
 
+/** Link fields: only real web, page, email and phone addresses (no "javascript:" tricks). */
+const LINK_FIELDS = new Set(["href", "linkedin"]);
+const SAFE_LINK = /^(\/(?!\/)|#|https?:\/\/|mailto:|tel:)/i;
+
+function linkValidate(required: boolean) {
+  return (value: unknown) => {
+    if (typeof value !== "string" || !value.trim()) return required ? "This field is required." : true;
+    return (
+      SAFE_LINK.test(value.trim()) ||
+      'Start the link with "/" (a page here), "#", "https://", "mailto:" or "tel:".'
+    );
+  };
+}
+
 function friendlyFields(fields: Field[]): Field[] {
   return fields.map((field) => {
     const f = { ...field } as Field & Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     if ("name" in f && f.name && f.label === undefined && f.type !== "ui") {
       f.label = LABELS[f.name] ?? humanise(f.name);
+    }
+
+    if (f.type === "text" && "name" in f && LINK_FIELDS.has(f.name) && !f.validate) {
+      f.validate = linkValidate(Boolean(f.required));
     }
 
     if (f.type === "array") {

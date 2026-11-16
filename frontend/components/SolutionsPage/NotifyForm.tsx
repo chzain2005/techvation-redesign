@@ -48,7 +48,9 @@ export default function NotifyForm({ notify }: { notify: NotifyText }) {
           <Glyph name="check" size={18} />
         </span>
         <span className="flex flex-col">
-          <span className="font-heading text-subtitle font-semibold text-white">{notify.successTitle}</span>
+          <span className="font-heading text-subtitle font-semibold text-white">
+            {notify.successTitle}
+          </span>
           <span className="text-small text-white/70">{notify.successText}</span>
         </span>
       </div>
@@ -56,31 +58,34 @@ export default function NotifyForm({ notify }: { notify: NotifyText }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex w-full max-w-140 flex-col gap-2.5 md:flex-row md:items-center md:gap-3 md:rounded-full md:border md:border-white/18 md:bg-white/8 md:p-2 md:pl-5.5 md:backdrop-blur-md"
-    >
-      <label className="flex flex-1 items-center gap-2.5 rounded-full border border-white/18 bg-white/8 px-5 py-3.5 backdrop-blur-md md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
-        <span className="sr-only">{notify.label}</span>
-        <Glyph name="bell" size={18} className="text-accent" />
-        <input
-          type="email"
-          name="email"
-          required
-          autoComplete="email"
-          placeholder={notify.placeholder}
-          className="w-full min-w-0 bg-transparent text-body-base text-white outline-none placeholder:text-white/55"
-        />
-      </label>
-      <Honeypot />
-      <Button type="submit" className="w-full md:w-auto" disabled={isSending}>
-        {notify.submitLabel}
-      </Button>
+    // The error message sits under the form, so the pill layout stays intact.
+    <div className="flex w-full max-w-140 flex-col gap-2">
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-140 flex-col gap-2.5 md:flex-row md:items-center md:gap-3 md:rounded-full md:border md:border-white/18 md:bg-white/8 md:p-2 md:pl-5.5 md:backdrop-blur-md"
+      >
+        <label className="flex flex-1 items-center gap-2.5 rounded-full border border-white/18 bg-white/8 px-5 py-3.5 backdrop-blur-md md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
+          <span className="sr-only">{notify.label}</span>
+          <Glyph name="bell" size={18} className="text-accent" />
+          <input
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder={notify.placeholder}
+            className="w-full min-w-0 bg-transparent text-body-base text-white outline-none placeholder:text-white/55"
+          />
+        </label>
+        <Honeypot />
+        <Button type="submit" className="w-full md:w-auto" disabled={isSending}>
+          {notify.submitLabel}
+        </Button>
+      </form>
       {error && (
-        <p role="alert" className="text-small font-medium text-white md:sr-only">
+        <p role="alert" className="text-small font-medium text-white">
           {error}
         </p>
       )}
-    </form>
+    </div>
   );
 }

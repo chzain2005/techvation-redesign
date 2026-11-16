@@ -12,6 +12,8 @@ import { after } from "next/server";
 import { getPayload } from "payload";
 import { FORM_KINDS, type FormKind } from "@/cms/collections/FormSubmissions";
 import { sendAlert } from "./alerts";
+import { bookedStarts, CALL_MS, clashes, MAX_AHEAD_MS } from "./booking-rules";
+import { overFormLimit, overLookupLimit, TOO_MANY, visitorHash } from "./rate-limit";
 
 export type FormResult = { ok: true } | { ok: false; error: string };
 
@@ -19,7 +21,28 @@ export type FormResult = { ok: true } | { ok: false; error: string };
 const MAX_CV_BYTES = 4 * 1024 * 1024;
 
 /** Standard fields; every other field goes into `details`. */
-const STANDARD = new Set(["form", "page", "name", "email", "phone", "company", "service", "message", "cv", "website"]);
+const STANDARD = new Set(["form", "page", "name", "email", "phone", "company", "service", "message", "cv", "website", "slotStart"]);
+
+const TAKEN = "Sorry, that time was just booked by someone else. Please go back and pick another time.";
+
+/**
+ * The start times (ms) of calls already booked between two moments, so the
+ * calendar can show those times as booked. Only times are returned, never
+ * who booked them.
+ */
+export async function getBookedTimes(fromIso: string, toIso: string): Promise<number[]> {
+  const from = new Date(fromIso).getTime();
+  const to = new Date(toIso).getTime();
+  if (Number.isNaN(from) || Number.isNaN(to) || to < from || to - from > MAX_AHEAD_MS) return [];
+  if (overLookupLimit(await visitorHash())) return [];
+  try {
+    const payload = await getPayload({ config });
+    return await bookedStarts(payload, from, to);
+  } catch (error) {
+    console.error("[forms] could not read booked times:", error);
+    return [];
+  }
+}
 
 /** Free-text fields some forms use for their message. */
 const MESSAGE_FIELDS = ["message", "goal", "details", "topic"];
@@ -53,8 +76,27 @@ export async function submitForm(data: FormData): Promise<FormResult> {
     if (values.length) details[key] = values.join(", ");
   }
 
+  // A call booking: its exact start time, which must be in the future.
+  let bookingStart: number | undefined;
+  if (form === "booking") {
+    bookingStart = new Date(clean(data.get("slotStart"), 40)).getTime();
+    const now = Date.now();
+    if (Number.isNaN(bookingStart) || bookingStart < now || bookingStart > now + MAX_AHEAD_MS) {
+      return { ok: false, error: "Please go back and pick a time for your call." };
+    }
+  }
+
   try {
     const payload = await getPayload({ config });
+
+    // At most a few forms per visitor in a short time (stops spam floods).
+    const visitor = await visitorHash();
+    if (await overFormLimit(payload, visitor)) return { ok: false, error: TOO_MANY };
+
+    // Two people can't book the same time.
+    if (bookingStart !== undefined && (await clashes(payload, bookingStart))) {
+      return { ok: false, error: TAKEN };
+    }
 
     // The CV of a job application: a PDF of at most 4 MB.
     let cv: number | undefined;
@@ -90,13 +132,44 @@ export async function submitForm(data: FormData): Promise<FormResult> {
     };
     const submission = await payload.create({
       collection: "form-submissions",
-      data: { ...fields, status: "new", cv },
+      data: {
+        ...fields,
+        status: "new",
+        cv,
+        visitor,
+        bookingStart: bookingStart !== undefined ? new Date(bookingStart).toISOString() : undefined,
+      },
       overrideAccess: true,
     });
 
+    // Two visitors confirming overlapping times at the same moment: the
+    // earlier booking keeps the time, the later one is removed and asked to
+    // pick again.
+    if (bookingStart !== undefined) {
+      const { docs: earlier } = await payload.find({
+        collection: "form-submissions",
+        where: {
+          and: [
+            { form: { equals: "booking" } },
+            { status: { not_equals: "cancelled" } },
+            { id: { less_than: submission.id } },
+            { bookingStart: { greater_than: new Date(bookingStart - CALL_MS).toISOString() } },
+            { bookingStart: { less_than: new Date(bookingStart + CALL_MS).toISOString() } },
+          ],
+        },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+      });
+      if (earlier.length) {
+        await payload.delete({ collection: "form-submissions", id: submission.id, overrideAccess: true });
+        return { ok: false, error: TAKEN };
+      }
+    }
+
     // Email the team (Settings → Email alerts) after the visitor already has
     // their answer, so a slow or failing email never affects the form.
-    after(() => sendAlert(payload, { ...fields, id: submission.id, hasCv: Boolean(cv) }));
+    after(() => sendAlert(payload, { ...fields, id: submission.id, hasCv: Boolean(cv), bookingStart }));
     return { ok: true };
   } catch (error) {
     const details = (error as { data?: { errors?: unknown } }).data?.errors;

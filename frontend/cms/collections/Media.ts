@@ -19,7 +19,8 @@ export const Media: CollectionConfig = {
     // Local uploads folder (also used to avoid duplicate file names). MEDIA_DIR
     // can point elsewhere, e.g. an empty folder when uploading to the cloud.
     staticDir: process.env.MEDIA_DIR || "media",
-    mimeTypes: ["image/*"],
+    // Photos only: SVG files are refused because they can contain scripts.
+    mimeTypes: ["image/png", "image/jpeg", "image/webp", "image/avif", "image/gif"],
     focalPoint: true,
   },
   hooks: revalidateCollection("media"),

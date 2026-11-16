@@ -7,6 +7,7 @@ import {
   formatShortDate,
   formatTimeRange,
   startOfToday,
+  zonedMoment,
 } from "@/lib/schedule";
 import ConsultationPopup from "./ConsultationPopup";
 import ConsultationSuccess from "./ConsultationSuccess";
@@ -200,6 +201,7 @@ export default function PopupProvider({ children }: { children: ReactNode }) {
                       booking.minutes,
                       scheduleCall.durationMinutes,
                     )} (${zone?.short})`}
+                    slotStart={zonedMoment(booking.day, booking.minutes, booking.timeZone).toISOString()}
                     contact={contact}
                     onBack={() => setStep("date")}
                     onConfirmed={(details) => {

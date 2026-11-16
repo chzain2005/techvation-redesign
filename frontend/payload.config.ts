@@ -55,13 +55,37 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const databaseUri = process.env.DATABASE_URI || "file:./techvation.db";
 
+/*
+ * The only websites allowed to use the CMS API from a browser (CORS) and to
+ * send requests with an admin login cookie (CSRF protection).
+ */
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.thetechvation.com").replace(/\/$/, "");
+const allowedOrigins = [
+  siteUrl,
+  siteUrl.replace("://www.", "://"),
+  siteUrl.includes("://www.") ? siteUrl : siteUrl.replace("://", "://www."),
+  ...(process.env.NODE_ENV === "production" ? [] : ["http://localhost:3000"]),
+];
+
+/*
+ * The database connection is encrypted (TLS) unless it is on this computer.
+ * With DATABASE_CA_CERT (Supabase > Database settings > SSL certificate) the
+ * server's certificate is verified too.
+ */
+const isLocalDatabase = /@(localhost|127\.0\.0\.1)[:/]/.test(databaseUri);
+const databaseSsl = isLocalDatabase
+  ? undefined
+  : process.env.DATABASE_CA_CERT
+    ? { ca: process.env.DATABASE_CA_CERT.replace(/\\n/g, "\n") }
+    : { rejectUnauthorized: false };
+
 const db = databaseUri.startsWith("file:")
   ? sqliteAdapter({ client: { url: databaseUri } })
   : postgresAdapter({
       // A few connections per server process: on Vercel many processes run at
       // once, and Supabase's pooler limits the total. Use Supabase's
       // "Transaction pooler" address (port 6543) in production.
-      pool: { connectionString: databaseUri, max: Number(process.env.DATABASE_POOL_MAX ?? 3) },
+      pool: { connectionString: databaseUri, max: Number(process.env.DATABASE_POOL_MAX ?? 3), ssl: databaseSsl },
       // Schema changes are applied by migrations in production
       // (npm run payload migrate); in development they are pushed directly.
       push: process.env.NODE_ENV !== "production",
@@ -106,6 +130,8 @@ const s3Config = {
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || undefined,
   secret: process.env.PAYLOAD_SECRET || "",
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   admin: {
     user: Users.slug,
     importMap: { baseDir: dirname },

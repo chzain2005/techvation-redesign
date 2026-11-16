@@ -13,6 +13,8 @@ import { sendForm } from "@/lib/forms/send";
 type ScheduleDetailsStepProps = {
   /** The chosen slot as text, e.g. "Wed, Nov 18 · 11:30 AM – 12:00 PM (PKT)". */
   summary: string;
+  /** The exact start of the call (ISO), so the server can check it is still free. */
+  slotStart: string;
   /** Details we already know (from the consultation form), filled in for the visitor. */
   contact: Contact;
   /** "Change" or "Back" was clicked: return to the date and time step. */
@@ -27,6 +29,7 @@ type ScheduleDetailsStepProps = {
  */
 export default function ScheduleDetailsStep({
   summary,
+  slotStart,
   contact,
   onBack,
   onConfirmed,
@@ -45,7 +48,7 @@ export default function ScheduleDetailsStep({
     // the calendar invite promised in step 3 from there.
     setIsSending(true);
     setError("");
-    const result = await sendForm("booking", data, { slot: summary });
+    const result = await sendForm("booking", data, { slot: summary, slotStart });
     setIsSending(false);
     if (!result.ok) return setError(result.error);
 

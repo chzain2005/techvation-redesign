@@ -25,6 +25,8 @@ export type AlertSubmission = {
   page?: string;
   details?: Record<string, string>;
   hasCv?: boolean;
+  /** Start of a booked call (ms). */
+  bookingStart?: number;
 };
 
 const escape = (value: string) =>
@@ -60,7 +62,22 @@ export async function sendAlert(payload: Payload, submission: AlertSubmission) {
     const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.thetechvation.com").replace(/\/$/, "");
     const adminLink = `${siteUrl}/admin/collections/form-submissions/${submission.id}`;
 
+    // The call time in Pakistan time for the team (the visitor's own time is in "Slot").
+    const callTime = submission.bookingStart
+      ? new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Karachi",
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        }).format(new Date(submission.bookingStart)) + " (PKT)"
+      : undefined;
+
     const rows: Array<[string, string | undefined]> = [
+      ["Call time", callTime],
       ["Name", submission.name],
       ["Email", submission.email],
       ["Phone / WhatsApp", submission.phone],

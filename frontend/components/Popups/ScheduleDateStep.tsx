@@ -1,6 +1,6 @@
 "use client"; // The calendar reacts to clicks and remembers the month on screen.
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/Button/Button";
 import Icon from "@/components/Icon/Icon";
 import { scheduleCall } from "@/data/popups";
@@ -15,8 +15,10 @@ import {
   isSameDay,
   monthCells,
   startOfToday,
+  zonedMoment,
   zoneOffsetMinutes,
 } from "@/lib/schedule";
+import { getBookedTimes } from "@/lib/forms/actions";
 import { PopupSelect } from "./PopupField";
 import type { Booking } from "./PopupProvider";
 
@@ -52,7 +54,39 @@ export default function ScheduleDateStep({ booking, onChange, onNext }: Schedule
   const cells = monthCells(firstOfMonth.getFullYear(), firstOfMonth.getMonth());
 
   const zone = timeZones.find((item) => item.id === booking.timeZone) ?? timeZones[0];
-  const hasTime = booking.minutes !== null;
+
+  // Calls other visitors already booked in the month on screen (start times
+  // in ms). A time is "booked" when it would overlap one of them.
+  const [bookedTimes, setBookedTimes] = useState<number[]>([]);
+  const monthKey = `${firstOfMonth.getFullYear()}-${firstOfMonth.getMonth()}`;
+  useEffect(() => {
+    let current = true;
+    const [year, month] = monthKey.split("-").map(Number);
+    // A day either side, so every time zone's view of the month is covered.
+    const from = new Date(year, month, 0);
+    const to = new Date(year, month + 1, 2);
+    getBookedTimes(from.toISOString(), to.toISOString())
+      .then((times) => current && setBookedTimes(times))
+      .catch(() => current && setBookedTimes([]));
+    return () => {
+      current = false;
+    };
+  }, [monthKey]);
+
+  const callMs = durationMinutes * 60 * 1000;
+  const isBooked = (minutes: number) => {
+    const start = zonedMoment(booking.day, minutes, booking.timeZone).getTime();
+    return bookedTimes.some((other) => Math.abs(other - start) < callMs);
+  };
+
+  // If the chosen time turns out to be booked (e.g. after changing the time
+  // zone, or someone just took it), clear it so another one is picked.
+  const chosenIsBooked = booking.minutes !== null && isBooked(booking.minutes);
+  useEffect(() => {
+    if (chosenIsBooked) onChange({ minutes: null });
+  }, [chosenIsBooked, onChange]);
+
+  const hasTime = booking.minutes !== null && !chosenIsBooked;
 
   /* Look of the two small arrow buttons next to the month name. */
   const monthButton =
@@ -196,16 +230,17 @@ export default function ScheduleDateStep({ booking, onChange, onNext }: Schedule
           <div className="grid grid-cols-3 gap-2 md:grid-cols-1 md:gap-2.5">
             {slots.map((slot) => {
               const isSelected = slot.minutes === booking.minutes;
+              const booked = isBooked(slot.minutes);
               return (
                 <button
                   key={slot.minutes}
                   type="button"
-                  disabled={slot.booked}
+                  disabled={booked}
                   aria-pressed={isSelected}
                   onClick={() => onChange({ minutes: slot.minutes })}
                   className={cn(
                     "rounded-cell border py-2.25 text-label-sm font-semibold whitespace-nowrap transition duration-200 md:rounded-xl md:px-3.5 md:py-2.75 md:text-label",
-                    slot.booked
+                    booked
                       ? "hidden border-transparent bg-surface text-faint md:block"
                       : isSelected
                         ? "cursor-pointer border-transparent bg-brand text-white"
@@ -213,7 +248,7 @@ export default function ScheduleDateStep({ booking, onChange, onNext }: Schedule
                   )}
                 >
                   {formatTime(slot.minutes)}
-                  {slot.booked && dateStep.bookedSuffix}
+                  {booked && dateStep.bookedSuffix}
                 </button>
               );
             })}
