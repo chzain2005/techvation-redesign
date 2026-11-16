@@ -41,8 +41,8 @@ export default function ValueVisual({ visual }: { visual: (typeof uniqueValue)["
   return (
     // Small top/bottom padding below desktop, as in the tablet and phone frames.
     <div className="shrink-0 pt-2.5 pb-5 xl:p-0">
-      <div className="size-82.5 max-[23.125rem]:size-70 md:size-120 xl:size-140">
-        <div className="relative size-140 origin-top-left scale-59 max-[23.125rem]:scale-50 md:scale-86 xl:scale-100">
+      <div className="size-82.5 max-[370px]:size-70 md:size-120 xl:size-140">
+        <div className="relative size-140 origin-top-left scale-59 max-[370px]:scale-50 md:scale-86 xl:scale-100">
           {/* Big hollow word behind everything */}
           <p
             aria-hidden

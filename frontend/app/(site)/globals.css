@@ -198,12 +198,16 @@
   /* ---- Widths ---- */
   --container-page: 90rem; /* 1440px - the width of the Figma frame */
 
-  /* ---- Breakpoints ---- */
-  --breakpoint-sm: 40rem; /* 640px - large phones */
-  --breakpoint-md: 48rem; /* 768px - tablets (the Figma tablet frame is 834px) */
-  --breakpoint-lg: 64rem; /* 1024px - large tablets */
-  --breakpoint-xl: 80rem; /* 1280px - the desktop layout starts here */
-  --breakpoint-desktop: 90rem; /* 1440px - the exact Figma layout */
+  /* ---- Breakpoints ----
+     In pixels, not rem: rem breakpoints follow the font size set in the
+     visitor's browser, so the desktop layout would start at the wrong
+     screen width for anyone who changed that setting. */
+  --breakpoint-sm: 640px; /* large phones */
+  --breakpoint-md: 768px; /* tablets (the Figma tablet frame is 834px) */
+  --breakpoint-lg: 1024px; /* large tablets */
+  --breakpoint-xl: 1280px; /* the desktop layout starts here */
+  --breakpoint-desktop: 1440px; /* the exact Figma layout */
+  --breakpoint-2xl: 1536px; /* (unused; kept in pixels like the rest) */
 
   /* ---- Corner radius ---- */
   --radius-cell: 0.625rem; /* 10px - calendar days, small tags */
@@ -578,6 +582,16 @@
    (set by the Navbar; 0 while it is slid away). Sticky bars use it. */
 :root {
   --nav-offset: 0px;
+}
+
+/*
+ * One rem is always 16px, whatever font size is set in the visitor's browser.
+ * The illustrations (orbit, "VALUE" picture) mix rem-sized pieces with images
+ * exported in pixels; with another browser font size the two no longer lined
+ * up and pieces overlapped. Browser zoom (Ctrl +/-) still scales everything.
+ */
+html {
+  font-size: 16px;
 }
 
 body {
